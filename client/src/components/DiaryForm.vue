@@ -3,7 +3,7 @@
       <v-dialog v-model="dialogDiaryForm" >
         <v-card style="direction: rtl;">
           <v-card-title>
-            <span class="text-h7">{{ diary._id ? "Update" : "Add New" }}</span>
+            <span class="text-h7">{{ diary._id ? "עדכון" : "חדש" }}</span>
             <v-spacer></v-spacer>
             <v-col cols="5">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="diary.date" persistent width="290px">
