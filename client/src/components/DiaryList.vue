@@ -21,9 +21,9 @@
           dense>
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title> {{header}} - {{diaryList.length.toLocaleString()}} </v-toolbar-title>
+              <v-toolbar-title> {{header}} {{diaryList.length.toLocaleString()}} </v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-text-field v-model="search" label="Search" class="mx-4 sreach-width" clearable></v-text-field>
+              <!-- <v-text-field v-model="search" label="Search" class="mx-4 sreach-width" clearable></v-text-field> -->
               <v-spacer></v-spacer>
               <v-col style="text-align-last: center;">
               <export-excel

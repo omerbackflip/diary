@@ -1,14 +1,15 @@
 <template>
       <!-- Add New/Update row dialogDiaryForm -->
       <v-dialog v-model="dialogDiaryForm" >
-        <v-card style="direction: rtl;">
+        <v-card style="direction: rtl; background-color: beige;">
           <v-card-title>
             <span class="text-h7">{{ diary._id ? "עדכון" : "חדש" }}</span>
-            <v-spacer></v-spacer>
+            <!-- <v-spacer></v-spacer> -->
             <v-col cols="5">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="diary.date" persistent width="290px">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-text-field v-model="diary.date" label="תאריך" readonly v-bind="attrs" v-on="on">
+                  <v-text-field v-model="diary.date" readonly v-bind="attrs" v-on="on" hide-details 
+                                style="padding-top: 0px; margin-top: -4px;">
                   </v-text-field>
                 </template>
                 <v-date-picker v-model="diary.date" scrollable>
@@ -47,16 +48,16 @@
                     <v-text-field v-model="diary.agoran" label="עגורן" required dense></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field v-model="diary.yetzikot" label="יציקות" dense></v-text-field>
+                    <v-textarea v-model="diary.yetzikot" label="יציקות" auto-grow rows="1" dense></v-textarea>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field v-model="diary.homarim" label="חומרים" dense></v-text-field>
+                    <v-textarea v-model="diary.homarim" label="חומרים" auto-grow rows="1" dense></v-textarea>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field v-model="diary.shonot" label="שונות" dense></v-text-field>
+                    <v-textarea v-model="diary.shonot" label="שונות" auto-grow rows="1" dense></v-textarea>
                   </v-col>
-                  <v-col cols="12" class="no-padding hebrew">
-                    <v-textarea v-model="diary.description" label="תאור יום" auto-grow rows="2" dense></v-textarea>
+                  <v-col cols="12">
+                    <v-textarea v-model="diary.description" label="תאור יום" auto-grow rows="1" dense></v-textarea>
                   </v-col>
                 </v-row>
               </v-form>
@@ -178,28 +179,27 @@ export default {
 	margin: 12px;
 }
 
-.padding-date{
-  padding-left: 0px !important ;
-  padding-right: 0px !important ;
-}
-
-.v-input--checkbox {
-  margin-top: 0px !important;
-}
-.payments-wrapper{
-    border: 3px solid #85a7ff;
-    margin-left: 5px !important;
-    margin-right: 5px !important;
-}
-.hebrew {
+/* .hebrew {
   direction: rtl;
   text-align-last: right;
-}
+} */
 .col {
   padding-top: 0px;
   padding-bottom: 20px;
 }
-.input {
-  color: blue;
+.v-card__title {
+  align-items: stretch;
+  justify-content: space-evenly;
+}
+.v-text-field {input 
+  {
+    text-align-last: center;
+    color: blue;
+  }}
+
+.v-text-field { textarea  
+  {
+    color: blue;
+  }
 }
 </style>
