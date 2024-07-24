@@ -9,6 +9,7 @@ export const DIARY_WEB_HEADERS = [
     { text: "שופל",     value: "shufel",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "באגר",     value: "bagger",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "מנוף",     value: "manof",         class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
+    { text: "מאניטו",   value: "manitu",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "עגורן",    value: "agoran",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "יציקות",   value: "yetzikot",      class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
     { text: "חומרים",   value: "homrim",        class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},

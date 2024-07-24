@@ -45,6 +45,9 @@
                     <v-text-field v-model="diary.manof" label="מנוף" dense></v-text-field>
                   </v-col>
                   <v-col cols="3">
+                    <v-text-field v-model="diary.manitu" label="מאניטו" dense></v-text-field>
+                  </v-col>
+                  <v-col cols="3">
                     <v-text-field v-model="diary.agoran" label="עגורן" required dense></v-text-field>
                   </v-col>
                   <v-col cols="12">
