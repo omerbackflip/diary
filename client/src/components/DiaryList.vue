@@ -61,7 +61,7 @@ import Vue from "vue";
 import moment from "moment";
 import apiService from "../services/apiService";
 // import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
-import { DIARY_MODEL, DIARY_WEB_HEADERS, NEW_DIARY } from "../constants/constants";
+import { DIARY_MODEL, DIARY_WEB_HEADERS, DIARY_MOBILE_HEADERS, NEW_DIARY } from "../constants/constants";
 import diaryForm from "./DiaryForm.vue"
 import { isMobile } from '../constants/constants';
 import excel from "vue-excel-export";
@@ -69,8 +69,9 @@ Vue.use(excel);
 
 Vue.filter("formatDate", function (value) {
 	if (value) {
+    moment.locale('he')
 		//return moment(String(value)).format('MM/DD/YYYY hh:mm')
-		return moment(String(value)).format("DD/MM/YYYY");
+		return moment(String(value)).format("DD/MM/YYYY dddd");
 	}
 });
 
@@ -98,7 +99,7 @@ export default {
 	methods: {
 		getHeaders() {
 			if (this.isMobile()) {
-				return DIARY_WEB_HEADERS;
+				return DIARY_MOBILE_HEADERS;
 			} else {
 				return DIARY_WEB_HEADERS;
 			}
@@ -155,9 +156,9 @@ export default {
   cursor: pointer;
 }
 
-.bg-green {
+/* .bg-green {
   background-color: lightgreen !important;
-}
+} */
 
 .mobile-headers {
   font-size: 11px !important;

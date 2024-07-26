@@ -2,42 +2,27 @@
     <nav>
         <v-app-bar app dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-            <v-spacer></v-spacer>
-            <v-row >
-                <v-col col="2">
-                    <template>
-                    <div class="mt-2 text-center">
+                <v-col col="10">
+                    <div class="text-center" style="text-align-last: justify;">
+                        {{ new Date() | formatDate  }}
                         <v-btn x-small @click="callAddNewDiary">
                             <v-icon small>mdi-plus</v-icon>
                         </v-btn>
-                        <v-menu offset-y>
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn icon v-bind="attrs" v-on="on" class="float-right">
-                                <v-icon>mdi-dots-vertical</v-icon>
-                            </v-btn>
-                        </template>
-                        <!-- <v-list>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn v-bind="attrs" v-on="on">
-                                    <v-icon left>expand_more</v-icon>
-                                    <span>Menu1</span>
-                                </v-btn>
-                            </template> -->
-                            <v-list>
-                                <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
-                                    <v-list-item-title>{{link.text}}</v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        <!-- </v-list> -->
-
-                        </v-menu>
                     </div>
-                    </template>
                 </v-col>
-            </v-row>
-
+                <v-menu offset-y>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn icon v-bind="attrs" v-on="on" class="float-right">
+                            <v-icon>mdi-dots-vertical</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item v-for="link in links" :key="link.text" router :to="link.route">
+                            <v-list-item-title>{{link.text}}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
         </v-app-bar>
-
         <v-navigation-drawer app v-model="drawer" class="primary">
             <v-list>
                 <v-list-item v-for="link in links" :key="link.text" router @click="navigate(link)">
@@ -62,6 +47,14 @@
 
 <script>
 import ImportXLS from '../ImportXLS.vue';
+import Vue from "vue";
+import moment from "moment";
+Vue.filter("formatDate", function (value) {
+	if (value) {
+		//return moment(String(value)).format('MM/DD/YYYY hh:mm')
+		return moment(String(value)).format("DD/MM/YYYY - dddd");
+	}
+});
 export default {
     components: { ImportXLS },
     data() {
@@ -74,6 +67,7 @@ export default {
                 {icon: 'folder', text: 'טבלת הטבלאות', route: '/tableList'},
                 {icon: 'folder', text: 'קליטת אקסל', route: null, import: 'EXCEL', onClick: 'runModal'},
             ],
+            displayDay: '',
         }
     },
     methods:{

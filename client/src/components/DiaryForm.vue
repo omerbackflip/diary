@@ -1,19 +1,17 @@
 <template>
       <!-- Add New/Update row dialogDiaryForm -->
       <v-dialog v-model="dialogDiaryForm" >
-        <v-card style="direction: rtl; background-color: beige;">
+        <v-card style="direction: rtl;" :class="bck_grnd(diary._id)"> <!-- "background-color: beige;" -->
           <v-card-title>
             <span class="text-h7">{{ diary._id ? "עדכון" : "חדש" }}</span>
-            <!-- <v-spacer></v-spacer> -->
             <v-col cols="5">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="diary.date" persistent width="290px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field v-model="diary.date" readonly v-bind="attrs" v-on="on" hide-details 
                                 style="padding-top: 0px; margin-top: -4px;">
-                  </v-text-field>
+                  </v-text-field> {{displayDay}}
                 </template>
                 <v-date-picker v-model="diary.date" scrollable>
-                <!-- <v-date-picker v-model="diary.date" scrollable> -->
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="dateModal = false"> Cancel </v-btn>
                   <v-btn text color="primary" @click="$refs.dateDialog.save(diary.date)"> OK </v-btn>
@@ -22,13 +20,14 @@
             </v-col>
             <v-btn small v-show="diary._id" @click="copyToNew"> Copy </v-btn>
           </v-card-title>
+
           <v-card-text>
             <v-container>
               <v-form ref="form">
                 <v-row>
-                  <v-col cols="3">
+                  <!-- <v-col cols="3">
                     <v-text-field v-model="diary.director" label="מנהל" required dense></v-text-field>
-                  </v-col>
+                  </v-col> -->
                   <v-col cols="3">
                     <v-text-field v-model="diary.poalim" label="פועלים" dense></v-text-field>
                   </v-col>
@@ -39,7 +38,7 @@
                     <v-text-field v-model="diary.shufel" label="שופל" dense></v-text-field>
                   </v-col>
                   <v-col cols="3">
-                    <v-text-field v-model="diary.bagger" label="באגר" required dense></v-text-field>
+                    <v-text-field v-model="diary.bagger" label="באגר" dense></v-text-field>
                   </v-col>
                   <v-col cols="3">
                     <v-text-field v-model="diary.manof" label="מנוף" dense></v-text-field>
@@ -48,7 +47,10 @@
                     <v-text-field v-model="diary.manitu" label="מאניטו" dense></v-text-field>
                   </v-col>
                   <v-col cols="3">
-                    <v-text-field v-model="diary.agoran" label="עגורן" required dense></v-text-field>
+                    <v-text-field v-model="diary.agoran" label="עגורן" dense></v-text-field>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-text-field v-model="diary.pipe" label="משאבה" dense></v-text-field>
                   </v-col>
                   <v-col cols="12">
                     <v-textarea v-model="diary.yetzikot" label="יציקות" auto-grow rows="1" dense></v-textarea>
@@ -108,7 +110,6 @@ export default {
         },
         dateModal : false,
         invoiceID: 0,
-
         diary: [],
       };
     },
@@ -127,7 +128,6 @@ export default {
       copyToNew() {
         this.isNewDiary = true
         this.diary._id = null
-        this.diary.published = false
       },
 
       // saveDiary: async function () {
@@ -168,10 +168,21 @@ export default {
         this.$refs.form.reset();
       },
 
+      //Background of card
+      bck_grnd(item) {
+        let classes = item ? "bg-beige" :"";
+        return classes;
+      },
+
     },
 
     async mounted(){
+    },
 
+    computed : {
+      displayDay: function () {
+        return moment(this.diary.date).format('dddd')
+      }
     }
 };
 </script>
@@ -198,11 +209,17 @@ export default {
   {
     text-align-last: center;
     color: blue;
-  }}
-
+  }
+}
 .v-text-field { textarea  
   {
     color: blue;
   }
+}
+/* .bg-green {
+  background-color: rgb(212, 220, 212) !important;
+} */
+.bg-beige {
+  background-color: beige !important;
 }
 </style>

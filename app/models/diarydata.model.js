@@ -7,6 +7,7 @@ module.exports = mongoose => {
       traktor: Number,
       manitu: Number,
       shufel: Number,
+      pipe: Number,
       bagger: Number,
       manof: Number,
       agoran: Number,
