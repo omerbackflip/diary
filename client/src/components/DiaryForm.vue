@@ -90,6 +90,7 @@ import Vue from "vue";
 import moment from "moment";
 Vue.filter("formatDate", function (value) {
 	if (value) {
+    moment.locale('he')
 		//return moment(String(value)).format('MM/DD/YYYY hh:mm')
 		return moment(String(value)).format("DD/MM/YYYY");
 	}

@@ -16,17 +16,16 @@
           loading-text="Loading... Please wait"
           loader-height="20"
           @click:row="getDiaryForEdit"
-          single-select
           item-key="_id"
           dense>
-          <template v-slot:top>
+        <template v-slot:top>
             <v-toolbar flat>
               <v-toolbar-title> {{header}} {{diaryList.length.toLocaleString()}} </v-toolbar-title>
               <v-spacer></v-spacer>
               <!-- <v-text-field v-model="search" label="Search" class="mx-4 sreach-width" clearable></v-text-field> -->
               <v-spacer></v-spacer>
               <v-col style="text-align-last: center;">
-              <export-excel
+                <export-excel
                 :data="diaryList"
                 type="xlsx"
                 name="all-diary"
@@ -35,16 +34,60 @@
                 <v-btn x-small class="btn btn-danger">
                   <v-icon small>mdi-download</v-icon>
                 </v-btn>
-              </export-excel>
-            </v-col>
+                </export-excel>
+              </v-col>
           </v-toolbar>
         </template>
-        <template v-slot:[`item.date`]="{ item }">
+        <!-- <template v-slot:[`item.date`]="{ item }">
           <span style="margin-left: 0.5rem"> {{ item.date | formatDate }}</span>
-          <!-- <td v-if="isMobile()">
-              <span> {{ item.description }} </span>
-          </td> -->
+        </template> -->
+
+        <template v-slot:item ="{ item, headers }">
+          <tr style="border-bottom: hidden; vertical-align: text-top;" @click="getDiaryForEdit(item)">
+            <td>
+              <span style="margin-left: 0.5rem"> {{ item.date | formatDate }}</span>
+            </td>
+            <td>
+              <span>{{item.poalim}}</span>
+            </td>
+            <td>
+              <span>{{item.traktor}}</span>
+            </td>   
+            <td>
+              <span>{{item.shufel}}</span>
+            </td> 
+            <td>
+              <span>{{item.pipe}}</span>
+            </td>
+            <td>
+              <span>{{item.bagger}}</span>
+            </td>   
+            <td>
+              <span>{{item.manof}}</span>
+            </td>  
+            <td>
+              <span>{{item.manitu}}</span>
+            </td>
+            <td>
+              <span>{{item.agoran}}</span>
+            </td>   
+            <td>
+              <span>{{item.yetzikot}}</span>
+            </td>  
+            <td>
+              <span>{{item.homarim}}</span>
+            </td>
+            <td>
+              <span>{{item.shonot}}</span>
+            </td>
+          </tr>
+          <tr>
+            <td :colspan="headers.length" @click="getDiaryForEdit(item)">
+              <span>{{item.description}}</span>
+            </td>            
+          </tr>
         </template>
+
         </v-data-table>
       </v-flex>
 
@@ -61,7 +104,7 @@ import Vue from "vue";
 import moment from "moment";
 import apiService from "../services/apiService";
 // import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
-import { DIARY_MODEL, DIARY_WEB_HEADERS, DIARY_MOBILE_HEADERS, NEW_DIARY } from "../constants/constants";
+import { DIARY_MODEL, DIARY_WEB_HEADERS, NEW_DIARY } from "../constants/constants";
 import diaryForm from "./DiaryForm.vue"
 import { isMobile } from '../constants/constants';
 import excel from "vue-excel-export";
@@ -71,7 +114,7 @@ Vue.filter("formatDate", function (value) {
 	if (value) {
     moment.locale('he')
 		//return moment(String(value)).format('MM/DD/YYYY hh:mm')
-		return moment(String(value)).format("DD/MM/YYYY dddd");
+		return moment(String(value)).format("DD/MM/YY dddd");
 	}
 });
 
@@ -99,7 +142,7 @@ export default {
 	methods: {
 		getHeaders() {
 			if (this.isMobile()) {
-				return DIARY_MOBILE_HEADERS;
+				return DIARY_WEB_HEADERS;
 			} else {
 				return DIARY_WEB_HEADERS;
 			}
@@ -128,6 +171,14 @@ export default {
 		    this.retrieveDairies();
 			}
 		},
+
+    expandAll: function () {
+       let expandObject = {}
+       for(const ddd of this.diary) {
+         expandObject[ddd._id] = true
+       }
+       this.$refs.datatable.expanded = expandObject
+     }
 
 	},
 

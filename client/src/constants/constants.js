@@ -2,8 +2,8 @@ export const DIARY_MODEL = 'diarydatas';
 export const TABLE_MODEL = 'tables';
 
 export const DIARY_WEB_HEADERS = [
-    { text: "תאריך",    value: "date",          class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},	
-    { text: "מנהל",     value: "director",      class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
+    { text: "תאריך",    value: "date",          class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},	
+    // { text: "מנהל",     value: "director",      class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "פועלים",   value: "poalim",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "טרקטור",   value: "traktor",       class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "שופל",     value: "shufel",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
@@ -15,15 +15,15 @@ export const DIARY_WEB_HEADERS = [
     { text: "יציקות",   value: "yetzikot",      class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
     { text: "חומרים",   value: "homarim",       class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
     { text: "שונות",    value: "shonot",        class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
-    { text: "תאור יום", value: "description",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"}
+    // { text: "תאור יום", value: "description",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"}
 ];
 export const DIARY_MOBILE_HEADERS = [
-    { text: "תאריך",    value: "date",          class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},	
+    { text: "תאריך",    value: "date",          class: "mobile-headers",    groupable: false,   align: "right", width: "75%"},	
     // { text: "מנהל",     value: "director",      class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "פועלים",   value: "poalim",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "טרקטור",   value: "traktor",       class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "שופל",     value: "shufel",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
-    // { text: "משאבה",    value: "pipe",          class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
+    { text: "משאבה",    value: "pipe",          class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     // { text: "באגר",     value: "bagger",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     // { text: "מנוף",     value: "manof",         class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     // { text: "מאניטו",   value: "manitu",        class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
