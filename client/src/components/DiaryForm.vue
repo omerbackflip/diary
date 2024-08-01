@@ -3,7 +3,8 @@
       <v-dialog v-model="dialogDiaryForm" >
         <v-card style="direction: rtl;" :class="bck_grnd(diary._id)"> <!-- "background-color: beige;" -->
           <v-card-title>
-            <span class="text-h7">{{ diary._id ? "עדכון" : "חדש" }}</span>
+            <camera></camera>
+            <span class="text-h7">{{ diary._id ? "Update" : "New" }}</span>
             <v-col cols="5">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="diary.date" persistent width="290px">
                 <template v-slot:activator="{ on, attrs }">
@@ -72,7 +73,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn small @click="saveDiary()" :loading="isLoading">
-              {{ diary._id ? "Update" : "Save New" }}
+              {{ diary._id ? "Save" : "Save New" }}
             </v-btn>
             <v-btn small v-show="!invoiceID" class="mx-3" @click="clearForm"> Clear </v-btn>
             <v-spacer></v-spacer>
@@ -87,6 +88,7 @@
 import { DIARY_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import Vue from "vue";
+import Camera from "./Camera.vue";
 import moment from "moment";
 Vue.filter("formatDate", function (value) {
 	if (value) {
@@ -96,6 +98,7 @@ Vue.filter("formatDate", function (value) {
 	}
 });
 export default {
+  components: { Camera },
     name: "diary-form",
     data() {
       return {
@@ -206,13 +209,13 @@ export default {
   align-items: stretch;
   justify-content: space-evenly;
 }
-.v-text-field {input 
+.v-text-field{input 
   {
     text-align-last: center;
     color: blue;
   }
 }
-.v-text-field { textarea  
+.v-text-field{textarea  
   {
     color: blue;
   }
