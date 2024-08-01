@@ -29,18 +29,16 @@
  
 <template>
         <div>
-        <v-row>
-            <!-- This function should open the smartphone camera to grab picture or video and save it to 'photo' array-->
+        <!-- <v-row>
             <v-btn x-small @click="capture">
                 <v-icon small>add_a_photo</v-icon>
             </v-btn>
         </v-row>
         <v-row>
-            <!-- This function should open the galary with the relevant photo's -->
             <v-btn x-small @click="view">
                 <v-icon small>folder</v-icon>
             </v-btn>
-        </v-row>
+        </v-row> -->
     </div>
 </template>
 

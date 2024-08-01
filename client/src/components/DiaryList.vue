@@ -47,22 +47,22 @@
             <td>
               <span style="margin-left: 0.5rem"> {{ item.date | formatDate }}</span>
             </td>
-            <td>
+            <td v-if="!isMobile()">
               <span>{{item.poalim}}</span>
             </td>
             <td>
               <span>{{item.traktor}}</span>
             </td>   
-            <td>
+            <td v-if="!isMobile()">
               <span>{{item.shufel}}</span>
             </td> 
             <td>
               <span>{{item.pipe}}</span>
             </td>
-            <td>
+            <td v-if="!isMobile()">
               <span>{{item.bagger}}</span>
             </td>   
-            <td>
+            <td v-if="!isMobile()">
               <span>{{item.manof}}</span>
             </td>  
             <td>
@@ -71,18 +71,18 @@
             <td>
               <span>{{item.agoran}}</span>
             </td>   
-            <td>
+            <td v-if="!isMobile()" style="text-align: right">
               <span>{{item.yetzikot}}</span>
             </td>  
-            <td>
+            <td v-if="!isMobile()" style="text-align: right">
               <span>{{item.homarim}}</span>
             </td>
-            <td>
+            <td v-if="!isMobile()" style="text-align: right">
               <span>{{item.shonot}}</span>
             </td>
           </tr>
           <tr>
-            <td :colspan="headers.length" @click="getDiaryForEdit(item)">
+            <td :colspan="headers.length" @click="getDiaryForEdit(item)" style="text-align: right">
               <span>{{item.description}}</span>
             </td>            
           </tr>
@@ -104,7 +104,7 @@ import Vue from "vue";
 import moment from "moment";
 import apiService from "../services/apiService";
 // import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
-import { DIARY_MODEL, DIARY_WEB_HEADERS, NEW_DIARY } from "../constants/constants";
+import { DIARY_MODEL, DIARY_WEB_HEADERS, DIARY_MOBILE_HEADERS, NEW_DIARY } from "../constants/constants";
 import diaryForm from "./DiaryForm.vue"
 import { isMobile } from '../constants/constants';
 import excel from "vue-excel-export";
@@ -142,7 +142,7 @@ export default {
 	methods: {
 		getHeaders() {
 			if (this.isMobile()) {
-				return DIARY_WEB_HEADERS;
+				return DIARY_MOBILE_HEADERS;
 			} else {
 				return DIARY_WEB_HEADERS;
 			}
@@ -154,7 +154,11 @@ export default {
             model: DIARY_MODEL,
           });
 			if (response && response.data) {
-				this.diaryList = response.data;
+				this.diaryList = response.data.sort(function(a, b) {
+            var c = new Date(a.date);
+            var d = new Date(b.date);
+          return d-c;
+        });
 				this.isLoading = false;
 			}
 		},
