@@ -20,7 +20,7 @@
           dense>
         <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title> {{header}} {{diaryList.length.toLocaleString()}} </v-toolbar-title>
+              <v-toolbar-title> סה"כ ימי עבודה - {{diaryList.length.toLocaleString()}} </v-toolbar-title>
               <v-spacer></v-spacer>
               <!-- <v-text-field v-model="search" label="Search" class="mx-4 sreach-width" clearable></v-text-field> -->
               <v-spacer></v-spacer>
@@ -112,8 +112,7 @@ Vue.use(excel);
 
 Vue.filter("formatDate", function (value) {
 	if (value) {
-    moment.locale('he')
-		//return moment(String(value)).format('MM/DD/YYYY hh:mm')
+    // moment.locale('he')
 		return moment(String(value)).format("DD/MM/YY dddd");
 	}
 });
@@ -134,7 +133,6 @@ export default {
 			itemToEdit: "",
       dateModal : false,
       selected: [],
-      header: '',
 		};
 	},
 
@@ -151,20 +149,16 @@ export default {
 		async retrieveDairies() {
 			this.isLoading = true;
       let response = await apiService.getMany({
-            model: DIARY_MODEL,
-          });
+        model: DIARY_MODEL,
+      });
 			if (response && response.data) {
 				this.diaryList = response.data.sort(function(a, b) {
             var c = new Date(a.date);
             var d = new Date(b.date);
           return d-c;
         });
-				this.isLoading = false;
+      this.isLoading = false;
 			}
-		},
-
-		refreshList() {
-			this.retrieveDairies();
 		},
 
     // get diary data before call to diaryForm for edit
@@ -175,14 +169,6 @@ export default {
 		    this.retrieveDairies();
 			}
 		},
-
-    expandAll: function () {
-       let expandObject = {}
-       for(const ddd of this.diary) {
-         expandObject[ddd._id] = true
-       }
-       this.$refs.datatable.expanded = expandObject
-     }
 
 	},
 

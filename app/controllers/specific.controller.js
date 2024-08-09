@@ -6,6 +6,7 @@ var fs = require('fs');
 const XLSX = require('xlsx');
 const { transformCSVData } = require("../util/util");
 const specificService = require("../services/specific-service");
+const { url } = require("../config/db.config");
 
 // **************** EXAMPLE FILE FOR SPECIFIC CONTROLLERS ************* //
 
@@ -32,6 +33,16 @@ exports.saveExcelBulk = async (req, res) => {
 		res.status(500).send({
 			message: "Error saving bulk of Books"
 		});
+	}
+};
+
+exports.getDbInfo = (req,res) => {
+	try {
+		const local = url.includes('localhost'); //retuens true/false
+		return res.send({ success: true, local});
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({ message: "Error getting db info", error });
 	}
 };
 

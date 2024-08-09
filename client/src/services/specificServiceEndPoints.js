@@ -23,6 +23,9 @@ class SpecificServiceEndPoints {
     });
   }
 
+  async getDbInfo() {
+		return await axios.get(`${baseUrl}/specific/get-database-info`);
+	}
 
 }
 

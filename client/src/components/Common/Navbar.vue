@@ -2,6 +2,14 @@
     <nav>
         <v-app-bar app dark>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+                <div :class="local ? 'bckg-red' :''" style="font-size: x-small;">
+                    <div v-if="isMobile()">
+                        {{local ? 'L' : 'P'}}
+                    </div>
+                    <div v-else>
+                        {{local ? 'LocalHost' : 'Production'}}
+                    </div>
+                </div>
                 <v-col col="10">
                     <div class="text-center" style="text-align-last: justify;">
                         {{ new Date() | formatDate  }}
@@ -49,6 +57,8 @@
 import ImportXLS from '../ImportXLS.vue';
 import Vue from "vue";
 import moment from "moment";
+import { isMobile } from '../../constants/constants';
+import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
 Vue.filter("formatDate", function (value) {
 	if (value) {
         moment.locale('he')
@@ -69,6 +79,8 @@ export default {
                 {icon: 'folder', text: 'קליטת אקסל', route: null, import: 'EXCEL', onClick: 'runModal'},
             ],
             displayDay: '',
+            local: false,
+            isMobile,
         }
     },
     methods:{
@@ -110,9 +122,23 @@ export default {
             this.$root.$emit('addNewDiary',{ newRow: true});
         },
 
+        async getDatabaseInformation() {
+            try {
+                const response = await SpecificServiceEndPoints.getDbInfo();
+                if(response && response.data && response.data.success) {
+                    this.local = response.data.local;
+                }
+            } catch (error) {
+                console.log(error);
+
+            }
+        },
     },
     computed: {
-    }
+    },
+    async mounted() {
+        this.getDatabaseInformation();
+    },
 }
 </script>
 
@@ -138,6 +164,10 @@ export default {
     }
     .cursor-pointer{
         cursor: pointer ;
+    }
+    .bckg-red {
+        background-color: red;
+        /* -webkit-writing-mode: vertical-rl */
     }
 </style>
 

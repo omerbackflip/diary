@@ -10,6 +10,7 @@ module.exports = app => {
   var router = require("express").Router();
 
   router.post("/save-excel-bulk",upload.single('file'), specific.saveExcelBulk);
+  router.get("/get-database-info", specific.getDbInfo);
 
   // router.post("/save-books-bulk",upload.single('file') , specific.saveBooksBulk);
 
