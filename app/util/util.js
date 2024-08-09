@@ -1,3 +1,6 @@
+var fs = require('fs');
+const path = require('path');
+
 exports.transformCSVData = (sheet_name_list, workbook) => {
 	try {
 		return sheet_name_list.map((y) => {
@@ -31,4 +34,32 @@ exports.transformCSVData = (sheet_name_list, workbook) => {
 	} catch (error) {
 		return false;
 	}
+};
+
+exports.checkAndStoreMedia = (record_id, medias, total_previous_media = 0) => {
+	
+	medias.forEach((media, media_no) => {
+		ImageBase64 = media.fileContent;
+		ImageBase64 = ImageBase64.replace(/^data:image\/octet-stream;base64,/, "");
+
+		ImageBase64  +=  ImageBase64.replace('+', ' ');
+		ImageBinaryData  =   new Buffer.from(ImageBase64, 'base64').toString('binary');
+
+		media_counter = media_no + total_previous_media + 1;
+
+		let filename = 'media-' + record_id + '-' + media_counter + '.jpeg'
+		let uploadFolder = path.join(__dirname + '/../../client/public/media_files/');
+		
+		
+		fs.writeFile(uploadFolder + filename, ImageBinaryData, "binary", function (err) {
+		    console.log("Error: While uploading files", err); // writes out file without error, but it's not a valid image
+		});
+
+		delete media.fileContent;
+
+		media.filename = filename;
+		media.uploadAt = new Date();
+	});
+
+	return medias;
 }

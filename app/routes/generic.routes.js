@@ -6,6 +6,9 @@ module.exports = app => {
 	// Create entity
 	router.post("/create", generic.create);
 
+	// Create entity with media
+	router.post("/create-with-media", generic.createWithMedia);
+
 	// Retrieve all entity
 	router.get("/get-list", generic.findAll);
 
@@ -17,6 +20,9 @@ module.exports = app => {
 
 	// Update a entity with id
 	router.put("/update/:id", generic.update);
+
+	// Update a entity with id  and media
+	router.put("/update-with-media/:id", generic.updateWithMedia);
 
 	// Delete all generic
 	router.delete("/delete-all", generic.deleteAll);

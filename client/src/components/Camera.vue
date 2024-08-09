@@ -1,5 +1,5 @@
 
-<!-- <template>
+<template>
     <div class="camera-box">
         <div style="display: flex; justify-content: center;">
             <img style="height: 25px;" v-if="isCameraOpen"
@@ -7,11 +7,14 @@
                  class="button-img camera-shoot" @click="capture"/>
             <div class="camera-button">
                 <button type="button" class="button is-rounded cam-button"
-                        style="margin-left: 40%; background-color: white; border: 0px;"
+                        style="margin-left: 40%; background-color: white; border: 0px; width: 100%;"
                         @click="toggleCamera"
                 >
-                    <span v-if="!isCameraOpen"><img style="height: 25px;" class="button-img"
-                                        src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png"></span>
+                    <span v-if="!isCameraOpen">
+                        Start Uploading Images
+                        <img style="height: 25px;" class="button-img"
+                                        src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png">
+                    </span>
                     <span v-else><img style="height: 25px;" class="button-img"
                                       src="https://img.icons8.com/material-outlined/50/000000/cancel.png"></span>
                 </button>
@@ -23,13 +26,13 @@
                 <canvas v-show="false" id="photoTaken" ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
             </div>
         </div>
-        <vue-picture-swipe :items="items"></vue-picture-swipe>
+        <!-- <vue-picture-swipe :items="items"></vue-picture-swipe> -->
     </div>
-</template> -->
+</template>
  
-<template>
+<!-- <template>
         <div>
-        <!-- <v-row>
+        <v-row>
             <v-btn x-small @click="capture">
                 <v-icon small>add_a_photo</v-icon>
             </v-btn>
@@ -38,13 +41,13 @@
             <v-btn x-small @click="view">
                 <v-icon small>folder</v-icon>
             </v-btn>
-        </v-row> -->
+        </v-row>
     </div>
-</template>
+</template> -->
 
 
 <script>
-    // import VuePictureSwipe from 'vue-picture-swipe';
+    //import VuePictureSwipe from 'vue-picture-swipe';
  
     export default {
         name: "Camera",
@@ -54,8 +57,8 @@
         data() {
             return {
                 isCameraOpen: false,
-                canvasHeight:20,
-                canvasWidth:20,
+                canvasHeight:300,
+                canvasWidth:300,
                 items: [],
             }
         },
@@ -102,6 +105,14 @@
                     self.uploadPhoto(dataUrl);
                     self.isCameraOpen = false;
                     self.stopCameraStream();
+
+                    let mediaInfo = {
+                        id: (this.items.length - 1),
+                        fileContent: dataUrl,
+                        source: "camera",
+                    };
+                    this.$emit('new-media-added', mediaInfo);
+
                 }, FLASH_TIMEOUT);
             },
  
@@ -115,6 +126,8 @@
                         alt: 'some numbers on a grey background' // optional alt attribute for thumbnail image
                     }
                 )
+
+                console.log(this.items);
             },
             uploadPhoto(dataURL){
                 let uniquePictureName = this.generateCapturePhotoName();

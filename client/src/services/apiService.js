@@ -10,11 +10,11 @@ class ApiService {
   }
 
   create(data,params) {
-    return http.post("generic/create", data, {params});
+    return http.post("generic/create-with-media", data, {params});
   }
 
   update(id, data,params) {
-    return http.put(`generic/update/${id}`, data, {params});
+    return http.put(`generic/update-with-media/${id}`, data, {params});
   }
 
   deleteOne(params) {

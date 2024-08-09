@@ -3,8 +3,11 @@
       <v-dialog v-model="dialogDiaryForm" >
         <v-card style="direction: rtl;" :class="bck_grnd(diary._id)"> <!-- "background-color: beige;" -->
           <v-card-title>
-            <camera></camera>
             <span class="text-h7">{{ diary._id ? "Update" : "New" }}</span>
+            <span v-if="mediaItems.length || (diary.medias && diary.medias.length)" class="mdi mdi-folder-eye" @click="changeMediaDisplay()" title="View Images">
+              {{ getTotalMediaCount() }}
+            </span>
+            <span class="mdi mdi-camera" @click="changeMediaUploadStatus()" title="Upload Images"></span>
             <v-col cols="5">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="diary.date" persistent width="290px">
                 <template v-slot:activator="{ on, attrs }">
@@ -24,6 +27,35 @@
 
           <v-card-text>
             <v-container>
+              
+              <v-row v-if="isUploadMedia">
+                <v-col cols="12">
+                  <camera ref="camera" @new-media-added="addMediaItems"></camera>
+                </v-col>
+                <v-col cols="12">
+                  <br/>
+                </v-col>
+              </v-row>
+              <v-row v-if="isDisplayMedia">
+                <v-col cols="12">
+                <strong>Total Media Files Found:</strong> {{ getTotalMediaCount() }}
+                </v-col>
+                
+                <v-col cols="4" v-for="mediaItem in diary.medias" :key="mediaItem.id">
+                  <img v-if="mediaItem.source == 'disk'" class="media-files" v-bind:src="getMediaPath(mediaItem.filename)" />
+                  <span class="remove-btn"><strong>Remove</strong></span>
+                </v-col>
+
+                <v-col cols="4" v-for="mediaItem in mediaItems" :key="mediaItem.id">
+                  <img v-if="mediaItem.source == 'disk'" class="media-files" v-bind:src="getMediaPath(mediaItem.filename)" />
+                  <img v-if="mediaItem.source == 'camera'" class="media-files" v-bind:src="mediaItem.fileContent" />
+                </v-col>
+
+                <v-col cols="12">
+                  <br/><br/>
+                </v-col>
+              </v-row>
+
               <v-form ref="form">
                 <v-row>
                   <!-- <v-col cols="3">
@@ -106,6 +138,8 @@ export default {
         resolve: null,      // What is this for ?
         isLoading: false,
         isNewDiary: false,
+        isUploadMedia: false,
+        isDisplayMedia: false,
         message: '',
         options: {
           color: "grey lighten-3",
@@ -115,6 +149,7 @@ export default {
         dateModal : false,
         invoiceID: 0,
         diary: [],
+        mediaItems: [],
       };
     },
 
@@ -122,6 +157,15 @@ export default {
       open(diary, isNewDiary) {
         this.isNewDiary = isNewDiary;
         this.diary = diary 
+
+        if(diary.medias && diary.medias.length > 0){
+          var mediaCounter = -1;
+          diary.medias = diary.medias.map((media) => {
+            mediaCounter++;
+            return {filename: media.filename, id: mediaCounter, source: 'disk'};
+          });
+        }
+
         this.diary.date = moment(this.diary.date).format('YYYY-MM-DD');
         this.dialogDiaryForm = true;
         return new Promise((resolve) => {
@@ -139,6 +183,13 @@ export default {
         try {
           this.isLoading = true
           let response = ''
+
+          this.diary.medias = this.mediaItems.map((mediaItem) => {
+              return {fileContent: mediaItem.fileContent};
+          });
+
+          console.log(this.diary.medias);
+
           if (this.isNewDiary)  {
             response = await apiService.create(this.diary, {model: DIARY_MODEL});
           } else {
@@ -146,6 +197,7 @@ export default {
           } 
           if (response) {
             this.dialogDiaryForm = false;
+            this.mediaItems = [];
             this.isLoading =  false;
             this.resolve(true);
           }
@@ -177,7 +229,22 @@ export default {
         let classes = item ? "bg-beige" :"";
         return classes;
       },
-
+      changeMediaUploadStatus(){
+        this.isUploadMedia = this.isUploadMedia == true ? false : true;
+      },
+      changeMediaDisplay(){
+        this.isDisplayMedia = this.isDisplayMedia == true ? false : true;
+      },
+      addMediaItems(media){
+        this.mediaItems.push(media);
+        this.isDisplayMedia = true;
+      },
+      getMediaPath(filename){
+        return 'media_files/' + filename;
+      },
+      getTotalMediaCount(){
+        return this.mediaItems.length + (this.diary.medias ? this.diary.medias.length : 0);
+      },
     },
 
     async mounted(){
@@ -225,5 +292,13 @@ export default {
 } */
 .bg-beige {
   background-color: beige !important;
+}
+.media-files{
+  width: 150px;
+}
+.remove-btn {
+  display: none;
+  color: red;
+  cursor: pointer;
 }
 </style>
