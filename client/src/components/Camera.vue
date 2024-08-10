@@ -75,8 +75,9 @@
                 }
             },
             startCameraStream() {
+                let constraints = ''
                 if(this.isMobile()){
-                    const constraints = (window.constraints = {
+                    constraints = (window.constraints = {
                         audio: false,
                         video: {
                             facingMode: {
@@ -85,7 +86,7 @@
                         }
                     });
                 }else{
-                    const constraints = (window.constraints = {
+                    constraints = (window.constraints = {
                         audio: false,
                         video: true,
                     });
