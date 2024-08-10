@@ -15,14 +15,16 @@
                         <img style="height: 25px;" class="button-img"
                                         src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png">
                     </span>
-                    <span v-else><img style="height: 25px;" class="button-img"
-                                      src="https://img.icons8.com/material-outlined/50/000000/cancel.png"></span>
+                    <span v-else>
+                        <img style="height: 25px;" @click="stopCameraStream()" class="button-img"
+                                      src="https://img.icons8.com/material-outlined/50/000000/cancel.png">
+                    </span>
                 </button>
             </div>
         </div>
         <div>
             <div v-if="isCameraOpen" class="camera-canvas">
-                <video ref="camera" :width="canvasWidth" :height="canvasHeight" autoplay></video>
+                <video ref="camera" :width="canvasWidth" :height="canvasHeight" autoplay @click="capture"></video>
                 <canvas v-show="false" id="photoTaken" ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
             </div>
         </div>
@@ -73,14 +75,27 @@
                 }
             },
             startCameraStream() {
-                const constraints = (window.constraints = {
-                    audio: false,
-                    video: true
-                });
+                if(this.isMobile()){
+                    const constraints = (window.constraints = {
+                        audio: false,
+                        video: {
+                            facingMode: {
+                              exact: "environment"
+                            }
+                        }
+                    });
+                }else{
+                    const constraints = (window.constraints = {
+                        audio: false,
+                        video: true,
+                    });
+                }
+
                 navigator.mediaDevices
                     .getUserMedia(constraints)
                     .then(stream => {
                         this.$refs.camera.srcObject = stream;
+                        this.openFullscreen(this.$refs.camera);
                     }).catch(error => {
                     alert("Browser doesn't support or there is some errors." + error);
                 });
@@ -143,6 +158,20 @@
             generateCapturePhotoName(){
                 return  Math.random().toString(36).substring(2, 15)
             },
+
+            openFullscreen(videoElement) {
+              var elem = videoElement
+              
+              if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+              } else if (elem.mozRequestFullScreen) { /* Firefox */
+                elem.mozRequestFullScreen();
+              } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                elem.webkitRequestFullscreen();
+              } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                elem.msRequestFullscreen();
+              }
+            },
  
             dataURLtoFile(dataURL, filename) {
                 let arr = dataURL.split(','),
@@ -156,6 +185,13 @@
                 }
                 return new File([u8arr], filename, {type: mime});
             },
+            isMobile() {
+               if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                 return true
+               } else {
+                 return false
+               }
+            }
         }
     }
 </script>
@@ -167,5 +203,8 @@
         padding: 2px;
         /* width: 80%;
         min-height: 300px; */
+    }
+    video::-webkit-media-controls {
+      display: none;
     }
 </style>
