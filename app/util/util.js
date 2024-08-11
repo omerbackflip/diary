@@ -48,7 +48,7 @@ exports.checkAndStoreMedia = (record_id, medias, total_previous_media = 0) => {
 		media_counter = media_no + total_previous_media + 1;
 
 		let filename = 'media-' + record_id + '-' + media_counter + '.jpeg'
-		let uploadFolder = path.join(__dirname + '/../../client/public/media_files/');
+		let uploadFolder = path.join(__dirname + '/../../client/' + process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH);
 		
 		
 		fs.writeFile(uploadFolder + filename, ImageBinaryData, "binary", function (err) {

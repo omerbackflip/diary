@@ -81,7 +81,7 @@
                         audio: false,
                         video: {
                             facingMode: {
-                              exact: "environment"
+                              exact: "environment" //user - front,   environment -> back
                             }
                         }
                     });
