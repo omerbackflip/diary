@@ -8,7 +8,7 @@
               {{ getTotalMediaCount() }}
             </span>
             
-            <!--<span class="mdi mdi-camera" @click="changeMediaUploadStatus()" title="Upload Images"></span>-->
+            <span class="mdi mdi-camera" @click="changeMediaUploadStatus()" title="Upload Images"></span>
 
             <v-col cols="5">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="diary.date" persistent width="290px">
@@ -231,10 +231,10 @@ export default {
         let classes = item ? "bg-beige" :"";
         return classes;
       },
-      // changeMediaUploadStatus(){
-      //   this.isUploadMedia = this.isUploadMedia == true ? false : true;
-      //   this.$refs.camera.toggleCamera();
-      // },
+      changeMediaUploadStatus(){
+        //this.isUploadMedia = this.isUploadMedia == true ? false : true;
+        this.$refs.camera.toggleCamera();
+      },
       changeMediaDisplay(){
         this.isDisplayMedia = this.isDisplayMedia == true ? false : true;
       },

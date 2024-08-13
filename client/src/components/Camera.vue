@@ -11,9 +11,9 @@
                         @click="toggleCamera"
                 >
                     <span v-if="!isCameraOpen">
-                        Start Uploading Images
+                        <!--Start Uploading Images
                         <img style="height: 25px;" class="button-img"
-                                        src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png">
+                                        src="https://img.icons8.com/material-outlined/50/000000/camera--v2.png">-->
                     </span>
                     <span v-else>
                         <img style="height: 25px;" @click="stopCameraStream()" class="button-img"
