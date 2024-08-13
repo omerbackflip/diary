@@ -7,7 +7,9 @@
             <span v-if="mediaItems.length || (diary.medias && diary.medias.length)" class="mdi mdi-folder-eye" @click="changeMediaDisplay()" title="View Images">
               {{ getTotalMediaCount() }}
             </span>
-            <span class="mdi mdi-camera" @click="changeMediaUploadStatus()" title="Upload Images"></span>
+            
+            <!--<span class="mdi mdi-camera" @click="changeMediaUploadStatus()" title="Upload Images"></span>-->
+
             <v-col cols="5">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="diary.date" persistent width="290px">
                 <template v-slot:activator="{ on, attrs }">
@@ -138,7 +140,7 @@ export default {
         resolve: null,      // What is this for ?
         isLoading: false,
         isNewDiary: false,
-        isUploadMedia: false,
+        isUploadMedia: true,
         isDisplayMedia: false,
         message: '',
         options: {
@@ -229,9 +231,10 @@ export default {
         let classes = item ? "bg-beige" :"";
         return classes;
       },
-      changeMediaUploadStatus(){
-        this.isUploadMedia = this.isUploadMedia == true ? false : true;
-      },
+      // changeMediaUploadStatus(){
+      //   this.isUploadMedia = this.isUploadMedia == true ? false : true;
+      //   this.$refs.camera.toggleCamera();
+      // },
       changeMediaDisplay(){
         this.isDisplayMedia = this.isDisplayMedia == true ? false : true;
       },
