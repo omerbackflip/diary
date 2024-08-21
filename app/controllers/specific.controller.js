@@ -4,9 +4,10 @@ const DIARY_MODEL = db.diarydatas;
 const csv = require('csvtojson');
 var fs = require('fs');
 const XLSX = require('xlsx');
-const { transformCSVData } = require("../util/util");
+const { transformCSVData, storeMedia } = require("../util/util");
 const specificService = require("../services/specific-service");
 const { url } = require("../config/db.config");
+const path = require('path');
 
 // **************** EXAMPLE FILE FOR SPECIFIC CONTROLLERS ************* //
 
@@ -46,75 +47,31 @@ exports.getDbInfo = (req,res) => {
 	}
 };
 
+exports.savePic = async(req, res) => {
+	try {
+		const media = { ...req.body };
+		if(media && media.fileContent){
+			let picName = storeMedia(media.fileContent); // save the pics 
+			res.send(picName);
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).send({message: error.message || "Some error while savePic function in specifc.controller.js file"});		
+	}
+}
+
+exports.deletePic = async(req, res) => {
+	try {
+		const fileName = req.body;
+		let uploadFolder = path.join(__dirname + '/../../client/' + process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH);
+		// fs.unlink(uploadFolder + fileName,() => {}) // fs.unlink must have callback - so dummy callback was added
+		unLinkFile(uploadFolder + fileName)
+	} catch (error) {
+		console.log(error);
+		res.status(500).send({message: error.message || "Some error while deletePic function in specifc.controller.js file"});		
+	}
+}
+
 function unLinkFile(path) {
 	fs.unlinkSync(path);
 }
-
-// exports.saveBooksBulk = async (req, res) => {
-// 	if (!req.body) {
-// 		return res.status(400).send({
-// 			message: "Data of bulk to update can not be empty!"
-// 		});
-// 	}
-
-// 	try {
-// 		let data = await csv().fromFile(`uploads/${req.file.filename}`);
-// 		if (data) {
-// 			// filter out all items with no "asmchta_date"
-// 			data = data.filter((item) => item.asmchta_date !== '');
-// 			const allData = await getMappedItems(data, req.body.company);
-// 			const result = await Book.insertMany(allData, { ordered: true });
-// 			unLinkFile(`uploads/${req.file.filename}`);
-// 			if (result) {
-// 				return res.send({
-// 					hasErrors: false,
-// 					message: "Data successfully Imported"
-// 				})
-// 			}
-// 		}
-
-// 	} catch (error) {
-// 		console.log(error)
-// 		res.status(500).send({
-// 			message: "Error saving bulk of Invoices"
-// 		});
-// 	}
-// };
-
-// async function getMappedItems(filteredData, company) {
-// 	const data = await Promise.all(filteredData.map(async (item, i) => {
-// 		const { year, asmacta1, record_id } = item;
-// 		if (company && year && asmacta1) { // if no date - probbaly is Yitra...
-// 			await updateExcelRecID(company, year, asmacta1, record_id);
-// 		}
-// 		return {
-// 			company,
-// 			asmchta_date: item.asmchta_date,
-// 			record_id: item.record_id,
-// 			year: item.year,
-// 			record_schum: item.record_schum,
-// 			pratim: item.pratim,
-// 			asmacta1: item.asmacta1,
-// 			schum_hova: item.schum_hova,
-// 			schum_zchut: item.schum_zchut,
-// 			cust_lname: item.cust_lname,
-// 			cust_fname: item.cust_fname,
-// 			bs_item_name: item.bs_item_name,
-// 			bs_group_name: item.bs_group_name,
-// 		}
-// 	}));
-// 	return data;
-// }
-
-// async function updateExcelRecID(company, year, invoiceId, excelRecID) {
-// 	return await Invoice.findOneAndUpdate({
-// 		company,
-// 		year,
-// 		invoiceId
-// 	},
-// 		{ excelRecID });
-// };
-
-// function unLinkFile(path) {
-// 	fs.unlinkSync(path);
-// }

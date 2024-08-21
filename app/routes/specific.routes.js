@@ -11,8 +11,8 @@ module.exports = app => {
 
   router.post("/save-excel-bulk",upload.single('file'), specific.saveExcelBulk);
   router.get("/get-database-info", specific.getDbInfo);
-
-  // router.post("/save-books-bulk",upload.single('file') , specific.saveBooksBulk);
+	router.post("/save-pic", specific.savePic);
+	router.post("/delete-pic", specific.deletePic);
 
   app.use('/api/specific', router);
 };

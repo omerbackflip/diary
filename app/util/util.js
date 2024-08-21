@@ -1,5 +1,6 @@
 var fs = require('fs');
 const path = require('path');
+const moment = require('moment');
 
 exports.transformCSVData = (sheet_name_list, workbook) => {
 	try {
@@ -36,30 +37,18 @@ exports.transformCSVData = (sheet_name_list, workbook) => {
 	}
 };
 
-exports.checkAndStoreMedia = (record_id, medias, total_previous_media = 0) => {
+exports.storeMedia = (fileContent) => {
+	ImageBase64 = fileContent;
+	ImageBase64 = ImageBase64.replace(/^data:image\/octet-stream;base64,/, "");
+
+	ImageBase64  +=  ImageBase64.replace('+', ' ');
+	ImageBinaryData  =   new Buffer.from(ImageBase64, 'base64').toString('binary');
+
+	let filename = 'pic-' + moment(new Date()).format('YYYY-MM-DD-HH.mm.ss') + '.jpeg'
+	let uploadFolder = path.join(__dirname + '/../../client/' + process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH);
 	
-	medias.forEach((media, media_no) => {
-		ImageBase64 = media.fileContent;
-		ImageBase64 = ImageBase64.replace(/^data:image\/octet-stream;base64,/, "");
-
-		ImageBase64  +=  ImageBase64.replace('+', ' ');
-		ImageBinaryData  =   new Buffer.from(ImageBase64, 'base64').toString('binary');
-
-		media_counter = media_no + total_previous_media + 1;
-
-		let filename = 'media-' + record_id + '-' + media_counter + '.jpeg'
-		let uploadFolder = path.join(__dirname + '/../../client/' + process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH);
-		
-		
-		fs.writeFile(uploadFolder + filename, ImageBinaryData, "binary", function (err) {
-		    console.log("Error: While uploading files", err); // writes out file without error, but it's not a valid image
-		});
-
-		delete media.fileContent;
-
-		media.filename = filename;
-		media.uploadAt = new Date();
+	fs.writeFile(uploadFolder + filename, ImageBinaryData, "binary", function (err) {
+		console.log("Error: While saving files111", err); // writes out file without error, but it's not a valid image
 	});
-
-	return medias;
+	return filename;
 }

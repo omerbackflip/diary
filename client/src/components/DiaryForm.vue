@@ -1,16 +1,27 @@
 <template>
       <!-- Add New/Update row dialogDiaryForm -->
       <v-dialog v-model="dialogDiaryForm" >
-        <v-card style="direction: rtl;" :class="bck_grnd(diary._id)"> <!-- "background-color: beige;" -->
-          <v-card-title>
-            <span class="text-h7">{{ diary._id ? "Update" : "New" }}</span>
-            <span v-if="mediaItems.length || (diary.medias && diary.medias.length)" class="mdi mdi-folder-eye" @click="changeMediaDisplay()" title="View Images">
-              {{ getTotalMediaCount() }}
-            </span>
-            
-            <span class="mdi mdi-camera" @click="changeMediaUploadStatus()" title="Upload Images"></span>
+        <v-row v-if="isDisplayMedia">
+          <!-- <v-col cols="4" v-for="newPic in diary.medias" :key="newPic.id">
+            <img v-if="newPic.source == 'disk'" class="media-files" v-bind:src="getMediaPath(newPic.filename)" />
+            <span class="remove-btn" @click="removeImg(newPic)"><strong>Remove</strong></span>
+          </v-col> -->
+          <!-- <v-col cols="4" v-for="newPic in newPicsList" :key="newPic.id">
+            <img v-if="newPic.source == 'camera'" class="media-files" v-bind:src="newPic.fileContent" />
+          </v-col> -->
+          <v-col cols="4" v-for="(pic,i) in diary.pics" :key="i">
+            <img class="media-files" v-bind:src="getMediaPath(pic)" />
+            <span class="remove-btn" @click="removeImg(pic)"><strong>Remove</strong></span>
+          </v-col>
+        </v-row>
 
-            <v-col cols="5">
+        <v-card style="direction: rtl;" :class="bck_grnd(diary._id)">
+          <v-card-title>
+            <v-icon v-if="getTotalMediaCount()>0" @click="toggleMedia()">{{`mdi-numeric-${getTotalMediaCount() > 10 ? 10 : getTotalMediaCount()}`+"-box-multiple-outline"}}</v-icon>
+            <span class="mdi mdi-camera" @click="callCamera()"></span>
+
+            <!--  Date  -->
+            <v-col cols="5" style="padding-bottom: 0px;">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="diary.date" persistent width="290px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field v-model="diary.date" readonly v-bind="attrs" v-on="on" hide-details 
@@ -24,39 +35,16 @@
                 </v-date-picker>
               </v-dialog>
             </v-col>
+
             <v-btn small v-show="diary._id" @click="copyToNew"> Copy </v-btn>
           </v-card-title>
 
           <v-card-text>
             <v-container>
               
-              <v-row v-if="isUploadMedia">
-                <v-col cols="12">
-                  <camera ref="camera" @new-media-added="addMediaItems"></camera>
-                </v-col>
-                <v-col cols="12">
-                  <br/>
-                </v-col>
-              </v-row>
-              <v-row v-if="isDisplayMedia">
-                <v-col cols="12">
-                <strong>Total Media Files Found:</strong> {{ getTotalMediaCount() }}
-                </v-col>
-                
-                <v-col cols="4" v-for="mediaItem in diary.medias" :key="mediaItem.id">
-                  <img v-if="mediaItem.source == 'disk'" class="media-files" v-bind:src="getMediaPath(mediaItem.filename)" />
-                  <span class="remove-btn"><strong>Remove</strong></span>
-                </v-col>
-
-                <v-col cols="4" v-for="mediaItem in mediaItems" :key="mediaItem.id">
-                  <img v-if="mediaItem.source == 'disk'" class="media-files" v-bind:src="getMediaPath(mediaItem.filename)" />
-                  <img v-if="mediaItem.source == 'camera'" class="media-files" v-bind:src="mediaItem.fileContent" />
-                </v-col>
-
-                <v-col cols="12">
-                  <br/><br/>
-                </v-col>
-              </v-row>
+              <!-- <v-row v-if="isUploadMedia"> -->
+                <camera ref="camera" @new-media-added="addMediaItems" style="border-block: none;"></camera>
+              <!-- </v-row> -->
 
               <v-form ref="form">
                 <v-row>
@@ -121,6 +109,7 @@
 <script>
 import { DIARY_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
+import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
 import Vue from "vue";
 import Camera from "./Camera.vue";
 import moment from "moment";
@@ -143,15 +132,10 @@ export default {
         isUploadMedia: true,
         isDisplayMedia: false,
         message: '',
-        options: {
-          color: "grey lighten-3",
-          width: 500,
-          zIndex: 200,
-        },
         dateModal : false,
         invoiceID: 0,
         diary: [],
-        mediaItems: [],
+        newPicsList: [],
       };
     },
 
@@ -159,7 +143,6 @@ export default {
       open(diary, isNewDiary) {
         this.isNewDiary = isNewDiary;
         this.diary = diary 
-
         if(diary.medias && diary.medias.length > 0){
           var mediaCounter = -1;
           diary.medias = diary.medias.map((media) => {
@@ -167,7 +150,7 @@ export default {
             return {filename: media.filename, id: mediaCounter, source: 'disk'};
           });
         }
-
+        this.isDisplayMedia = false
         this.diary.date = moment(this.diary.date).format('YYYY-MM-DD');
         this.dialogDiaryForm = true;
         return new Promise((resolve) => {
@@ -185,12 +168,9 @@ export default {
         try {
           this.isLoading = true
           let response = ''
-
-          this.diary.medias = this.mediaItems.map((mediaItem) => {
-              return {fileContent: mediaItem.fileContent};
-          });
-
-          console.log(this.diary.medias);
+          // this.diary.medias = this.newPicsList.map((newPic) => {
+          //     return {fileContent: newPic.fileContent};
+          // });
 
           if (this.isNewDiary)  {
             response = await apiService.create(this.diary, {model: DIARY_MODEL});
@@ -199,7 +179,7 @@ export default {
           } 
           if (response) {
             this.dialogDiaryForm = false;
-            this.mediaItems = [];
+            this.newPicsList = [];
             this.isLoading =  false;
             this.resolve(true);
           }
@@ -231,22 +211,31 @@ export default {
         let classes = item ? "bg-beige" :"";
         return classes;
       },
-      changeMediaUploadStatus(){
+      callCamera(){
         //this.isUploadMedia = this.isUploadMedia == true ? false : true;
         this.$refs.camera.toggleCamera();
       },
-      changeMediaDisplay(){
-        this.isDisplayMedia = this.isDisplayMedia == true ? false : true;
+      toggleMedia(){
+        this.isDisplayMedia = !this.isDisplayMedia;
       },
-      addMediaItems(media){
-        this.mediaItems.push(media);
+      async addMediaItems(media){
+        let picName = await SpecificServiceEndPoints.savePic(media);
+        this.diary.pics.push(picName.data)
         this.isDisplayMedia = true;
       },
       getMediaPath(filename){
         return 'media_files/' + filename;
       },
       getTotalMediaCount(){
-        return this.mediaItems.length + (this.diary.medias ? this.diary.medias.length : 0);
+        return this.diary.pics !== undefined ? this.diary.pics.length : 0
+      },
+      async removeImg(item) {
+        this.diary.pics = this.diary.pics.filter((item1) => {
+          return item1 != item
+        })
+        let fileName = [item]
+        let response = await SpecificServiceEndPoints.deletePic(fileName) // remove pic from media-files
+        console.log("response", response)
       },
     },
 
@@ -276,8 +265,9 @@ export default {
   padding-bottom: 20px;
 }
 .v-card__title {
-  align-items: stretch;
+  align-items: center;
   justify-content: space-evenly;
+  padding: 0% !important;
 }
 .v-text-field{input 
   {
@@ -300,7 +290,7 @@ export default {
   width: 150px;
 }
 .remove-btn {
-  display: none;
+  /* display: none; */
   color: red;
   cursor: pointer;
 }

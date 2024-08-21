@@ -28,34 +28,12 @@
                 <canvas v-show="false" id="photoTaken" ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
             </div>
         </div>
-        <!-- <vue-picture-swipe :items="items"></vue-picture-swipe> -->
     </div>
 </template>
  
-<!-- <template>
-        <div>
-        <v-row>
-            <v-btn x-small @click="capture">
-                <v-icon small>add_a_photo</v-icon>
-            </v-btn>
-        </v-row>
-        <v-row>
-            <v-btn x-small @click="view">
-                <v-icon small>folder</v-icon>
-            </v-btn>
-        </v-row>
-    </div>
-</template> -->
-
-
 <script>
-    //import VuePictureSwipe from 'vue-picture-swipe';
- 
     export default {
         name: "Camera",
-        // components: {
-        //     VuePictureSwipe
-        // },
         data() {
             return {
                 isCameraOpen: false,
@@ -143,7 +121,7 @@
                     }
                 )
 
-                console.log(this.items);
+                // console.log(this.items);
             },
             uploadPhoto(dataURL){
                 let uniquePictureName = this.generateCapturePhotoName();

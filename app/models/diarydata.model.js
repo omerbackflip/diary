@@ -15,7 +15,8 @@ module.exports = mongoose => {
       homarim: String,
       shonot: String,
       description: String,
-      medias: [{filename: String, uploadAt: Date}]
+      medias: [{filename: String, uploadAt: Date}],
+      pics: [String]
     },
     { timestamps: true }
   );

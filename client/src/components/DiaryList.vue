@@ -136,7 +136,6 @@ export default {
 		};
 	},
 
-          /* eslint-disable */
 	methods: {
 		getHeaders() {
 			if (this.isMobile()) {
@@ -165,8 +164,8 @@ export default {
 		async getDiaryForEdit(item) {
 			if (item._id) {
         this.diary = item
-			  await this.$refs.diaryForm.open(this.diary, false);
-		    this.retrieveDairies();
+        await this.$refs.diaryForm.open(this.diary, false);
+        this.retrieveDairies();
 			}
 		},
 

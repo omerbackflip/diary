@@ -18,39 +18,6 @@ exports.create = async (req, res) => {
 	}
 };
 
-//Create and Save a new entity with media files:
-exports.createWithMedia = async (req, res) => {
-	try {
-		const entity = { ...req.body };
-		
-		let medias = [];
-		if(entity.medias){
-			medias = entity.medias;
-			delete entity.medias;
-		}
-
-		const data = await dbService.createItem(db[req.query.model], entity);
-		
-		if (data) {
-			
-			if(medias.length > 0){
-				rec_id = data._id.toString();
-				let mediasInfo = util.checkAndStoreMedia(rec_id, medias);
-
-				entity.medias = mediasInfo;
-				const updateData = await dbService.updateItem(db[req.query.model], {_id: rec_id}, entity);
-
-				res.send(updateData)
-			}else{
-				res.send(data);
-			}
-		}
-	} catch (error) {
-		console.log(error);
-		res.status(500).send({message: error.message || "Some error occurred while retrieving entity."});
-	}
-};
-
 exports.findAll = async (req, res) => {
 	try {
 		const query = {... req.query};
@@ -88,42 +55,6 @@ exports.update = async (req, res) => {
 		res.status(500).send({ message: "Error updating entity!"});		
 	}
 };
-
-//Update a entity identified by the id in the request:
-exports.updateWithMedia = async (req, res) => {
-	try {
-		const id = req.params.id;
-		const entity = { ...req.body };
-
-		let medias = [];
-		if(entity.medias){
-			medias = entity.medias;
-			delete entity.medias;
-		}
-
-		const data = await dbService.updateItem(db[req.query.model], {_id: id}, entity);
-
-		if(data) {
-			
-			if(medias.length > 0){
-				
-				let mediasInfo = util.checkAndStoreMedia(id, medias, data.medias.length);
-				
-				entity.medias = data.medias.concat(mediasInfo);
-
-				const updateData = await dbService.updateItem(db[req.query.model], {_id: id}, entity);
-			}
-
-			res.send({ message: "entity was updated successfully." });
-
-		} else {
-			res.status(404).send({message: `Cannot update entity with id=${id}. Maybe entity was not found!`});
-		}
-	} catch (error) {
-		res.status(500).send({ message: "Error updating entity!"});		
-	}
-};
-
 
 //Delete a entity with the specified id:
 exports.delete = async (req, res) => {
