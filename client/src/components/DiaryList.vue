@@ -36,18 +36,15 @@
                 </v-btn>
                 </export-excel>
               </v-col>
-              <v-select :items="months" item-text="name" item-value="id" v-model="month" style="contain: inline-size; color: aqua"></v-select>
-              <v-col style="font-size: small">
-                <v-row class="summary">מחפרון - {{totals[month-1].traktor ? totals[month-1].traktor : 0}}</v-row>
-                <v-row class="summary">מניטו -  {{totals[month-1].manitu ? totals[month-1].manitu : 0}}</v-row>
-                <v-row class="summary">מנופאי - {{totals[month-1].agoran ? totals[month-1].agoran :0}}</v-row>
+              <v-select :items="months" item-text="name" item-value="id" v-model="month" hide-details 
+                        style="contain: inline-size; background-color: aqua; font-size: small;"></v-select>
+              <v-col style="font-size: small;">
+                <v-row class="summary">מחפרון - {{totals[month-1].traktor}}</v-row>
+                <v-row class="summary">מניטו -  {{totals[month-1].manitu}}</v-row>
+                <v-row class="summary">מנופאי - {{totals[month-1].agoran}}</v-row>
               </v-col>
-          </v-toolbar>
+            </v-toolbar>
         </template>
-        <!-- <template v-slot:[`item.date`]="{ item }">
-          <span style="margin-left: 0.5rem"> {{ item.date | formatDate }}</span>
-        </template> -->
-
         <template v-slot:item ="{ item, headers }">
           <tr style="border-bottom: hidden; vertical-align: text-top;" @click="getDiaryForEdit(item)">
             <td style="text-align: justify;">
@@ -229,17 +226,13 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .list {
   text-align: left;
   max-width: auto;
   margin: auto;
   cursor: pointer;
 }
-
-/* .bg-green {
-  background-color: lightgreen !important;
-} */
 
 .mobile-headers {
   font-size: 11px !important;
@@ -377,8 +370,5 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .hebrew {
   direction: rtl;
   text-align-last: right;
-}
-.v-input__control {
-  background-color: aqua;
 }
 </style>
