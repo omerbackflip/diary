@@ -1,7 +1,7 @@
 <template>
       <!-- Add New/Update row dialogDiaryForm -->
       <v-dialog v-model="dialogDiaryForm" >
-        <v-row v-if="isDisplayMedia">
+        <v-row v-if="isDisplayMedia" style="background-color: beige; margin-left: 0px;">
           <!-- <v-col cols="4" v-for="newPic in diary.medias" :key="newPic.id">
             <img v-if="newPic.source == 'disk'" class="media-files" v-bind:src="getMediaPath(newPic.filename)" />
             <span class="remove-btn" @click="removeImg(newPic)"><strong>Remove</strong></span>

@@ -1,3 +1,14 @@
+<!-- in order to access the camera in the user phone - need to configure this:
+https://stackoverflow.com/questions/34878749/in-androids-google-chrome-how-to-set-unsafely-treat-insecure-origin-as-secure#:~:text=This%20can%20be%20done%20from,to%20be%20treated%20as%20secure 
+
+This can be done from chrome://flags/ or about://flags.
+Go to about://flags, search for unsafely-treat-insecure-origin-as-secure flag, and enable it. 
+You will have to provide the origin which you want to be treated as secure.
+Multiple origins can be entered as comma-separated values.
+Relaunch your browser after making this change.
+
+Note that the protocol part is also important, and specifying the IP address, or the domain name isn't enough. 
+eg. http:// in http://185.28.152.24:8084  . If you are not using port 80, then you may have to specify that too. -->
 
 <template>
     <div class="camera-box">

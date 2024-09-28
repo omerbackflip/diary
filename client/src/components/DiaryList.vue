@@ -20,11 +20,11 @@
           dense>
         <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title> סה"כ ימי עבודה - {{diaryList.length.toLocaleString()}} </v-toolbar-title>
-              <v-spacer></v-spacer>
+              <v-toolbar-title> ימי עבודה - {{diaryList.length.toLocaleString()}} </v-toolbar-title>
+              <!-- <v-spacer></v-spacer> -->
               <!-- <v-text-field v-model="search" label="Search" class="mx-4 sreach-width" clearable></v-text-field> -->
-              <v-spacer></v-spacer>
-              <v-col style="text-align-last: center;">
+              <!-- <v-spacer></v-spacer> -->
+              <v-col v-show="!isMobile()" style="text-align-last: center;">
                 <export-excel
                 :data="diaryList"
                 type="xlsx"
@@ -36,6 +36,12 @@
                 </v-btn>
                 </export-excel>
               </v-col>
+              <v-select :items="months" item-text="name" item-value="id" v-model="month" style="contain: inline-size; color: aqua"></v-select>
+              <v-col style="font-size: small">
+                <v-row class="summary">מחפרון - {{totals[month-1].traktor ? totals[month-1].traktor : 0}}</v-row>
+                <v-row class="summary">מניטו -  {{totals[month-1].manitu ? totals[month-1].manitu : 0}}</v-row>
+                <v-row class="summary">מנופאי - {{totals[month-1].agoran ? totals[month-1].agoran :0}}</v-row>
+              </v-col>
           </v-toolbar>
         </template>
         <!-- <template v-slot:[`item.date`]="{ item }">
@@ -44,7 +50,7 @@
 
         <template v-slot:item ="{ item, headers }">
           <tr style="border-bottom: hidden; vertical-align: text-top;" @click="getDiaryForEdit(item)">
-            <td>
+            <td style="text-align: justify;">
               <span style="margin-left: 0.5rem"> {{ item.date | formatDate }}</span>
             </td>
             <td v-if="!isMobile()">
@@ -104,7 +110,7 @@ import Vue from "vue";
 import moment from "moment";
 import apiService from "../services/apiService";
 // import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
-import { DIARY_MODEL, DIARY_WEB_HEADERS, DIARY_MOBILE_HEADERS, NEW_DIARY } from "../constants/constants";
+import { DIARY_MODEL, DIARY_WEB_HEADERS, DIARY_MOBILE_HEADERS, NEW_DIARY, TABLE_MODEL } from "../constants/constants";
 import diaryForm from "./DiaryForm.vue"
 import { isMobile } from '../constants/constants';
 import excel from "vue-excel-export";
@@ -133,6 +139,9 @@ export default {
 			itemToEdit: "",
       dateModal : false,
       selected: [],
+      months: [],
+      month: '', // months are 0..11 
+      totals: [],
 		};
 	},
 
@@ -156,8 +165,13 @@ export default {
             var d = new Date(b.date);
           return d-c;
         });
-      this.isLoading = false;
+        this.isLoading = false;
 			}
+      this.diaryList.forEach((item) => {
+          this.totals[new Date(item.date).getMonth()].traktor += item.traktor ? item.traktor : 0
+          this.totals[new Date(item.date).getMonth()].manitu += item.manitu ? item.manitu : 0
+          this.totals[new Date(item.date).getMonth()].agoran += item.agoran ? item.agoran : 0
+      })
 		},
 
     // get diary data before call to diaryForm for edit
@@ -169,9 +183,36 @@ export default {
 			}
 		},
 
+    loadTable: async function (table_id, tableName) {
+			try {
+				const response = await apiService.getMany({ table_id, model: TABLE_MODEL });
+				if (response) {
+					this[tableName] = response.data.map((code) => {
+            return {id: code.table_code, name: code.description}
+          });
+				}
+			} catch (error) {
+				console.log(error);
+			}
+    },
+
 	},
 
 	async mounted() {
+    await this.loadTable(3, "months");
+    this.totals = [ {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0},
+                    {traktor: 0, manitu: 0, agoran: 0}]
+    this.month = new Date().getMonth()+1
 		this.retrieveDairies();
     this.$root.$on("addNewDiary", async () => {
 			// this.dialog = true;
@@ -269,9 +310,9 @@ th > i {
 }
 
 .summary {
-  cursor: pointer;
-  text-decoration: underline;
+  background-color: aqua;
   color: blue;
+  justify-content: center;
 }
 
 .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
@@ -337,5 +378,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   direction: rtl;
   text-align-last: right;
 }
-
+.v-input__control {
+  background-color: aqua;
+}
 </style>
