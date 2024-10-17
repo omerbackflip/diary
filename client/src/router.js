@@ -12,6 +12,11 @@ export default new Router({
       component: () => import("./components/DiaryList")
     },
     {
+      path: "/leadList",
+      name: "lead-list",
+      component: () => import("./components/LeadList")
+    },
+    {
       path: "/tableList",
       name: "table-list",
       component: () => import("./components/TableList")

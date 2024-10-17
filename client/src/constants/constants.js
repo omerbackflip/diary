@@ -1,5 +1,6 @@
 export const DIARY_MODEL = 'diarydatas';
 export const TABLE_MODEL = 'tables';
+export const LEAD_MODEL = 'leads';
 
 export const DIARY_WEB_HEADERS = [
     { text: "תאריך",    value: "date",          class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},	
@@ -33,6 +34,14 @@ export const DIARY_MOBILE_HEADERS = [
     // { text: "שונות",    value: "shonot",        class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
     // { text: "תאור יום", value: "description",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"}
 ];
+export const LEADS_HEADERS = [
+    { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+    { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+    // { text: "תאור", value: "description",   class: "mobile-headers",    groupable: false,   align: "right", width: "40%"},
+    // { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+    { text: "עדכון אחרון", value: "last_update",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+];
+
 export const NEW_DIARY = {
     date: new Date(),
     director: null,
@@ -48,6 +57,13 @@ export const NEW_DIARY = {
     homarim: "",
     shonot: "",
     description: "",
+};
+export const NEW_LEAD = {
+    last_update: new Date(),
+    name: "",
+    phone: "",
+    description: "",
+    status: "",
 };
 
 export const isMobile = () => {

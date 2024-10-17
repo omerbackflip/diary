@@ -212,7 +212,6 @@ export default {
     this.month = new Date().getMonth()+1
 		this.retrieveDairies();
     this.$root.$on("addNewDiary", async () => {
-			// this.dialog = true;
       this.diary = NEW_DIARY;
       this.diary.date = moment(new Date()).format('YYYY-MM-DD')
       await this.$refs.diaryForm.open(this.diary, true);

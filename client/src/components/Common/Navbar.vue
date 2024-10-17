@@ -13,7 +13,7 @@
                 <v-col col="10">
                     <div class="text-center" style="text-align-last: justify;">
                         {{ new Date() | formatDate  }}
-                        <v-btn x-small @click="callAddNewDiary">
+                        <v-btn x-small @click="callAddNewRow()">
                             <v-icon small>mdi-plus</v-icon>
                         </v-btn>
                     </div>
@@ -75,17 +75,25 @@ export default {
             importData: [], // EXCEL
             links: [
                 {icon: 'folder', text: 'יומן עבודה', route: '/'},
+                {icon: 'folder', text: 'רשימת לידים', route: '/leadList'},
                 {icon: 'folder', text: 'טבלת הטבלאות', route: '/tableList'},
                 {icon: 'folder', text: 'קליטת אקסל', route: null, import: 'EXCEL', onClick: 'runModal'},
             ],
             displayDay: '',
             local: false,
             isMobile,
+            activeComponent: '',
         }
     },
     methods:{
-        setAddNewRow() {
-            this.$root.$emit('addNewRow',{ newRow: true});
+        callAddNewRow() {
+            switch (this.activeComponent) {
+                case '/leadList' :
+                    this.$root.$emit('addNewLead');
+                    break;
+                default :
+                    this.$root.$emit('addNewDiary');
+            }
         },
 
         runModal(importData) {
@@ -107,6 +115,7 @@ export default {
         navigate(link) {
             if(link.route) {
                 if (this.$route.path != link.route) { // avoid calling same route
+                    this.activeComponent = link.route;
                     this.$router.push({ path: link.route , query: this.query || {}});
                 }
             } else {
@@ -116,10 +125,6 @@ export default {
 
         closeModal() {
             this.openImportModal = false;
-        },
-
-        callAddNewDiary() {
-            this.$root.$emit('addNewDiary',{ newRow: true});
         },
 
         async getDatabaseInformation() {
