@@ -6,11 +6,6 @@
             <!--  Date  -->
             <v-col cols="5" style="padding-bottom: 0px;">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="lead.last_update" persistent width="290px">
-                <!-- <template v-slot:activator="{ on, attrs }">
-                  <v-text-field v-model="lead.last_update" readonly v-bind="attrs" v-on="on" hide-details 
-                                style="padding-top: 0px; margin-top: -4px;">
-                  </v-text-field> {{displayDay}}
-                </template> -->
                 <v-date-picker v-model="lead.last_update" scrollable>
                   <v-spacer></v-spacer>
                   <v-btn text color="primary" @click="dateModal = false"> Cancel </v-btn>
@@ -24,7 +19,6 @@
 
           <v-card-text>
             <v-container>
-
               <v-form ref="form">
                 <v-row>
                   <v-col cols="6">

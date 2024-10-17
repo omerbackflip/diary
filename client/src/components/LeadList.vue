@@ -1,6 +1,6 @@
 <template>
   <div class="list row">
-    <v-layout>
+    <v-layout style="padding: 0px">
       <v-flex>
         <v-data-table
           :headers="getHeaders()"
@@ -24,8 +24,7 @@
               <v-col v-show="!isMobile()" style="text-align-last: center;">
                 <export-excel
                 :data="leadsList"
-                type="xlsx"
-                footer="This is footer">
+                type="xlsx">
                 <v-btn x-small class="btn btn-danger">
                   <v-icon small>mdi-download</v-icon>
                 </v-btn>
@@ -41,9 +40,6 @@
             <td>
               <span>{{item.phone}}</span>
             </td>   
-            <!-- <td>
-              <span>{{item.status}}</span>
-            </td>  -->
             <td>
               <span>{{item.last_update | formatDate}}</span>
             </td>
