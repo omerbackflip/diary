@@ -45,6 +45,9 @@
                     </v-dialog>
                   </v-col>
                   <v-col cols="12">
+                    <v-text-field v-model="lead.email" label="Email" @focus="$event.target.select()" dense></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
                     <v-textarea v-model="lead.description" label="תאור" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
                 </v-row>

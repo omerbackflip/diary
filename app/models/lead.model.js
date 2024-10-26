@@ -6,6 +6,7 @@ module.exports = mongoose => {
       description: String,
       status: String,
       last_update: Date,
+      email: String,
     },
     { timestamps: true }
   );

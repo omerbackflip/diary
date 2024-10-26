@@ -64,6 +64,7 @@ export const NEW_LEAD = {
     phone: "",
     description: "",
     status: "",
+    email: "",
 };
 
 export const isMobile = () => {
