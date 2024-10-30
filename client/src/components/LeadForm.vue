@@ -28,7 +28,7 @@
                     <v-text-field v-model="lead.phone" label="טלפון" @focus="$event.target.select()" dense></v-text-field>
                   </v-col>
                   <v-col cols="6">
-                    <v-text-field v-model="lead.status" label="סטטוס" @focus="$event.target.select()" dense></v-text-field>
+                    <v-text-field v-model="lead.status" label="הגיע אלינו מ.." @focus="$event.target.select()" dense></v-text-field>
                   </v-col>
                   <v-col cols="6" style="padding-bottom: 0px;">
                     <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="lead.last_update" persistent width="290px">

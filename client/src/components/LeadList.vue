@@ -21,6 +21,8 @@
         <template v-slot:top>
             <v-toolbar flat>
               <v-toolbar-title> סה"כ - {{leadsList.length.toLocaleString()}} </v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-text-field :v-model="search" label="Search"></v-text-field>
               <v-col v-show="!isMobile()" style="text-align-last: center;">
                 <export-excel
                 :data="leadsList"
