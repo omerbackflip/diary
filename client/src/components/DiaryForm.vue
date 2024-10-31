@@ -1,14 +1,7 @@
 <template>
       <!-- Add New/Update row dialogDiaryForm -->
-      <v-dialog v-model="dialogDiaryForm" >
+      <v-dialog v-model="dialogDiaryForm" width="500">
         <v-row v-if="isDisplayMedia" style="background-color: beige; margin-left: 0px;">
-          <!-- <v-col cols="4" v-for="newPic in diary.medias" :key="newPic.id">
-            <img v-if="newPic.source == 'disk'" class="media-files" v-bind:src="getMediaPath(newPic.filename)" />
-            <span class="remove-btn" @click="removeImg(newPic)"><strong>Remove</strong></span>
-          </v-col> -->
-          <!-- <v-col cols="4" v-for="newPic in newPicsList" :key="newPic.id">
-            <img v-if="newPic.source == 'camera'" class="media-files" v-bind:src="newPic.fileContent" />
-          </v-col> -->
           <v-col cols="4" v-for="(pic,i) in diary.pics" :key="i">
             <img class="media-files" v-bind:src="getMediaPath(pic)" />
             <span class="remove-btn" @click="removeImg(pic)"><strong>Remove</strong></span>

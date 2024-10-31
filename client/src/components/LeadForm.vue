@@ -1,6 +1,6 @@
 <template>
       <!-- Add New/Update row dialogLeadForm -->
-      <v-dialog v-model="dialogLeadForm" >
+      <v-dialog v-model="dialogLeadForm" width="500">
         <v-card style="direction: rtl;" :class="bck_grnd(lead._id)">
           <v-card-title>
             <!--  Date  -->
