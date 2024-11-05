@@ -41,9 +41,6 @@
 
               <v-form ref="form">
                 <v-row>
-                  <!-- <v-col cols="3">
-                    <v-text-field v-model="diary.director" label="מנהל" required dense></v-text-field>
-                  </v-col> -->
                   <v-col cols="3">
                     <v-text-field v-model="diary.poalim" label="פועלים" dense></v-text-field>
                   </v-col>
@@ -248,11 +245,6 @@ export default {
 .field-margin{
 	margin: 12px;
 }
-
-/* .hebrew {
-  direction: rtl;
-  text-align-last: right;
-} */
 .col {
   padding-top: 0px;
   padding-bottom: 20px;
@@ -273,9 +265,6 @@ export default {
     color: blue;
   }
 }
-/* .bg-green {
-  background-color: rgb(212, 220, 212) !important;
-} */
 .bg-beige {
   background-color: beige !important;
 }

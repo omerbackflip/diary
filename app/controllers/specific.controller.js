@@ -1,6 +1,5 @@
 const db = require("../models");
-const DIARY_MODEL = db.diarydatas;
-// const Book = db.books;
+const LEADS_MODEL = db.leads;
 const csv = require('csvtojson');
 var fs = require('fs');
 const XLSX = require('xlsx');
@@ -13,13 +12,13 @@ const path = require('path');
 
 exports.saveExcelBulk = async (req, res) => {
 	try {
-        // await DIARY_MODEL.deleteMany();
+        // await LEADS_MODEL.deleteMany();
 		var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@'});
 		var sheet_name_list = workbook.SheetNames;
 		const data = transformCSVData(sheet_name_list , workbook);
         let excelData = specificService.getExcelToSave(data[0]);
 		if (excelData) {
-			const result = await DIARY_MODEL.insertMany(excelData, { ordered: true });
+			const result = await LEADS_MODEL.insertMany(excelData, { ordered: true });
 			unLinkFile(`uploads/${req.file.filename}`);
 			if (result) {
 				return res.send({

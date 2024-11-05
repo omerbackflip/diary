@@ -107,7 +107,8 @@ import Vue from "vue";
 import moment from "moment";
 import apiService from "../services/apiService";
 // import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
-import { DIARY_MODEL, DIARY_WEB_HEADERS, DIARY_MOBILE_HEADERS, NEW_DIARY, TABLE_MODEL } from "../constants/constants";
+
+import { DIARY_MODEL, DIARY_WEB_HEADERS, DIARY_MOBILE_HEADERS, NEW_DIARY, loadTable } from "../constants/constants";
 import diaryForm from "./DiaryForm.vue"
 import { isMobile } from '../constants/constants';
 import excel from "vue-excel-export";
@@ -126,6 +127,7 @@ export default {
 	data() {
 		return {
       isMobile,
+      loadTable,
 			diaryList: [],
 			dialog: false,
 			search: "",
@@ -180,23 +182,12 @@ export default {
 			}
 		},
 
-    loadTable: async function (table_id, tableName) {
-			try {
-				const response = await apiService.getMany({ table_id, model: TABLE_MODEL });
-				if (response) {
-					this[tableName] = response.data.map((code) => {
-            return {id: code.table_code, name: code.description}
-          });
-				}
-			} catch (error) {
-				console.log(error);
-			}
-    },
-
 	},
 
 	async mounted() {
-    await this.loadTable(3, "months");
+    this.months = (await loadTable(3)).map((code) => {
+      return {id: code.table_code, name: code.description}
+    });
     this.totals = [ {traktor: 0, manitu: 0, agoran: 0},
                     {traktor: 0, manitu: 0, agoran: 0},
                     {traktor: 0, manitu: 0, agoran: 0},

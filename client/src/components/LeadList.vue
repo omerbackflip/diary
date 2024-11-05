@@ -22,7 +22,7 @@
             <v-toolbar flat>
               <v-toolbar-title> סה"כ - {{leadsList.length.toLocaleString()}} </v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-text-field :v-model="search" label="Search"></v-text-field>
+              <v-text-field v-model="search" label="Search"></v-text-field>
               <v-col v-show="!isMobile()" style="text-align-last: center;">
                 <export-excel
                 :data="leadsList"
@@ -114,7 +114,11 @@ export default {
         model: LEAD_MODEL,
       });
 			if (response && response.data) {
-				this.leadsList = response.data;
+				this.leadsList = response.data.sort(function(a, b) {
+            var c = new Date(a.last_update);
+            var d = new Date(b.last_update);
+          return d-c;
+        });
         this.isLoading = false;
 			}
 		},

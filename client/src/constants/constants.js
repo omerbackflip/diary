@@ -1,6 +1,7 @@
 export const DIARY_MODEL = 'diarydatas';
 export const TABLE_MODEL = 'tables';
 export const LEAD_MODEL = 'leads';
+import apiService from "../services/apiService";
 
 export const DIARY_WEB_HEADERS = [
     { text: "תאריך",    value: "date",          class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},	
@@ -73,4 +74,16 @@ export const isMobile = () => {
     } else {
         return false;
     }
-}
+};
+
+export const loadTable = async (table_id) => {
+    try {
+        const response = await apiService.getMany({ table_id, model: TABLE_MODEL });
+        if (response.data.length > 0) {
+            return (response.data)
+            // return (response.data.map((code) => code.description))
+        } else return (window.alert("Read Table no - " + table_id + " faild"))
+    } catch (error) {
+        console.log(error);
+    }
+};

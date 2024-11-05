@@ -3,26 +3,19 @@ const db = require("../models");
 
 exports.getExcelToSave = (data) => {
     try {
-        let diaries = [];
+        let leads = [];
         data.forEach(item => {
         let diary = {
-                date: !isNaN(Date.parse(item.date)) ? moment(item.date,"DD MM YYYY").add(1,'days').subtract(1,'hour') : null,
-                director: item.director,
-                poalim: item.poalim,
-                traktor: item.traktor,
-                manitu: item.manitu,
-                shufel: item.shufel,
-                bagger: item.bagger,
-                manof: item.manof,
-                agoran: item.agoran,
-                homarim: item.homarim,
-                shonot: item.shonot,
-                yetzikot: item.yetzikot,
+                name: item.name,
+                phone: item.phone,
+                email: item.email,
+                last_update: !isNaN(Date.parse(item.last_update)) ? moment(item.last_update,"DD MM YYYY") : null,
                 description: item.description,
+                status: item.status
             };
-            diaries.push(diary);
+            leads.push(diary);
         });
-        return diaries;
+        return leads;
     } catch (error) {
         console.log(error)
         throw error;
