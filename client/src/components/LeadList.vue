@@ -46,7 +46,7 @@
               <span>{{item.last_update | formatDate}}</span>
             </td>
           </tr>
-          <tr>
+          <tr style="border-bottom: outset">
             <td :colspan="headers.length" @click="getLeadForEdit(item)" style="text-align: right">
               <span>{{item.description}}</span>
             </td>            
@@ -119,6 +119,9 @@ export default {
             var d = new Date(b.last_update);
           return d-c;
         });
+        this.leadsList.map((item) => {
+          item.last_update = moment(new Date(item.last_update)).format('YYYY-MM-DD')
+        })
         this.isLoading = false;
 			}
 		},
