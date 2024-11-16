@@ -20,10 +20,9 @@
           dense>
         <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title> ימי עבודה - {{diaryList.length.toLocaleString()}} </v-toolbar-title>
-              <!-- <v-spacer></v-spacer> -->
-              <!-- <v-text-field v-model="search" label="Search" class="mx-4 sreach-width" clearable></v-text-field> -->
-              <!-- <v-spacer></v-spacer> -->
+              <v-col class="pa-0" cols="3">
+                <v-toolbar-title style="text-align-last: center; color: blue;"> ימי עבודה {{diaryList.length.toLocaleString()}} </v-toolbar-title>
+              </v-col>
               <v-col v-show="!isMobile()" style="text-align-last: center;">
                 <export-excel
                 :data="diaryList"
@@ -36,12 +35,23 @@
                 </v-btn>
                 </export-excel>
               </v-col>
-              <v-select :items="months" item-text="name" item-value="id" v-model="month" hide-details 
-                        style="contain: inline-size; background-color: aqua; font-size: small;"></v-select>
+              <v-col class="pa-0" cols="3">
+                <v-select :items="months" item-text="name" item-value="id" v-model="month" hide-details 
+                          style="contain: inline-size; background-color: aqua; font-size: small;"></v-select>
+              </v-col>
               <v-col style="font-size: small;">
-                <v-row class="summary">מחפרון - {{totals[month-1].traktor}}</v-row>
-                <v-row class="summary">מניטו -  {{totals[month-1].manitu}}</v-row>
-                <v-row class="summary">מנופאי - {{totals[month-1].agoran}}</v-row>
+                <v-row class="summary">
+                  <v-col class="pa-0" cols="8">מחפרון - </v-col>
+                  <v-col class="pa-0" style="text-align-last: center;" cols="4">{{totals[month-1].traktor}}</v-col>
+                </v-row>
+                <v-row class="summary">
+                  <v-col class="pa-0" cols="8">משאית פסולת -  </v-col>
+                  <v-col class="pa-0" style="text-align-last: center;" cols="4">{{totals[month-1].manitu}}</v-col>
+                </v-row>
+                <v-row class="summary">
+                  <v-col class="pa-0" cols="8">מנופאי - </v-col>
+                  <v-col class="pa-0" style="text-align-last: center;" cols="4">{{totals[month-1].agoran}}</v-col>
+                </v-row>
               </v-col>
             </v-toolbar>
         </template>
@@ -84,7 +94,7 @@
               <span>{{item.shonot}}</span>
             </td>
           </tr>
-          <tr>
+          <tr style="border-bottom-width: thick;">
             <td :colspan="headers.length" @click="getDiaryForEdit(item)" style="text-align: right">
               <span>{{item.description}}</span>
             </td>            
@@ -295,7 +305,8 @@ th > i {
 .summary {
   background-color: aqua;
   color: blue;
-  justify-content: center;
+  justify-content: right;
+  padding-right: 7px;
 }
 
 .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
@@ -346,7 +357,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 1rem;
     direction: rtl;
     white-space: pre-wrap;
-    text-align: center;
+    text-align: right;
 }
 .sreach-width {
   width: 4rem;

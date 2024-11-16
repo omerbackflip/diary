@@ -57,7 +57,7 @@
                     <v-text-field v-model="diary.manof" label="מנוף" dense></v-text-field>
                   </v-col>
                   <v-col cols="3">
-                    <v-text-field v-model="diary.manitu" label="מאניטו" dense></v-text-field>
+                    <v-text-field v-model="diary.manitu" label="פסולת" dense></v-text-field>
                   </v-col>
                   <v-col cols="3">
                     <v-text-field v-model="diary.agoran" label="עגורן" dense></v-text-field>
