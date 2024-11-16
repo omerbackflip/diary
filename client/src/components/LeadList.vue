@@ -46,7 +46,7 @@
               <span>{{item.last_update | formatDate}}</span>
             </td>
           </tr>
-          <tr style="border-bottom: outset">
+          <tr style="border-bottom-width: thick;">
             <td :colspan="headers.length" @click="getLeadForEdit(item)" style="text-align: right">
               <span>{{item.description}}</span>
             </td>            
