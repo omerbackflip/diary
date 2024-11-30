@@ -9,5 +9,6 @@ db.url = dbConfig.url;
 db.tables = require("./table.model.js")(mongoose);
 db.diarydatas = require("./diarydata.model.js")(mongoose);
 db.leads = require("./lead.model.js")(mongoose);
+db.holders = require("./holder.model.js")(mongoose);
 
 module.exports = db; 

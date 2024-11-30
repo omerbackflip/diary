@@ -76,6 +76,7 @@ export default {
             links: [
                 {icon: 'folder', text: 'יומן עבודה', route: '/'},
                 {icon: 'folder', text: 'רשימת לידים', route: '/leadList'},
+                {icon: 'folder', text: 'דיירים', route: '/holderList'},
                 {icon: 'folder', text: 'טבלת הטבלאות', route: '/tableList'},
                 {icon: 'folder', text: 'קליטת אקסל', route: null, import: 'EXCEL', onClick: 'runModal'},
             ],
@@ -87,9 +88,12 @@ export default {
     },
     methods:{
         callAddNewRow() {
-            switch (this.activeComponent) {
+            switch (this.$route.path) {
                 case '/leadList' :
                     this.$root.$emit('addNewLead');
+                    break;
+                case '/holderList' :
+                    this.$root.$emit('addNewHolder');
                     break;
                 default :
                     this.$root.$emit('addNewDiary');

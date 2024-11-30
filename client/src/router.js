@@ -17,6 +17,11 @@ export default new Router({
       component: () => import("./components/LeadList")
     },
     {
+      path: "/holderList",
+      name: "holder-list",
+      component: () => import("./components/HolderList")
+    },
+    {
       path: "/tableList",
       name: "table-list",
       component: () => import("./components/TableList")

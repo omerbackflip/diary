@@ -6,10 +6,9 @@
 					{{ importData }}
 				</v-card-title>
 				<v-progress-linear :indeterminate="loading" color="cyan" height="10"></v-progress-linear>
-                <div v-show="importData==='BOOKS'">
+                <!-- <div v-show="importData==='BOOKS'">
 					<v-row class="v-row">
 						<v-col cols="9">
-							<!-- <v-radio-group row v-model="importYear" v-for="(item,index) in years" :key="index" class="v-radio-group"> -->
 							<v-radio-group row v-model="importYear" class="radio-group">
 								<p v-for="(item,index) in years" :key="index">
 									<v-radio :label=item :value="item"></v-radio>
@@ -23,7 +22,7 @@
 							</v-radio-group>
 						</v-col>
 					</v-row>
-                </div>
+                </div> -->
 				<v-card-text> DATA will be overwritten </v-card-text>
 				<v-file-input truncate-length="50" @change="setFile"></v-file-input>
 				<v-divider></v-divider>

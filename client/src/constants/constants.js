@@ -1,6 +1,7 @@
 export const DIARY_MODEL = 'diarydatas';
 export const TABLE_MODEL = 'tables';
 export const LEAD_MODEL = 'leads';
+export const HOLDER_MODEL = 'holders';
 import apiService from "../services/apiService";
 
 export const DIARY_WEB_HEADERS = [
@@ -42,7 +43,12 @@ export const LEADS_HEADERS = [
     // { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
     { text: "עדכון אחרון", value: "last_update",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
 ];
-
+export const HOLDER_MOBILE_HEADERS = [
+    { text: "מס' דירה", value: "flatId",   class: "mobile-headers",    groupable: false,   align: "right", width: "25%"},
+    { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "40%"},
+    { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "35%"},
+    // { text: "email", value: "email",   class: "mobile-headers",    groupable: false,   align: "right", width: "25%"},
+];
 export const NEW_DIARY = {
     date: new Date(),
     director: null,
@@ -65,6 +71,12 @@ export const NEW_LEAD = {
     phone: "",
     description: "",
     status: "",
+    email: "",
+};
+export const NEW_HOLDER = {
+    flatId: '',
+    name: "",
+    phone: "",
     email: "",
 };
 
