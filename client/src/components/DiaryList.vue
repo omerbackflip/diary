@@ -94,7 +94,7 @@
               <span>{{item.shonot}}</span>
             </td>
           </tr>
-          <tr style="border-bottom-width: thick;">
+          <tr>
             <td :colspan="headers.length" @click="getDiaryForEdit(item)" style="text-align: right">
               <span>{{item.description}}</span>
             </td>            

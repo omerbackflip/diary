@@ -44,10 +44,13 @@ export const LEADS_HEADERS = [
     { text: "עדכון אחרון", value: "last_update",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
 ];
 export const HOLDER_MOBILE_HEADERS = [
-    { text: "מס' דירה", value: "flatId",   class: "mobile-headers",    groupable: false,   align: "right", width: "25%"},
-    { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "40%"},
-    { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "35%"},
-    // { text: "email", value: "email",   class: "mobile-headers",    groupable: false,   align: "right", width: "25%"},
+    { text: "מס' דירה", value: "flatId",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "60%"},
+    // { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "35%"},
+    { text: "בניה", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "5%"},
+    { text: "חשמל", value: "email",   class: "mobile-headers rotated-header",    groupable: false,  width: "5%"},
+    { text: "ריצוף", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "5%"},
+    { text: "חיפוי", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "5%"},
 ];
 export const NEW_DIARY = {
     date: new Date(),
@@ -78,6 +81,8 @@ export const NEW_HOLDER = {
     name: "",
     phone: "",
     email: "",
+    status: "",
+    remark: "",
 };
 
 export const isMobile = () => {
@@ -99,3 +104,9 @@ export const loadTable = async (table_id) => {
         console.log(error);
     }
 };
+
+export const sendWhatsapp = async(phone) => {
+    let fixedPhone = phone
+    if (phone.charAt(0) === '0') fixedPhone = phone.substring(1)
+    window.open('https://api.whatsapp.com/send?phone=972'+fixedPhone.replace("-", ""))
+  }

@@ -6,6 +6,8 @@ module.exports = mongoose => {
       phone: String,
       email: String,
       gDrvPath: String,
+      status: String,
+      remark: String,
       documents: [{docType: String, description: String, fname: String}],
     },
     { timestamps: true }

@@ -1,6 +1,6 @@
 <template>
   <div class="list row">
-    <v-layout>
+    <v-layout style="padding: 0px;">
       <v-flex>
         <v-data-table
           :headers="getHeaders()"
@@ -10,7 +10,7 @@
           fixed-header
           mobile-breakpoint="0"
           height="80vh"
-          class="elevation-3 mt-0 hebrew"
+          class="elevation-3 mt-0 hebrew custom-headers"
           :loading="isLoading"
           loading-text="Loading... Please wait"
           loader-height="20"
@@ -20,11 +20,42 @@
           dense>
           <template v-slot:top>
               <v-toolbar flat>
+                <v-col class="pa-0" cols="5">
+                  <v-toolbar-title style="border-right-width: thick; border-color: lightgreen;"> תיק דיירים  </v-toolbar-title>
+                </v-col>
+                <v-spacer></v-spacer>
                 <v-col class="pa-0" cols="3">
                   <v-toolbar-title style="text-align-last: center; color: blue;"> סה"כ {{holderList.length.toLocaleString()}} </v-toolbar-title>
                 </v-col>
               </v-toolbar>
           </template>
+          <template v-slot:item ="{ item, headers }">
+          <tr style="border-bottom: hidden;" @click="getHolderForEdit(item)">
+            <td :class="`${item.status}`">
+              <span>{{item.flatId}}</span>
+            </td>
+            <td>
+              <span>{{item.name}}</span>
+            </td>   
+            <td>
+              <v-checkbox hide-details style="justify-items: center;"></v-checkbox>
+            </td>
+            <td>
+              <v-checkbox hide-details style="justify-items: center;"></v-checkbox>
+            </td>
+            <td>
+              <v-checkbox hide-details style="justify-items: center;"></v-checkbox>
+            </td>
+            <td>
+              <v-checkbox hide-details style="justify-items: center;"></v-checkbox>
+            </td>
+          </tr>
+          <tr>
+            <td :colspan="headers.length" @click="getHolderForEdit(item)" style="text-align: right">
+              <span>{{item.remark}}</span>
+            </td>            
+          </tr>
+        </template>
         </v-data-table>
       </v-flex>
 
@@ -104,7 +135,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style >
 .list {
   text-align: left;
   max-width: auto;
@@ -116,7 +147,7 @@ export default {
   font-size: 11px !important;
 }
 
-.mobile-items > td {
+td {
   /* font-size: 13px !important; */
   padding: 0px !important;
 }
@@ -180,13 +211,6 @@ th > i {
 	margin-top: 9px;
 }
 
-.summary {
-  background-color: aqua;
-  color: blue;
-  justify-content: right;
-  padding-right: 7px;
-}
-
 .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
     color: rgba(0, 0, 0, 0.6);
     white-space: nowrap;
@@ -205,19 +229,6 @@ th > i {
     border-radius: 7px;
     padding: 8px 14px 8px 14px;
     margin-top: 12px;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-    background: transparent;
-    bottom: 0;
-    color: transparent;
-    cursor: pointer;
-    height: auto;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: auto;
 }
 
 .hdr-styles{
@@ -249,5 +260,33 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .hebrew {
   direction: rtl;
   text-align-last: right;
+}
+.Fixed {
+  background-color: red;
+}
+
+.תיק-דיירים {
+  background-color: lightgreen;
+  }
+.Checked {
+  background-color: yellow;
+}
+
+.v-input--checkbox {
+  padding: 0px;
+  margin: 0px;
+}
+
+/* Rotate only headers with the specific class */
+.custom-headers th.rotated-header {
+  writing-mode: vertical-rl;
+  text-align: center;
+  transform: rotate(180deg); /* Optional: Flip the text for proper orientation */
+  white-space: nowrap; /* Ensure text doesn't wrap */
+  padding: 0px !important;
+}
+
+.v-input__slot {
+  justify-content: space-around;
 }
 </style>

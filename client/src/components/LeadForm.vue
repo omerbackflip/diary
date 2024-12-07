@@ -14,7 +14,7 @@
               </v-dialog>
             </v-col>
 
-            <v-btn small v-show="lead._id" @click="copyToNew"> Copy </v-btn>
+            <!-- <v-btn small v-show="lead._id" @click="copyToNew"> Copy </v-btn> -->
           </v-card-title>
 
           <v-card-text>
@@ -22,10 +22,11 @@
               <v-form ref="form">
                 <v-row>
                   <v-col cols="6">
-                    <v-text-field v-model="lead.name" label="שם" @focus="$event.target.select()" dense></v-text-field>
+                    <v-text-field v-model="lead.name" label="שם" @focus="$event.target.select()"></v-text-field>
                   </v-col>
                   <v-col cols="6">
-                    <v-text-field v-model="lead.phone" label="טלפון" @focus="$event.target.select()" dense></v-text-field>
+                    <v-text-field v-model="lead.phone" label="טלפון" @focus="$event.target.select()"
+                                  append-icon="mdi-whatsapp" @click:append="sendWhatsapp(lead.phone)" style="font-size: small;"></v-text-field>
                   </v-col>
                   <v-col cols="6">
                     <v-text-field v-model="lead.status" label="הגיע אלינו מ.." @focus="$event.target.select()" dense></v-text-field>
@@ -69,7 +70,7 @@
 </template>
 
 <script>
-import { LEAD_MODEL } from "../constants/constants";
+import { LEAD_MODEL, sendWhatsapp } from "../constants/constants";
 import apiService from "../services/apiService";
 import Vue from "vue";
 import moment from "moment";
@@ -84,6 +85,7 @@ export default {
     name: "lead-form",
     data() {
       return {
+        sendWhatsapp,
         dialogLeadForm: false,
         resolve: null,      // What is this for ?
         isLoading: false,

@@ -2,25 +2,40 @@
       <!-- Add New/Update row dialogHolderForm -->
       <v-dialog v-model="dialogHolderForm" width="500">
         <v-card style="direction: rtl;" :class="bck_grnd(holder._id)">
-          <v-card-title>
-            <v-btn small v-show="holder._id" @click="copyToNew"> Copy </v-btn>
-          </v-card-title>
-
           <v-card-text style="padding: 0px;">
             <v-container>
               <v-form ref="form">
                 <v-row>
-                  <v-col cols="6">
+                  <v-col cols="3">
+                    <v-text-field v-model="holder.flatId" dense @focus="$event.target.select()" disabled></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
                     <v-text-field v-model="holder.name" dense @focus="$event.target.select()"></v-text-field>
                   </v-col>
-                  <v-col cols="6">
-                    <v-text-field v-model="holder.phone" dense @focus="$event.target.select()"></v-text-field>
+                  <v-col cols="5">
+                    <v-text-field v-model="holder.phone" dense @focus="$event.target.select()" 
+                                  append-icon="mdi-whatsapp" @click:append="sendWhatsapp(holder.phone)" style="font-size: small;"></v-text-field>
                   </v-col>
-                  <v-col cols="3">
-                    <v-text-field v-model="holder.flatId" label="מס' דירה" dense @focus="$event.target.select()"></v-text-field>
-                  </v-col>
-                  <v-col cols="9">
+                  <v-col cols="8">
                     <v-text-field v-model="holder.email" label="אימייל" dense @focus="$event.target.select()"></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
+                      <v-combobox v-model="holder.status" :items="statusList" reverse dense/>
+                  </v-col>
+                  <v-col cols="3" class="combo">
+                    <v-checkbox hide-details label="בניה"></v-checkbox>
+                  </v-col>
+                  <v-col cols="3" class="combo">
+                    <v-checkbox hide-details label="חשמל"></v-checkbox>
+                  </v-col>
+                  <v-col cols="3" class="combo">
+                    <v-checkbox hide-details label="ריצוף"></v-checkbox>
+                  </v-col>
+                  <v-col cols="3" class="combo">
+                    <v-checkbox hide-details label="חיפוי"></v-checkbox>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-textarea v-model="holder.remark" label="עדכון אחרון..." auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
                 </v-row>
               </v-form>
@@ -40,9 +55,6 @@
             <v-container style="padding: 3px;">
                 <div v-for="(doc, i) in holder.documents" :key="i" class="text-fields-row">
                   <v-row style="padding-bottom: 15px;">
-                    <!-- <v-col cols="4">
-                      <v-combobox v-model="doc.docType" :items="docTypeList" dense hide-details></v-combobox>
-                    </v-col> -->
                     <v-col cols="10">
                       <v-textarea v-model="doc.description" auto-grow rows="1" hide-details @focus="$event.target.select()"
                                   ></v-textarea>
@@ -72,7 +84,7 @@
 </template>
 
 <script>
-import { HOLDER_MODEL, loadTable } from "../constants/constants";
+import { HOLDER_MODEL, loadTable, sendWhatsapp } from "../constants/constants";
 import apiService from "../services/apiService";
 import Vue from "vue";
 import moment from "moment";
@@ -87,6 +99,7 @@ export default {
     name: "holder-form",
     data() {
       return {
+        sendWhatsapp,
         dialogHolderForm: false,
         resolve: null,      // What is this for ?
         isLoading: false,
@@ -98,6 +111,7 @@ export default {
         invoiceID: 0,
         holder: [],
         newPicsList: [],
+        statusList: [],
       };
     },
 
@@ -111,11 +125,6 @@ export default {
         });
       },
 
-      copyToNew() {
-        this.isNewHolder = true
-        this.holder._id = null
-      },
-
       // saveHolder: async function () {
       async saveHolder() {
         try {
@@ -125,6 +134,7 @@ export default {
             response = await apiService.create(this.holder, {model: HOLDER_MODEL});
           } else {
             response = await apiService.update(this.holder._id, this.holder, { model: HOLDER_MODEL });
+            console.log(this.holder)
           } 
           if (response) {
             this.dialogHolderForm = false;
@@ -172,6 +182,7 @@ export default {
 
     async mounted(){
       this.docTypeList = (await loadTable(4)).map((code) => code.description)
+      this.statusList = (await loadTable(5)).map((code) => code.description)
     },
 
     computed : {
@@ -219,5 +230,19 @@ export default {
     border: 3px solid #85a7ff;
     margin-left: 5px !important;
     margin-right: 5px !important;
+}
+.checkbox-with-top-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center-align the label and checkbox */
+}
+
+.checkbox-label {
+  margin-bottom: 8px; /* Add spacing between label and checkbox */
+  font-size: 14px;
+  text-align: center;
+}
+.combo {
+  padding: 0px;
 }
 </style>
