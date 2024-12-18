@@ -7,7 +7,7 @@
               <v-form ref="form">
                 <v-row>
                   <v-col cols="3">
-                    <v-text-field v-model="holder.flatId" dense @focus="$event.target.select()" disabled></v-text-field>
+                    <v-text-field v-model="holder.flatId" dense @focus="$event.target.select()" :disabled="!isNewHolder"></v-text-field>
                   </v-col>
                   <v-col cols="4">
                     <v-text-field v-model="holder.name" dense @focus="$event.target.select()"></v-text-field>
@@ -181,8 +181,7 @@ export default {
     },
 
     async mounted(){
-      this.docTypeList = (await loadTable(4)).map((code) => code.description)
-      this.statusList = (await loadTable(5)).map((code) => code.description)
+      this.statusList = (await loadTable(6)).map((code) => code.description)
     },
 
     computed : {

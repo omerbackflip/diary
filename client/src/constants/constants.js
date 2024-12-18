@@ -83,6 +83,7 @@ export const NEW_HOLDER = {
     email: "",
     status: "",
     remark: "",
+    payedFile: false,
 };
 
 export const isMobile = () => {

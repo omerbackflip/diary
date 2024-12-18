@@ -28,8 +28,8 @@
                     <v-text-field v-model="lead.phone" label="טלפון" @focus="$event.target.select()"
                                   append-icon="mdi-whatsapp" @click:append="sendWhatsapp(lead.phone)" style="font-size: small;"></v-text-field>
                   </v-col>
-                  <v-col cols="6">
-                    <v-text-field v-model="lead.status" label="הגיע אלינו מ.." @focus="$event.target.select()" dense></v-text-field>
+                  <v-col cols="4">
+                    <v-combobox v-model="lead.status" :items="statusList" label="הגיע אלינו מ.." @focus="$event.target.select()" reverse :allow-overflow="false" dense></v-combobox>
                   </v-col>
                   <v-col cols="6" style="padding-bottom: 0px;">
                     <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="lead.last_update" persistent width="290px">
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { LEAD_MODEL, sendWhatsapp } from "../constants/constants";
+import { LEAD_MODEL, sendWhatsapp, loadTable } from "../constants/constants";
 import apiService from "../services/apiService";
 import Vue from "vue";
 import moment from "moment";
@@ -97,6 +97,7 @@ export default {
         invoiceID: 0,
         lead: [],
         newPicsList: [],
+        statusList: [],
       };
     },
 
@@ -168,6 +169,7 @@ export default {
     },
 
     async mounted(){
+      this.statusList = (await loadTable(5)).map((code) => code.description)
     },
 
     computed : {

@@ -1,174 +1,165 @@
 <template>
   <div class="list row">
-    <v-layout row wrap>
-      <v-flex xs12 md3>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="חיפוש"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-data-table
-          :headers="headers"
-          :items="tableID"
-          :search="search"
-          disable-pagination
-          hide-default-footer
-          fixed-header
-          height="75vh"
-          @click:row="filterTbl"
-          dense
-          class="elevation-3"
-          loading="isLoading"
-          loading-text="Loading... Please wait"
-        >
-          <template v-slot:[`item.actions`]="{ item }">
-            <!-- <v-icon small @click="editOne(item.id)">mdi-pencil</v-icon> -->
+    <!-- <v-layout row wrap style="padding: 0px"> -->
+      <v-flex xs12 md6 mt-5>
+        <v-data-table :headers="headers" 
+                      :items="tableID"
+                      disable-pagination
+                      hide-default-footer
+                      fixed-header
+                      height="70vh"
+                      @click:row="filterTbl"
+                      dense
+                      mobile-breakpoint="0"
+                      class="elevation-3 hebrew"
+                      loading = "isLoading"
+                      loading-text="Loading... Please wait">
+          <template v-slot:top>
+            <v-toolbar>
+              <v-row style="justify-content: center;">
+                <v-col cols="5">
+                  <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="חיפוש"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <export-excel
+                :data="tables"
+                type="xlsx"
+                name="all-tables"
+                title="All Tables"
+                footer="This is footer">
+                <v-btn x-small class="btn btn-danger">
+                  <v-icon small>mdi-download</v-icon>
+                </v-btn>
+              </export-excel>
+            </v-toolbar>           
+          </template>
+          <template v-slot:[`item.actions`]="{ item }"> 
+            <!-- <v-icon small @click="editOne(item._id)">mdi-pencil</v-icon> -->
             <div>
-              <v-icon
-                small
-                @click="
-                  itemToEdit === item.id ? updateOne(item) : setEdit(item)
-                "
-              >
-                {{ itemToEdit === item.id ? "mdi-floppy" : "mdi-pencil" }}
+              <v-icon small @click="(itemToEdit === item._id) ? updateOne(item) : setEdit(item)">
+                {{(itemToEdit === item._id) ? "mdi-floppy" : "mdi-pencil"}}
               </v-icon>
-              <v-icon small @click="deleteOne(item.id)">mdi-delete</v-icon>
+              <v-icon small @click="deleteOne(item._id)">mdi-delete</v-icon>
             </div>
           </template>
-          <template v-slot:[`item.description`]="{ item }">
-            <div v-if="itemToEdit === item.id">
-              <v-text-field
-                v-model="item.description"
-                :id="`itemEdit-${item.id}`"
-              />
+          <template v-slot:[`item.description`]="{ item }"> 
+            <div v-if = "itemToEdit === item._id">
+              <v-text-field v-model="item.description"
+                            :id="`itemEdit-${item._id}`"/>
             </div>
-            <!-- <div v-else @click="setEdit(item)"> -->
-            <div v-else @click="setEdit(item)">
-              <span> {{ item.description }}</span>
+            <div >
+              <span> {{item.description}}</span>
             </div>
           </template>
-          <template v-slot:[`item.table_id`]="{ item }">
-            <div v-if="itemToEdit === item.id">
-              <v-text-field
-                v-model="item.table_id"
-                :id="`itemEdit-${item.id}`"
-              />
-              <!-- @blur="updateOne(item)"/> -->
+          <template v-slot:[`item.table_id`]="{ item }"> 
+            <div v-if = "itemToEdit === item._id">
+              <v-text-field v-model="item.table_id"
+                            :id="`itemEdit-${item._id}`"/>
             </div>
-            <div v-else @click="setEdit(item)">
-              <span> {{ item.table_id }}</span>
+            <div >
+              <span> {{item.table_id}}</span>
             </div>
           </template>
-          <template v-slot:[`item.table_code`]="{ item }">
-            <div v-if="itemToEdit === item.id">
-              <v-text-field
-                v-model="item.table_code"
-                :id="`itemEdit-${item.id}`"
-              />
+          <template v-slot:[`item.table_code`]="{ item }"> 
+            <div v-if = "itemToEdit === item._id">
+              <v-text-field v-model="item.table_code"
+                            :id="`itemEdit-${item._id}`"/>
             </div>
-            <div v-else @click="setEdit(item)">
-              <span> {{ item.table_code }}</span>
-            </div>
-          </template>
-        </v-data-table>
-      </v-flex>
-      <v-flex xs12 md4 mt-3>
-        <div class="title">{{ tableTitle ? tableTitle : "Title" }}</div>
-        <v-data-table
-          :headers="headers"
-          :items="tableCode"
-          disable-pagination
-          dense
-          hide-default-footer
-          fixed-header
-          height="75vh"
-          class="elevation-3"
-          loading="isLoading"
-          loading-text="Loading... Please wait"
-        >
-          <template v-slot:[`item.actions`]="{ item }">
-            <!-- <v-icon small @click="editOne(item.id)">mdi-pencil</v-icon> -->
-            <div>
-              <v-icon
-                small
-                @click="
-                  itemToEdit === item.id ? updateOne(item) : setEdit(item)
-                "
-              >
-                {{ itemToEdit === item.id ? "mdi-floppy" : "mdi-pencil" }}
-              </v-icon>
-              <v-icon small @click="deleteOne(item.id)">mdi-delete</v-icon>
-            </div>
-          </template>
-          <template v-slot:[`item.description`]="{ item }">
-            <div v-if="itemToEdit === item.id">
-              <v-text-field
-                v-model="item.description"
-                :id="`itemEdit-${item.id}`"
-              />
-            </div>
-            <!-- <div v-else @click="setEdit(item)"> -->
-            <div v-else @click="setEdit(item)">
-              <span> {{ item.description }}</span>
-            </div>
-          </template>
-          <template v-slot:[`item.table_id`]="{ item }">
-            <div v-if="itemToEdit === item.id">
-              <v-text-field
-                v-model="item.table_id"
-                :id="`itemEdit-${item.id}`"
-              />
-              <!-- @blur="updateOne(item)"/> -->
-            </div>
-            <div v-else @click="setEdit(item)">
-              <span> {{ item.table_id }}</span>
-            </div>
-          </template>
-          <template v-slot:[`item.table_code`]="{ item }">
-            <div v-if="itemToEdit === item.id">
-              <v-text-field
-                v-model="item.table_code"
-                :id="`itemEdit-${item.id}`"
-              />
-            </div>
-            <div v-else @click="setEdit(item)">
-              <span> {{ item.table_code }}</span>
+            <div >
+              <span> {{item.table_code}}</span>
             </div>
           </template>
         </v-data-table>
       </v-flex>
 
-      <v-flex md10>
-        <v-footer
-          color="primary lighten-1"
-          align="center"
-          class="mt-2"
-          elevation="10"
-        >
+      <!-- SECOND TABLE -->
+      <v-flex xs12 md6 mt-5>
+        <v-data-table :headers="headers" 
+                      :items="tableCode"
+                      disable-pagination
+                      dense
+                      :search="search"
+                      hide-default-footer
+                      fixed-header
+                      height="70vh"
+                      mobile-breakpoint="0"
+                      class="elevation-3 hebrew"
+                      loading = "isLoading"
+                      loading-text="Loading... Please wait">
+          <template v-slot:top>
+            <v-toolbar>
+              <v-row style="justify-content: center;">
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="חיפוש"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field v-model="tableTitle" solo disabled hide-details style="text-align-last: center;">  {{tableTitle}} </v-text-field>
+                </v-col>
+              </v-row>
+            </v-toolbar>           
+          </template>
+          <template v-slot:[`item.actions`]="{ item }"> 
+            <td @click.stop>
+              <div>
+                <v-icon small @click="(itemToEdit === item._id) ? updateOne(item) : setEdit(item)">
+                  {{(itemToEdit === item._id) ? "mdi-floppy" : "mdi-pencil"}}
+                </v-icon>
+                <v-icon small @click="deleteOne(item._id)">mdi-delete</v-icon>
+              </div>
+            </td>
+          </template>
+          <template v-slot:[`item.description`]="{ item }"> 
+            <div v-if = "itemToEdit === item._id">
+              <v-text-field v-model="item.description" :id="`itemEdit-${item._id}`"/>
+            </div>
+            <div >
+              <span> {{item.description}}</span>
+            </div>
+          </template>
+          <template v-slot:[`item.table_id`]="{ item }"> 
+            <div v-if = "itemToEdit === item._id">
+              <v-text-field v-model="item.table_id" :id="`itemEdit-${item._id}`"/>
+            </div>
+            <div >
+              <span> {{item.table_id}}</span>
+            </div>
+          </template>
+          <template v-slot:[`item.table_code`]="{ item }"> 
+            <div v-if = "itemToEdit === item._id">
+              <v-text-field v-model="item.table_code" :id="`itemEdit-${item._id}`"/>
+            </div>
+            <div>
+              <span> {{item.table_code}}</span>
+            </div>
+          </template>
+        </v-data-table>
+      </v-flex>
+
+      <!-- ADD NEW TABLE -->
+      <v-flex md8 align-self-center>
+        <v-footer color="primary lighten-1" align="center" class="mt-2" elevation="10">
           <v-form ref="form">
             <v-row>
-              <v-col>
-                <v-text-field
-                  v-model="tblFields.id"
-                  label="ID"
-                  :rules="fldRules"
-                ></v-text-field>
+              <v-col >
+                <v-text-field v-model="tblFields.table_id" label="ID" :rules="fldRules"></v-text-field>
               </v-col>
-              <v-col>
-                <v-text-field
-                  v-model="tblFields.code"
-                  label="Code"
-                  required
-                ></v-text-field>
+              <v-col >
+                <v-text-field v-model="tblFields.table_code" label="Code" required></v-text-field>
               </v-col>
-              <v-col>
-                <v-text-field
-                  v-model="tblFields.description"
-                  label="Description"
-                  required
-                ></v-text-field>
+              <v-col >
+                <v-text-field v-model="tblFields.description" label="Description" required></v-text-field>
               </v-col>
             </v-row>
             <v-btn @click="addToTable"> -Add- </v-btn>
@@ -176,15 +167,21 @@
           </v-form>
         </v-footer>
       </v-flex>
-    </v-layout>
+
+    <!-- </v-layout> -->
   </div>
 </template>
 
 
 
 <script>
-import { TABLE_MODEL } from "../constants/constants";
-import apiService from "../services/apiService";
+import { TABLE_MODEL } from '../constants/constants';
+import apiService from '../services/apiService';
+import excel from "vue-excel-export";
+import Vue from "vue";
+
+Vue.use(excel);
+
 
 export default {
   name: "table-list",
@@ -193,43 +190,40 @@ export default {
       tables: [],
       tableID: [],
       tableCode: [],
-      tableTitle: "",
-      currInvoice: null,
-      currentIndex: -1,
-      search: "",
-      headers: [
-        { text: "ID", value: "table_id", class: "success title" },
-        { text: "CODE", value: "table_code", class: "success title" },
-        {
-          text: "Description",
-          value: "description",
-          class: "success title",
-          groupable: false,
-        },
-        {
-          text: "Act.",
-          value: "actions",
-          sortable: false,
-          class: "success title",
-          groupable: false,
-        },
+      tableTitle: '',
+      search: '',
+      headers:[
+        { text: "ID", value: "table_id", class: 'success title'},
+        { text: "CODE", value: "table_code", class: 'success title'},
+        { text: "Description", value: "description", class: 'success title', groupable: false },
+        { text: "Act.", value: "actions", sortable: false, class: 'success title', groupable: false  },
       ],
-      isLoading: true,
+      isLoading: false,
       itemToEdit: "",
       tblFields: {
-        id: "",
-        code: "",
-        description: "",
+        table_id:         "",
+        table_code:       "",
+        description:"",
       },
-      fldRules: [(v) => !!v || "Field is required"],
+      fldRules: [v => !!v || 'Field is required'],
     };
   },
 
   methods: {
+    retrieveTables() {
+      apiService.getMany({model: TABLE_MODEL})
+        .then((response) => {
+          this.tables = response.data;
+          this.tableID = response.data.filter(item => item.table_id === 99);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+
     deleteOne(id) {
-      if (window.confirm("Are you sure you want to delete one item ?")) {
-        apiService
-          .deleteOne({ model: TABLE_MODEL, id })
+      if (window.confirm('Are you sure you want to delete one item ?')){
+        apiService.deleteOne({model: TABLE_MODEL ,id})
           .then((response) => {
             console.log(response.data);
             this.refreshList();
@@ -240,26 +234,12 @@ export default {
       }
     },
 
-    retrieveTables() {
-      apiService
-        .getMany({ model: TABLE_MODEL })
-        .then((response) => {
-          this.tables = response.data;
-          this.tableID = response.data.filter((item) => item.table_id === 99);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-
     refreshList() {
       this.retrieveTables();
-      this.currInvoice = null;
-      this.currentIndex = -1;
     },
 
-    clearForm() {
-      this.$refs.form.reset();
+    clearForm (){
+      this.$refs.form.reset()
     },
 
     editOne(id) {
@@ -267,57 +247,54 @@ export default {
     },
 
     updateOne(item) {
-      apiService
-        .update(item.id, item, { model: TABLE_MODEL })
-        .then((response) => {
+      apiService.update(item._id, item, {model: TABLE_MODEL})
+        .then(response => {
           console.log(response.data);
-          this.message = "The updateOne() updated successfully!";
+          this.message = 'The updateOne() updated successfully!';
         })
-        .catch((e) => {
+        .catch(e => {
           console.log(e);
         });
-      this.itemToEdit = "";
+        this.itemToEdit = '';
     },
 
     setEdit(item) {
-      this.itemToEdit = item.id;
-      setTimeout(() => {
-        document.getElementById(`itemEdit-${item.id}`).focus();
-      }, 1);
+      this.itemToEdit = item._id;
+      setTimeout( () => {
+        document.getElementById(`itemEdit-${item._id}`).focus()
+      }, 1 );
     },
 
     addToTable() {
-      var data = {
-        table_id: this.tblFields.id,
-        table_code: this.tblFields.code,
-        description: this.tblFields.description,
-      };
-      apiService
-        .create(data, { model: TABLE_MODEL })
-        .then((response) => {
+      apiService.create(this.tblFields,{ model: TABLE_MODEL})
+        .then(response => {
           this.tblFields.id = response.data.id;
           this.refreshList();
           this.clearForm();
         })
-        .catch((e) => {
+        .catch(e => {
           console.log(e);
         });
     },
 
     filterTbl(row) {
-      this.tableCode = this.tables.filter(
-        (item) => item.table_id === row.table_code
-      );
+      this.tableCode = this.tables.filter(item => item.table_id === row.table_code)
       this.tableTitle = row.description;
     },
+
   },
 
-  computed: {},
+  computed: {
+
+  },
 
   mounted() {
     this.retrieveTables();
   },
 };
+
+
+
 </script>
 
 <style>
@@ -325,11 +302,19 @@ export default {
   text-align: left;
   max-width: auto;
   margin: auto;
+  justify-content: center;
 }
 .title {
-  border: 3px solid blue;
-  text-align: center;
-  font-weight: bold;
-  font-size: 16px;
+border: 3px solid blue;
+text-align: center;
+font-weight: bold;
+font-size: 16px;
+}
+.hebrew {
+  direction: rtl;
+  text-align-last: right !important
+}
+.v-toolbar__content {
+  justify-content: center;
 }
 </style>

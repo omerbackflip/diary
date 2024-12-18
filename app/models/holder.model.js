@@ -8,6 +8,8 @@ module.exports = mongoose => {
       gDrvPath: String,
       status: String,
       remark: String,
+      priority: Number,
+      payedFile: Boolean,
       documents: [{docType: String, description: String, fname: String}],
     },
     { timestamps: true }

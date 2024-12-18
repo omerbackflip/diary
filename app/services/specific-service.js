@@ -1,18 +1,30 @@
-const moment = require('moment');
-const db = require("../models");
+// const moment = require('moment');
+// const db = require("../models");
 
 exports.getExcelToSave = (data) => {
     try {
         let documents = [];
         data.forEach(item => {
         let document = {
-                flatId: item.flatId,
-                name: item.name,
+                name: item.name,    // this is Leads table
                 phone: item.phone,
+                description: item.description,
+                status: item.status,
+                last_update: item.last_update,
                 email: item.email,
             };
             documents.push(document);
         });
+        // let documents = data.map((item) => {
+        //     return ({
+        //         name: item.name,    // this is Leads table
+        //         phone: item.phone,
+        //         description: item.description,
+        //         status: item.status,
+        //         last_update: item.last_update,
+        //         email: item.email,
+        //     })
+        // })
         return documents;
     } catch (error) {
         console.log(error)

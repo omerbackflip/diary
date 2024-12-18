@@ -21,7 +21,8 @@
           <template v-slot:top>
               <v-toolbar flat>
                 <v-col class="pa-0" cols="5">
-                  <v-toolbar-title style="border-right-width: thick; border-color: lightgreen;"> תיק דיירים  </v-toolbar-title>
+                  <v-toolbar-title style="background-color: lightgreen;">  תיק דיירים שולם </v-toolbar-title>
+                  <!-- <v-img aspect-ratio="5.778" src="@/assets/color-flat.jpg"></v-img> -->
                 </v-col>
                 <v-spacer></v-spacer>
                 <v-col class="pa-0" cols="3">
