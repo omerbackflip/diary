@@ -15,16 +15,6 @@ exports.getExcelToSave = (data) => {
             };
             documents.push(document);
         });
-        // let documents = data.map((item) => {
-        //     return ({
-        //         name: item.name,    // this is Leads table
-        //         phone: item.phone,
-        //         description: item.description,
-        //         status: item.status,
-        //         last_update: item.last_update,
-        //         email: item.email,
-        //     })
-        // })
         return documents;
     } catch (error) {
         console.log(error)

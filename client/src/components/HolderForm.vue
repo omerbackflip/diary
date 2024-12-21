@@ -29,10 +29,10 @@
                     <v-checkbox hide-details label="חשמל"></v-checkbox>
                   </v-col>
                   <v-col cols="3" class="combo">
-                    <v-checkbox hide-details label="ריצוף"></v-checkbox>
+                    <v-checkbox hide-details label="מטבח"></v-checkbox>
                   </v-col>
                   <v-col cols="3" class="combo">
-                    <v-checkbox hide-details label="חיפוי"></v-checkbox>
+                    <v-checkbox hide-details label="סניטרים"></v-checkbox>
                   </v-col>
                   <v-col cols="12">
                     <v-textarea v-model="holder.remark" label="עדכון אחרון..." auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>

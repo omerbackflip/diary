@@ -1,7 +1,79 @@
 <template>
-  <div class="list row">
-    <v-layout style="padding: 0px;">
-      <v-flex>
+  <div class="list row hebrew">
+    <v-layout style="padding: 5px;">
+
+      <v-row class="ma-0" style="place-content: space-around ;">
+        <v-col cols="12" md="3" class="pa-0">
+          <v-card elevation="3" class="mb-3">
+            <v-toolbar color="white" flat style="justify-self: center;">
+              <v-toolbar-title class="red--text">בניין צפוני</v-toolbar-title>
+            </v-toolbar>
+            <v-container fluid>
+              <v-row>
+                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" class="px-0 py-1" style="text-align: -webkit-center;">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+28])">
+                    <v-row class="ma-0 cntr" :class="`${holderList[i+30].status}`"><span>{{i+29}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+30].name}}</v-row>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" class="px-0 py-1" style="text-align: -webkit-center;">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i])">
+                    <v-row class="ma-0 cntr" :class="`${holderList[i].status}`"><span>{{i+1}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i].name}}</v-row>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col v-for="i in Array.from({ length: 1 }, (_, index) => 1 - index)" :key="i" cols="6" class="px-0 py-1" style="text-align: -webkit-center;">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i-1])">
+                    <v-row class="ma-0 cntr" :class="`${holderList[i-1].status}`"><span>{{i}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i-1].name}}</v-row>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
+        <!--////////////////////////////// -->
+        <v-col cols="12" md="3" class="pa-0">
+          <v-card elevation="3">
+            <v-toolbar color="white" flat style="justify-self: center;">
+              <v-toolbar-title class="red--text">בניין דרומי</v-toolbar-title>
+            </v-toolbar>
+            <v-container fluid>
+              <v-row>
+                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" class="px-0 py-1" style="text-align: -webkit-center;">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+60])">
+                    <v-row class="ma-0 cntr" :class="`${holderList[i+60].status}`"><span>{{i+61}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+60].name}}</v-row>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" class="px-0 py-1" style="text-align: -webkit-center;">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i+32])">
+                    <v-row class="ma-0 cntr" :class="`${holderList[i+32].status}`"><span>{{i+33}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+32].name}}</v-row>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" class="px-0 py-1" style="text-align: -webkit-center;">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+30])">
+                    <v-row class="ma-0 cntr" :class="`${holderList[i+30].status}`"><span>{{i+31}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+30].name}}</v-row>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
+      </v-row>
+
+
+      <!-- <v-flex>
         <v-data-table
           :headers="getHeaders()"
           :items="holderList"
@@ -19,10 +91,9 @@
           :sort-by="['flatId']"
           dense>
           <template v-slot:top>
-              <v-toolbar flat>
+              <v-toolbar flat style="height: 26px;">
                 <v-col class="pa-0" cols="5">
                   <v-toolbar-title style="background-color: lightgreen;">  תיק דיירים שולם </v-toolbar-title>
-                  <!-- <v-img aspect-ratio="5.778" src="@/assets/color-flat.jpg"></v-img> -->
                 </v-col>
                 <v-spacer></v-spacer>
                 <v-col class="pa-0" cols="3">
@@ -36,19 +107,25 @@
               <span>{{item.flatId}}</span>
             </td>
             <td>
-              <span>{{item.name}}</span>
-            </td>   
-            <td>
-              <v-checkbox hide-details style="justify-items: center;"></v-checkbox>
+              <span  class="desc-oflow">{{item.name}}</span>
             </td>
             <td>
-              <v-checkbox hide-details style="justify-items: center;"></v-checkbox>
+              <span>{{item.phone}}</span>
+            </td>  
+            <td>
+              <v-checkbox hide-details></v-checkbox>
             </td>
             <td>
-              <v-checkbox hide-details style="justify-items: center;"></v-checkbox>
+              <v-checkbox hide-details></v-checkbox>
             </td>
             <td>
-              <v-checkbox hide-details style="justify-items: center;"></v-checkbox>
+              <v-checkbox hide-details></v-checkbox>
+            </td>
+            <td>
+              <v-checkbox hide-details></v-checkbox>
+            </td>
+            <td>
+              <v-checkbox hide-details></v-checkbox>
             </td>
           </tr>
           <tr>
@@ -58,7 +135,7 @@
           </tr>
         </template>
         </v-data-table>
-      </v-flex>
+      </v-flex> -->
 
       <holder-form ref="holderForm"/>
 
@@ -108,6 +185,7 @@ export default {
         model: HOLDER_MODEL,
       });
       this.holderList = response.data;
+      console.log(this.holderList)
       this.isLoading = false;
     },
  
@@ -244,7 +322,7 @@ th > i {
     max-height: 70%;
 }
 .v-toolbar__title {
-    font-size: 1rem;
+    /* font-siz e: 1rem; */
     direction: rtl;
     white-space: pre-wrap;
     text-align: right;
@@ -268,7 +346,7 @@ th > i {
 
 .תיק-דיירים {
   background-color: lightgreen;
-  }
+}
 .Checked {
   background-color: yellow;
 }
@@ -289,5 +367,29 @@ th > i {
 
 .v-input__slot {
   justify-content: space-around;
+}
+
+.desc-oflow {
+  overflow: hidden;
+  white-space:nowrap;
+  /* text-overflow:ellipsis;
+  width:150px;
+  display:inline-block; */
+  font-size: smaller;
+  color: blue;
+  place-content: center;
+}
+
+.cntr{
+  text-align-last: center;
+}
+
+.boxsize50 {
+  height: 50px;
+  width: 85px;
+}
+.boxsize100 {
+  height: 50px;
+  width: 100px;
 }
 </style>
