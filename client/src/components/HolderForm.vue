@@ -16,6 +16,9 @@
                     <v-text-field v-model="holder.phone" dense @focus="$event.target.select()" 
                                   append-icon="mdi-whatsapp" @click:append="sendWhatsapp(holder.phone)" style="font-size: small;"></v-text-field>
                   </v-col>
+                  <v-col cols="12" class="combo">
+                    <v-checkbox v-model="holder.payedFile" label="תיק דיירים" class="small-checkbox" hide-details></v-checkbox>
+                  </v-col>                  
                   <v-col cols="8">
                     <v-text-field v-model="holder.email" label="אימייל" dense @focus="$event.target.select()"></v-text-field>
                   </v-col>
