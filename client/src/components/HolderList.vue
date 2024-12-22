@@ -18,10 +18,10 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" class="px-0 py-1">
+                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" 
+                       class="px-0 py-1 j-center" :class="holderList[i].status==='טיפול דחוף' ? 'bck-red' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i])">
                     <v-row class="ma-0 cntr" :class="holderList[i].payedFile ? 'bck-green' : ''"><span>{{i+1}}</span></v-row>
-                    <!-- <v-row class="ma-0 cntr" :class="`${holderList[i].status}`"><span>{{i+1}}</span></v-row> -->
                     <v-row class="ma-0 desc-oflow">{{holderList[i].name}}</v-row>
                   </v-sheet>
                 </v-col>
@@ -53,7 +53,8 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" class="px-0 py-1">
+                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" 
+                        class="px-0 py-1 j-center" :class="holderList[i+32].status==='טיפול דחוף' ? 'bck-red' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i+32])">
                     <v-row class="ma-0 cntr" :class="holderList[i+32].payedFile ? 'bck-green' : ''"><span>{{i+33}}</span></v-row>
                     <v-row class="ma-0 desc-oflow">{{holderList[i+32].name}}</v-row>
@@ -391,6 +392,10 @@ th > i {
 }
 .boxsize100 {
   height: 50px;
-  width: 100px;
+  width: 165px;
+  justify-self: center;
+}
+.j-center {
+  justify-items: center;
 }
 </style>
