@@ -223,11 +223,6 @@ export default {
 .media-files{
   width: 150px;
 }
-.remove-btn {
-  /* display: none; */
-  color: red;
-  cursor: pointer;
-}
 .payments-wrapper{
     border: 3px solid #85a7ff;
     margin-left: 5px !important;

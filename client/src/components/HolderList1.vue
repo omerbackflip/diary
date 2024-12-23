@@ -1,8 +1,7 @@
 <template>
   <div class="list row hebrew">
     <v-layout style="padding: 5px;">
-
-      <v-row class="ma-0" style="place-content: space-around ;">
+      <!-- <v-row class="ma-0" style="place-content: space-around ;">
         <v-col cols="12" md="3" class="pa-0">
           <v-card elevation="3" class="mb-3">
             <v-toolbar color="white" flat style="justify-self: center;">
@@ -37,6 +36,7 @@
             </v-container>
           </v-card>
         </v-col>
+        //////////////////////////////
         <v-col cols="12" md="3" class="pa-0">
           <v-card elevation="3">
             <v-toolbar color="white" flat style="justify-self: center;">
@@ -71,10 +71,10 @@
             </v-container>
           </v-card>
         </v-col>
-      </v-row>
+      </v-row> -->
 
 
-      <!-- <v-flex>
+      <v-flex>
         <v-data-table
           :headers="getHeaders()"
           :items="holderList"
@@ -83,7 +83,7 @@
           fixed-header
           mobile-breakpoint="0"
           height="80vh"
-          class="elevation-3 mt-0 hebrew custom-headers"
+          class="mt-0 hebrew custom-headers"
           :loading="isLoading"
           loading-text="Loading... Please wait"
           loader-height="20"
@@ -94,7 +94,7 @@
           <template v-slot:top>
               <v-toolbar flat style="height: 26px;">
                 <v-col class="pa-0" cols="5">
-                  <v-toolbar-title style="background-color: lightgreen;">  תיק דיירים שולם </v-toolbar-title>
+                  <v-toolbar-title>  תיק דיירים  </v-toolbar-title>
                 </v-col>
                 <v-spacer></v-spacer>
                 <v-col class="pa-0" cols="3">
@@ -104,39 +104,30 @@
           </template>
           <template v-slot:item ="{ item, headers }">
           <tr style="border-bottom: hidden;" @click="getHolderForEdit(item)">
-            <td :class="`${item.status}`">
-              <span>{{item.flatId}}</span>
+            <td style="text-align-last: center;">
+              <span>{{item.flatId.substr(4, 2)}}</span>
             </td>
             <td>
-              <span  class="desc-oflow">{{item.name}}</span>
+              <span>{{item.name}}</span>
             </td>
-            <td>
-              <span>{{item.phone}}</span>
+            <td @click.stop>
+              <span @click="sendWhatsapp(item.phone)">{{item.phone}}<v-icon>mdi-whatsapp</v-icon></span>
             </td>  
             <td>
-              <v-checkbox hide-details></v-checkbox>
+              <v-checkbox v-model="item.payedFile" hide-details color="green" readonly></v-checkbox>
             </td>
             <td>
-              <v-checkbox hide-details></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox hide-details></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox hide-details></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox hide-details></v-checkbox>
+              <v-checkbox v-model="item.status" hide-details color="green" readonly></v-checkbox>
             </td>
           </tr>
           <tr>
-            <td :colspan="headers.length" @click="getHolderForEdit(item)" style="text-align: right">
+            <td :colspan="headers.length" @click="getHolderForEdit(item)" style="text-align: center">
               <span>{{item.remark}}</span>
             </td>            
           </tr>
         </template>
         </v-data-table>
-      </v-flex> -->
+      </v-flex>
 
       <holder-form ref="holderForm"/>
 
@@ -148,16 +139,17 @@
 
 <script>
 import apiService from "../services/apiService";
-import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER } from "../constants/constants";
+import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, sendWhatsapp } from "../constants/constants";
 import holderForm from "./HolderForm.vue"
 import { isMobile } from '../constants/constants';
 
 export default {
-	name: "holder-List",
+	name: "holder-List1",
 	components: { holderForm },
 	data() {
 		return {
       isMobile,
+      sendWhatsapp,
 			holderList: [],
 			dialog: false,
 			search: "",
@@ -185,7 +177,7 @@ export default {
       let response = await apiService.getMany({
         model: HOLDER_MODEL,
       });
-      this.holderList = response.data;
+      this.holderList = response.data.filter((item) => {return item.name});
       this.isLoading = false;
     },
  
@@ -294,6 +286,9 @@ th > i {
     color: rgba(0, 0, 0, 0.6);
     white-space: nowrap;
 }
+.v-data-table__wrapper {
+  margin-top: 20px !important;
+}
 
 .date-text{
   font-size: 12px !important;
@@ -359,7 +354,7 @@ th > i {
 /* Rotate only headers with the specific class */
 .custom-headers th.rotated-header {
   writing-mode: vertical-rl;
-  text-align: center;
+  text-align-last: center;
   transform: rotate(180deg); /* Optional: Flip the text for proper orientation */
   white-space: nowrap; /* Ensure text doesn't wrap */
   padding: 0px !important;
@@ -374,8 +369,8 @@ th > i {
   white-space:nowrap;
   /* text-overflow:ellipsis;
   width:150px;
-  display:inline-block; */
-  font-size: smaller;
+  display:inline-block;
+  font-size: smaller; */
   color: blue;
   place-content: center;
 }

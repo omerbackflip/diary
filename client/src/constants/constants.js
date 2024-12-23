@@ -44,14 +44,11 @@ export const LEADS_HEADERS = [
     { text: "עדכון אחרון", value: "last_update",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
 ];
 export const HOLDER_MOBILE_HEADERS = [
-    { text: "מס' דירה", value: "flatId",   class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
-    { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "45%"},
-    { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "20%"},
-    { text: "שולם", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
-    { text: "בניה", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
-    { text: "חשמל", value: "email",   class: "mobile-headers rotated-header",    groupable: false,  width: "1%"},
-    { text: "מטבח", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
-    { text: "סניטרים", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
+    { text: "דירה", value: "flatId",   class: "mobile-headers px-2",    groupable: false,   align: "right", width: "5%"},
+    { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "35%"},
+    { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "30%"},
+    { text: "ת.דייר", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
+    { text: "אושר", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
 ];
 export const NEW_DIARY = {
     date: new Date(),

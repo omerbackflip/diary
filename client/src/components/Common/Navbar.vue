@@ -77,6 +77,7 @@ export default {
                 {icon: 'folder', text: 'יומן עבודה', route: '/'},
                 {icon: 'folder', text: 'רשימת לידים', route: '/leadList'},
                 {icon: 'folder', text: 'דיירים', route: '/holderList'},
+                {icon: 'folder', text: 'דיירים-רשימה', route: '/holderList1'},
                 {icon: 'folder', text: 'טבלת הטבלאות', route: '/tableList'},
                 {icon: 'folder', text: 'קליטת אקסל', route: null, import: 'EXCEL', onClick: 'runModal'},
             ],
