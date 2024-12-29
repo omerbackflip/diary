@@ -16,29 +16,44 @@
                     <v-text-field v-model="holder.phone" dense @focus="$event.target.select()" 
                                   append-icon="mdi-whatsapp" @click:append="sendWhatsapp(holder.phone)" style="font-size: small;"></v-text-field>
                   </v-col>
-                  <v-col cols="12" class="combo">
+                  <v-col cols="6">
                     <v-checkbox v-model="holder.payedFile" label="תיק דיירים" class="small-checkbox" hide-details></v-checkbox>
                   </v-col>                  
                   <v-col cols="8">
                     <v-text-field v-model="holder.email" label="אימייל" dense @focus="$event.target.select()"></v-text-field>
                   </v-col>
                   <v-col cols="4">
-                      <v-combobox v-model="holder.status" :items="statusList" reverse dense/>
+                      <v-select v-model="holder.status" :items="statusList" reverse dense></v-select>
                   </v-col>
-                  <v-col cols="3" class="combo">
-                    <v-checkbox hide-details label="בניה"></v-checkbox>
-                  </v-col>
-                  <v-col cols="3" class="combo">
-                    <v-checkbox hide-details label="חשמל"></v-checkbox>
-                  </v-col>
-                  <v-col cols="3" class="combo">
-                    <v-checkbox hide-details label="מטבח"></v-checkbox>
-                  </v-col>
-                  <v-col cols="3" class="combo">
-                    <v-checkbox hide-details label="סניטרים"></v-checkbox>
-                  </v-col>
+                  <div class="small-checkbox">
+                    <v-row>
+                      <v-col cols="4">
+                        <v-checkbox v-model="holder.sendPlans" hide-details label="תוכניות"></v-checkbox>
+                      </v-col>
+                      <v-col cols="4">
+                        <v-checkbox v-model="holder.gotOffer" hide-details label="ה.מחיר"></v-checkbox>
+                      </v-col>
+                      <v-col cols="4">
+                        <v-checkbox v-model="holder.payedOffer" hide-details label="שולם"></v-checkbox>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="3">
+                        <v-checkbox v-model="holder.bniya" hide-details label="בניה"></v-checkbox>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-checkbox v-model="holder.hashmal" hide-details label="חשמל"></v-checkbox>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-checkbox v-model="holder.mitbach" hide-details label="מטבח"></v-checkbox>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-checkbox v-model="holder.senitar" hide-details label="סניטרים"></v-checkbox>
+                      </v-col>
+                    </v-row>
+                  </div>
                   <v-col cols="12">
-                    <v-textarea v-model="holder.remark" label="עדכון אחרון..." auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
+                    <v-textarea v-model="holder.remark" :label="holder.remark ? '' : 'עדכון אחרון...'" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
                 </v-row>
               </v-form>
@@ -137,7 +152,7 @@ export default {
             response = await apiService.create(this.holder, {model: HOLDER_MODEL});
           } else {
             response = await apiService.update(this.holder._id, this.holder, { model: HOLDER_MODEL });
-            console.log(this.holder)
+            // console.log(this.holder)
           } 
           if (response) {
             this.dialogHolderForm = false;
@@ -206,17 +221,13 @@ export default {
   justify-content: space-evenly;
   padding: 0% !important;
 }
-.v-text-field{input 
-  {
-    text-align-last: right;
-    color: blue;
-  }
+.v-text-field >>> input { /* use deep selectors when <style scoped> in Vue */
+  text-align-last: right;
+  color: blue;
 }
-/* .v-text-field{textarea  
-  {
-    color: blue;
-  }
-} */
+.v-text-field >>> textarea {
+  color: blue;
+}
 .bg-beige {
   background-color: beige !important;
 }
@@ -228,18 +239,11 @@ export default {
     margin-left: 5px !important;
     margin-right: 5px !important;
 }
-.checkbox-with-top-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center-align the label and checkbox */
+.small-checkbox {
+  transform: scale(0.75); /* Shrinks the checkbox */
 }
 
-.checkbox-label {
-  margin-bottom: 8px; /* Add spacing between label and checkbox */
-  font-size: 14px;
-  text-align: center;
-}
-.combo {
-  padding: 0px;
+.small-checkbox .v-label {
+  font-size: 12px; /* Smaller label */
 }
 </style>

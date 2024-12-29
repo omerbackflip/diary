@@ -254,16 +254,12 @@ export default {
   justify-content: space-evenly;
   padding: 0% !important;
 }
-.v-text-field{input 
-  {
-    text-align-last: center;
-    color: blue;
-  }
+.v-text-field >>> input { /* use deep selectors when <style scoped> in Vue */
+  text-align-last: center;
+  color: blue;
 }
-.v-text-field{textarea  
-  {
-    color: blue;
-  }
+.v-text-field >>> textarea {
+  color: blue;
 }
 .bg-beige {
   background-color: beige !important;

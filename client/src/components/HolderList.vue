@@ -10,27 +10,40 @@
             </v-toolbar>
             <v-container fluid>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" class="px-0 py-1">
+                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" 
+                       class="px-0 py-1" :class="holderList[i+28] && holderList[i+28].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+28])">
-                    <v-row class="ma-0 cntr" :class="holderList[i+30].payedFile ? 'bck-green' : ''"><span>{{i+29}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i+30].name}}</v-row>
+                    <v-row class="my-1 mx-5 cntr" :class="getStatus(i+28)"><span>{{i+29}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+28] ? holderList[i+28].name : ''}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" 
-                       class="px-0 py-1 j-center" :class="holderList[i].status==='טיפול דחוף' ? 'bck-red' : ''">
+                       class="px-0 py-1 j-center" :class="holderList[i] && holderList[i].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i])">
-                    <v-row class="ma-0 cntr" :class="holderList[i].payedFile ? 'bck-green' : ''"><span>{{i+1}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i].name}}</v-row>
+                    <v-row class="my-1 mx-0 cntr" :class="getStatus(i)">
+                      <span class="pa-0" style="display: flex; align-items: center; justify-content: space-evenly;">
+                        {{ i + 1 }}
+                        <!-- Avatars in 2x2 grid -->
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
+                          <v-avatar size="10" tile style="border: 1px solid blue; background-color: blue;"></v-avatar>
+                          <v-avatar size="10" tile style="border: 1px solid red; background-color: transparent;"></v-avatar>
+                          <v-avatar size="10" tile style="border: 1px solid green; background-color: transparent;"></v-avatar>
+                          <v-avatar size="10" tile style="border: 1px solid yellow; background-color: transparent;"></v-avatar>
+                        </div>
+                      </span>
+                    </v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i] ? holderList[i].name : ''}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 1 }, (_, index) => 1 - index)" :key="i" cols="6" class="px-0 py-1">
+                <v-col v-for="i in Array.from({ length: 1 }, (_, index) => 1 - index)" :key="i" cols="6"
+                       class="px-0 py-1" :class="holderList[i-1] && holderList[i-1].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i-1])">
-                    <v-row class="ma-0 cntr" :class="holderList[i-1].payedFile ? 'bck-green' : ''"><span>{{i}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i-1].name}}</v-row>
+                    <v-row class="my-1 mx-5 cntr" :class="getStatus(i-1)"><span>{{i}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i-1] ? holderList[i-1].name : ''}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
@@ -44,27 +57,29 @@
             </v-toolbar>
             <v-container fluid>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" class="px-0 py-1">
+                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" 
+                       class="px-0 py-1" :class="holderList[i+60] && holderList[i+60].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+60])">
-                    <v-row class="ma-0 cntr" :class="holderList[i+60].payedFile ? 'bck-green' : ''"><span>{{i+61}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i+60].name}}</v-row>
+                    <v-row class="my-1 mx-5 cntr" :class="getStatus(i+60)"><span>{{i+61}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+60] ? holderList[i+60].name : ''}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" 
-                        class="px-0 py-1 j-center" :class="holderList[i+32].status==='טיפול דחוף' ? 'bck-red' : ''">
-                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i+32])">
-                    <v-row class="ma-0 cntr" :class="holderList[i+32].payedFile ? 'bck-green' : ''"><span>{{i+33}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i+32].name}}</v-row>
+                        class="px-0 py-1 j-center" :class="holderList[i+32] && holderList[i+32].payedFile ? 'bck-green' : ''">
+                       <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i+32])">
+                    <v-row class="my-1 mx-5 cntr" :class="getStatus(i+32)"><span>{{i+33}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+32] ? holderList[i+32].name : ''}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" class="px-0 py-1">
+                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" 
+                       class="px-0 py-1" :class="holderList[i+30] && holderList[i+30].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+30])">
-                    <v-row class="ma-0 cntr" :class="holderList[i+30].payedFile ? 'bck-green' : ''"><span>{{i+31}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i+30].name}}</v-row>
+                    <v-row class="my-1 mx-5 cntr" :class="getStatus(i+30)"><span>{{i+31}}</span></v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+30] ? holderList[i+30].name : ''}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
@@ -72,71 +87,6 @@
           </v-card>
         </v-col>
       </v-row>
-
-
-      <!-- <v-flex>
-        <v-data-table
-          :headers="getHeaders()"
-          :items="holderList"
-          disable-pagination
-          hide-default-footer
-          fixed-header
-          mobile-breakpoint="0"
-          height="80vh"
-          class="elevation-3 mt-0 hebrew custom-headers"
-          :loading="isLoading"
-          loading-text="Loading... Please wait"
-          loader-height="20"
-          @click:row="getHolderForEdit"
-          item-key="_id"
-          :sort-by="['flatId']"
-          dense>
-          <template v-slot:top>
-              <v-toolbar flat style="height: 26px;">
-                <v-col class="pa-0" cols="5">
-                  <v-toolbar-title style="background-color: lightgreen;">  תיק דיירים שולם </v-toolbar-title>
-                </v-col>
-                <v-spacer></v-spacer>
-                <v-col class="pa-0" cols="3">
-                  <v-toolbar-title style="text-align-last: center; color: blue;"> סה"כ {{holderList.length.toLocaleString()}} </v-toolbar-title>
-                </v-col>
-              </v-toolbar>
-          </template>
-          <template v-slot:item ="{ item, headers }">
-          <tr style="border-bottom: hidden;" @click="getHolderForEdit(item)">
-            <td :class="`${item.status}`">
-              <span>{{item.flatId}}</span>
-            </td>
-            <td>
-              <span  class="desc-oflow">{{item.name}}</span>
-            </td>
-            <td>
-              <span>{{item.phone}}</span>
-            </td>  
-            <td>
-              <v-checkbox hide-details></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox hide-details></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox hide-details></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox hide-details></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox hide-details></v-checkbox>
-            </td>
-          </tr>
-          <tr>
-            <td :colspan="headers.length" @click="getHolderForEdit(item)" style="text-align: right">
-              <span>{{item.remark}}</span>
-            </td>            
-          </tr>
-        </template>
-        </v-data-table>
-      </v-flex> -->
 
       <holder-form ref="holderForm"/>
 
@@ -197,6 +147,17 @@ export default {
         this.retrieveHolders();
 			}
 		},
+
+    getStatus (i) {
+      switch (this.holderList[i] && this.holderList[i].status) {
+        // case 'אושר לביצוע' :
+        //   return 'bck-green'
+        case 'טיפול דחוף' :
+          return 'bck-red'
+        default :
+          return ''
+      }
+    }
 	},
 
 	async mounted() {
@@ -295,10 +256,6 @@ th > i {
     white-space: nowrap;
 }
 
-.date-text{
-  font-size: 12px !important;
-}
-
 .input-container input {
     box-sizing: border-box;
     position: relative;
@@ -346,9 +303,6 @@ th > i {
 
 .bck-green {
   background-color: lightgreen;
-}
-.Checked {
-  background-color: yellow;
 }
 
 .v-input--checkbox {

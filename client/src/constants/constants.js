@@ -47,8 +47,10 @@ export const HOLDER_MOBILE_HEADERS = [
     { text: "דירה", value: "flatId",   class: "mobile-headers px-2",    groupable: false,   align: "right", width: "5%"},
     { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "35%"},
     { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "30%"},
-    { text: "ת.דייר", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
-    { text: "אושר", value: "email",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
+    { text: "ת.דייר", value: "payedFile",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
+    { text: "תוכניות", value: "sendPlans",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
+    { text: "ה. מחיר", value: "gotOffer",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
+    { text: "שולם", value: "payedOffer",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
 ];
 export const NEW_DIARY = {
     date: new Date(),
