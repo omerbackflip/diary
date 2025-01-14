@@ -19,7 +19,9 @@ module.exports = mongoose => {
       senitar:  {type: Boolean, default: false},
       documents: [{ docType: String, 
                     description: String, 
-                    fname: String}],
+                    fname: String, 
+                    fid: String, 
+                    url: String}],
     },
     { timestamps: true }
   );

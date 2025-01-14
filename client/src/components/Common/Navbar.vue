@@ -42,6 +42,18 @@
                         <v-list-item-title class="white--text">{{link.text}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                <v-list-item @click="checkGoogleConnection()">
+                    <v-list-item-action>
+                        <v-icon class="white--text">
+                            links
+                        </v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title v-model="googleConnectMenuItem" class="white--text">
+                            {{ googleConnectMenuItem }}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list>
         </v-navigation-drawer>
         <template v-if="openImportModal">
@@ -59,6 +71,8 @@ import Vue from "vue";
 import moment from "moment";
 import { isMobile } from '../../constants/constants';
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
+import { checkGoogleStatus } from "@/utils/commonService";
+
 Vue.filter("formatDate", function (value) {
 	if (value) {
         moment.locale('he')
@@ -72,6 +86,7 @@ export default {
         return {
             drawer: false,
             openImportModal: false,
+            googleConnectMenuItem: 'Google (Not Connected)',
             importData: [], // EXCEL
             links: [
                 {icon: 'folder', text: 'יומן עבודה', route: '/'},
@@ -143,11 +158,19 @@ export default {
 
             }
         },
+
+        async checkGoogleConnection() {
+            console.log('checkGoogleConnection Running');
+             await checkGoogleStatus((menuItem) => {
+                this.googleConnectMenuItem = menuItem;
+            });
+        },
     },
     computed: {
     },
     async mounted() {
         this.getDatabaseInformation();
+        this.checkGoogleConnection();
     },
 }
 </script>
