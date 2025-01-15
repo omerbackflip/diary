@@ -14,5 +14,9 @@ module.exports = app => {
 	router.post("/save-pic", specific.savePic);
 	router.post("/delete-pic", specific.deletePic);
 
+  //Google auth  
+  router.get("/get-google-connection-status", specific.googleConnectionStatus);
+  router.get("/google-auth-handler", specific.googleAuthHandler);
+
   app.use('/api/specific', router);
 };

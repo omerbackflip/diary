@@ -78,7 +78,9 @@
                                   ></v-textarea>
                     </v-col>
                     <v-col cols="2" style="padding-right: 0px; align-content: center;">
-                      <v-icon small>mdi-file</v-icon>
+                      
+                      <GoogleDrivePicker :fileUrl="doc.url" :pickerNo="i" @onFileSelected="setDocument" />
+                      
                       <v-icon @click="removeDocumentRec(i)" small>mdi-delete</v-icon>
                     </v-col>
                     <!-- <v-divider></v-divider> -->
@@ -106,6 +108,9 @@ import { HOLDER_MODEL, loadTable, sendWhatsapp } from "../constants/constants";
 import apiService from "../services/apiService";
 import Vue from "vue";
 import moment from "moment";
+//import GoogleDrivePicker from "google-drive-picker";
+import GoogleDrivePicker from "./GoogleDrivePicker.vue";
+
 Vue.filter("formatDate", function (value) {
 	if (value) {
     moment.locale('he')
@@ -115,6 +120,9 @@ Vue.filter("formatDate", function (value) {
 });
 export default {
     name: "holder-form",
+    components: {
+      GoogleDrivePicker,
+    },
     data() {
       return {
         sendWhatsapp,
@@ -127,12 +135,12 @@ export default {
         message: '',
         dateModal : false,
         invoiceID: 0,
+        pickerDocIndex: false,
         holder: [],
         newPicsList: [],
         statusList: [],
       };
     },
-
     methods: {
       open(holder, isNewHolder) {
         this.isNewHolder = isNewHolder;
@@ -189,11 +197,26 @@ export default {
         return classes;
       },
       addDocumentRow() {
-        this.holder.documents.push({ docType: "", description: "", fname: "" });
+        this.holder.documents.push({ docType: "", description: "", fname: "", fid: "", url: ""});
       },
       removeDocumentRec(index) {
         if (window.confirm("אשר מחיקת מסמך")) {
           this.holder.documents.splice(index, 1);
+        }
+      },
+      setDocument(data, pickerNo) {
+        //console.log('setDocument',data);
+        if (data.action === window.google.picker.Action.PICKED) {
+          let selectedFile = data.docs[0];
+          
+          // console.log('Picked File:', data);
+          // console.log('Picked File:', selectedFile);
+
+          this.holder.documents[pickerNo]['fid'] = selectedFile.id;
+          this.holder.documents[pickerNo]['docType'] = selectedFile.type;
+          this.holder.documents[pickerNo]['fname'] = selectedFile.name;
+          this.holder.documents[pickerNo]['url'] = selectedFile.url;
+          this.holder.documents[pickerNo]['description'] = selectedFile.description != "" ? selectedFile.description : selectedFile.name;
         }
       },
     },
