@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
 	ServerApp : {
 		google: {
-			apiKeyForPicker: 'AIzaSyAQrhR1t9RJN0LICekbRAXQapR1IvVJ9xc', // picker API Key
+			apiKeyForPicker: 'AIzaSyB7JIngRxWywC2D2Ua92lYjbO7U4igfwSk', // picker API Key
 			locale: 'en', //https://developers.google.com/drive/picker/reference/picker.locales.md
 			pickerRootFolder: ['1nB3lzLf8lgszVEXK4hcGW1LuPl6-OonU'], // this is the id of "pick up root" folder in Google-Drive
 		},
