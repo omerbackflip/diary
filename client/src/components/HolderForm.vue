@@ -79,7 +79,8 @@
                     </v-col>
                     <v-col cols="2" style="padding-right: 0px; align-content: center;">
                       
-                      <GoogleDrivePicker :fileUrl="doc.url" :pickerNo="i" @onFileSelected="setDocument" />
+                      <GoogleDrivePicker :GDFileId="doc.fid" :pickerNo="i" @onFileSelected="setDocument" />
+                      <!-- <GoogleDrivePicker :GDFileId="doc.url" :pickerNo="i" @onFileSelected="setDocument" /> -->
                       
                       <v-icon @click="removeDocumentRec(i)" small>mdi-delete</v-icon>
                     </v-col>

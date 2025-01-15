@@ -1,19 +1,22 @@
 <template>
   <span>
-    <v-icon v-if="fileUrl" @click="openFile" medium>mdi-link</v-icon>
+    <v-icon v-if="GDFileId" @click="clickToView(GDFileId)" medium>mdi-eye-outline</v-icon>
     <v-icon @click="openDrivePicker" :disabled="!pickerApiLoaded" small>mdi-file</v-icon>
+    <modal-dialog ref="modalDialog"/>
   </span>
 </template>
 
 <script>
+import modalDialog from './Common/InvoiceModal.vue';
 export default {
   name: "GoogleDrivePicker",
+  components:{ modalDialog },
   props: {
     maxItems: {
       type: Number,
       default: 1,
     },
-    fileUrl: String,
+    GDFileId: String,
     pickerNo: Number
   },
   data() {
@@ -47,9 +50,9 @@ export default {
       this.pickerApiLoaded = true;
     },
 
-    openFile(){
-      window.open(this.fileUrl);
-    },
+    // openFile(){
+    //   window.open(this.GDFileId);
+    // },
 
     openDrivePicker(){
       this.createPicker();
@@ -83,6 +86,14 @@ export default {
         this.$emit("onFileSelected", data, this.pickerNo); // Emit the selected file details
       }
     },
+          
+    async clickToView(GDFileId) {
+        var fileview = `https://docs.google.com/file/d/${GDFileId}/preview?usp=drivesdk`
+        await this.$refs.modalDialog.open(fileview);
+        // this.filelink = fileview;    
+        // this.iframeSrc = fileview;
+        // this.isModalOpen = true;    
+      },
   },
   mounted() {
     this.initGooglePicker();
