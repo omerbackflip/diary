@@ -84,6 +84,7 @@ export const NEW_HOLDER = {
     status: "",
     remark: "",
     payedFile: false,
+    GDParantFolder: "",
 };
 
 export const isMobile = () => {

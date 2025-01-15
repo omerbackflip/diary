@@ -6,38 +6,41 @@
             <v-container>
               <v-form ref="form">
                 <v-row>
-                  <v-col cols="3">
+                  <v-col cols="4">
                     <v-text-field v-model="holder.flatId" dense @focus="$event.target.select()" :disabled="!isNewHolder"></v-text-field>
                   </v-col>
                   <v-col cols="4">
                     <v-text-field v-model="holder.name" dense @focus="$event.target.select()"></v-text-field>
                   </v-col>
-                  <v-col cols="5">
+                  <v-col cols="4">
+                    <v-text-field v-model="holder.GDParantFolder" dense @focus="$event.target.select()"></v-text-field>
+                  </v-col>
+                  <!-- <v-col cols="3">
                     <v-text-field v-model="holder.phone" dense @focus="$event.target.select()" 
                                   append-icon="mdi-whatsapp" @click:append="sendWhatsapp(holder.phone)" style="font-size: small;"></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-checkbox v-model="holder.payedFile" label="תיק דיירים" class="small-checkbox" hide-details></v-checkbox>
-                  </v-col>                  
+                  </v-col> -->
+                  <v-row>
+                    <v-col cols="3">
+                      <v-checkbox v-model="holder.payedFile" label="תיק" class="small-checkbox"></v-checkbox>
+                    </v-col>  
+                    <v-col cols="3">
+                      <v-checkbox v-model="holder.sendPlans" label="תוכניות" class="small-checkbox"></v-checkbox>
+                    </v-col>
+                    <v-col cols="3">
+                      <v-checkbox v-model="holder.gotOffer" label="ה.מחיר" class="small-checkbox"></v-checkbox>
+                    </v-col>
+                    <v-col cols="3">
+                      <v-checkbox v-model="holder.payedOffer" label="שולם" class="small-checkbox"></v-checkbox>
+                    </v-col>
+                  </v-row>                
                   <v-col cols="8">
-                    <v-text-field v-model="holder.email" label="אימייל" dense @focus="$event.target.select()"></v-text-field>
+                    <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
                   </v-col>
                   <v-col cols="4">
                       <v-select v-model="holder.status" :items="statusList" reverse dense></v-select>
                   </v-col>
                   <div class="small-checkbox">
-                    <v-row>
-                      <v-col cols="4">
-                        <v-checkbox v-model="holder.sendPlans" hide-details label="תוכניות"></v-checkbox>
-                      </v-col>
-                      <v-col cols="4">
-                        <v-checkbox v-model="holder.gotOffer" hide-details label="ה.מחיר"></v-checkbox>
-                      </v-col>
-                      <v-col cols="4">
-                        <v-checkbox v-model="holder.payedOffer" hide-details label="שולם"></v-checkbox>
-                      </v-col>
-                    </v-row>
-                    <v-row>
+                    <!-- <v-row>
                       <v-col cols="3">
                         <v-checkbox v-model="holder.bniya" hide-details label="בניה"></v-checkbox>
                       </v-col>
@@ -50,7 +53,7 @@
                       <v-col cols="3">
                         <v-checkbox v-model="holder.senitar" hide-details label="סניטרים"></v-checkbox>
                       </v-col>
-                    </v-row>
+                    </v-row> -->
                   </div>
                   <v-col cols="12">
                     <v-textarea v-model="holder.remark" :label="holder.remark ? '' : 'עדכון אחרון...'" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
@@ -66,7 +69,7 @@
                 <v-subheader>מסמכים</v-subheader>
               </v-col>
                 <v-col style="align-content: center;">
-                  <v-btn @click="addDocumentRow" class="primary" x-small><v-icon small >mdi-plus</v-icon></v-btn>
+                  <v-btn @click="addDocumentRow" class="primary" x-small><v-icon small>mdi-plus</v-icon></v-btn>
               </v-col>
             </v-row>
             </div>
@@ -74,17 +77,13 @@
                 <div v-for="(doc, i) in holder.documents" :key="i" class="text-fields-row">
                   <v-row style="padding-bottom: 15px;">
                     <v-col cols="10">
-                      <v-textarea v-model="doc.description" auto-grow rows="1" hide-details @focus="$event.target.select()"
-                                  ></v-textarea>
+                      <v-textarea v-model="doc.description" auto-grow rows="1" @focus="$event.target.select()" 
+                                  :messages="doc.fname"></v-textarea>
                     </v-col>
                     <v-col cols="2" style="padding-right: 0px; align-content: center;">
-                      
-                      <GoogleDrivePicker :GDFileId="doc.fid" :pickerNo="i" @onFileSelected="setDocument" />
-                      <!-- <GoogleDrivePicker :GDFileId="doc.url" :pickerNo="i" @onFileSelected="setDocument" /> -->
-                      
+                      <GooglePicker :GDFileId="doc.fid" :pickerNo="i" @onFileSelected="setDocument" :GDParantFolder="holder.GDParantFolder"/>
                       <v-icon @click="removeDocumentRec(i)" small>mdi-delete</v-icon>
                     </v-col>
-                    <!-- <v-divider></v-divider> -->
                   </v-row>
                 </div>                    
             </v-container>
@@ -109,8 +108,8 @@ import { HOLDER_MODEL, loadTable, sendWhatsapp } from "../constants/constants";
 import apiService from "../services/apiService";
 import Vue from "vue";
 import moment from "moment";
-//import GoogleDrivePicker from "google-drive-picker";
-import GoogleDrivePicker from "./GoogleDrivePicker.vue";
+//import GooglePicker from "google-drive-picker";
+import GooglePicker from "./GooglePicker.vue";
 
 Vue.filter("formatDate", function (value) {
 	if (value) {
@@ -122,7 +121,7 @@ Vue.filter("formatDate", function (value) {
 export default {
     name: "holder-form",
     components: {
-      GoogleDrivePicker,
+      GooglePicker,
     },
     data() {
       return {
@@ -220,6 +219,10 @@ export default {
           this.holder.documents[pickerNo]['description'] = selectedFile.description != "" ? selectedFile.description : selectedFile.name;
         }
       },
+
+      openPicker() {
+        this.$emit('GooglePicker', {GDFileId:"doc.fid" , pickerNo:"i" , onFileSelected:"setDocument" , GDParantFolder:"holder.GDParantFolder"})
+      }
     },
 
     async mounted(){
@@ -259,7 +262,7 @@ export default {
   width: 150px;
 }
 .payments-wrapper{
-    border: 3px solid #85a7ff;
+    border: 2px solid #85a7ff;
     margin-left: 5px !important;
     margin-right: 5px !important;
 }

@@ -5,7 +5,7 @@ module.exports = mongoose => {
       name: String,
       phone: String,
       email: String,
-      gDrvPath: String,
+      GDParantFolder: String,
       status: String,
       remark: String,
       priority: Number,

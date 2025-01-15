@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import modalDialog from './Common/InvoiceModal.vue';
+import modalDialog from './Common/ViewFileModal.vue';
 export default {
-  name: "GoogleDrivePicker",
+  name: "GooglePicker",
   components:{ modalDialog },
   props: {
     maxItems: {
@@ -17,7 +17,8 @@ export default {
       default: 1,
     },
     GDFileId: String,
-    pickerNo: Number
+    pickerNo: Number,
+    GDParantFolder: String,
   },
   data() {
     return {
@@ -50,10 +51,6 @@ export default {
       this.pickerApiLoaded = true;
     },
 
-    // openFile(){
-    //   window.open(this.GDFileId);
-    // },
-
     openDrivePicker(){
       this.createPicker();
     },
@@ -62,10 +59,15 @@ export default {
       let apiKey = localStorage.getItem('developerKey');
       let accessToken = localStorage.getItem('googleAccessToken');
       let locale = localStorage.getItem('locale');
-      
+      let folderId = this.GDParantFolder; // specific holder folder ID 
       if (this.pickerApiLoaded && accessToken) {
 
-        const view = new window.google.picker.View(window.google.picker.ViewId.DOCS);
+        // const view = new window.google.picker.View(window.google.picker.ViewId.DOCS);
+        const view = new window.google.picker.DocsView()
+          .setParent(folderId) // Set the folder ID to open
+          .setIncludeFolders(true) // Include subfolders
+          // .setSelectFolderEnabled(true); // Allow folder selection
+
         const picker = new window.google.picker.PickerBuilder()
           .addView(view)
           .setOAuthToken(accessToken)
