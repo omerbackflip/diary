@@ -55,8 +55,8 @@
             </div>
             <v-container style="padding: 3px;">
                 <div v-for="(doc, i) in holder.documents" :key="i" class="text-fields-row">
-                  <v-row style="padding-bottom: 15px;">
-                    <v-col cols="12">
+                  <v-row style="justify-content: space-around;">
+                    <v-col cols="10">
                       <v-textarea v-model="doc.description" auto-grow rows="1" @focus="$event.target.select()" 
                                   :messages="doc.fname"></v-textarea>
                     </v-col>

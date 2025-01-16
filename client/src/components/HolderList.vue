@@ -1,12 +1,32 @@
 <template>
   <div class="list row hebrew">
     <v-layout style="padding: 5px;">
-
       <v-row class="ma-0" style="place-content: space-around ;">
         <v-col cols="12" md="3" class="pa-0">
           <v-card elevation="3" class="mb-3">
-            <v-toolbar color="white" flat style="justify-self: center;">
+            <v-toolbar color="white" flat >
               <v-toolbar-title class="red--text">בניין צפוני</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <v-avatar size="10" tile color="blue"></v-avatar>
+                  <span style="font-size: 12px; color: blue;">תיק דיירים</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <v-avatar size="10" tile color="red"></v-avatar>
+                  <span style="font-size: 12px; color: blue;">תוכניות</span>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <v-avatar size="10" tile color="green"></v-avatar>
+                  <span style="font-size: 12px; color: blue;">הצעת מחיר</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <v-avatar size="10" tile color="yellow"></v-avatar>
+                  <span style="font-size: 12px; color: blue;">שולם</span>
+                </div>
+              </div>
             </v-toolbar>
             <v-container fluid>
               <v-row>
@@ -20,17 +40,25 @@
               </v-row>
               <v-row>
                 <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" 
-                       class="px-0 py-1 j-center" :class="holderList[i] && holderList[i].payedFile ? 'bck-green' : ''">
+                       class="px-0 py-1 j-center" :class="holderList[i] && holderList[i].payedFile ? '' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i])">
                     <v-row class="my-1 mx-0 cntr" :class="getStatus(i)">
                       <span class="pa-0" style="display: flex; align-items: center; justify-content: space-evenly;">
                         {{ i + 1 }}
                         <!-- Avatars in 2x2 grid -->
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
-                          <v-avatar size="10" tile style="border: 1px solid blue; background-color: blue;"></v-avatar>
-                          <v-avatar size="10" tile style="border: 1px solid red; background-color: transparent;"></v-avatar>
-                          <v-avatar size="10" tile style="border: 1px solid green; background-color: transparent;"></v-avatar>
-                          <v-avatar size="10" tile style="border: 1px solid yellow; background-color: transparent;"></v-avatar>
+                        <div v-if="holderList[i].name" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
+                          <v-avatar size="10" tile 
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].payedFile ? 'blue' : 'transparent'}">
+                          </v-avatar>
+                          <v-avatar size="10" tile 
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].sendPlans ? 'red' : 'transparent'}">
+                          </v-avatar>
+                          <v-avatar size="10" tile 
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].gotOffer ? 'green' : 'transparent'}">
+                          </v-avatar>
+                          <v-avatar size="10" tile 
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].payedOffer ? 'yellow' : 'transparent'}">
+                          </v-avatar>
                         </div>
                       </span>
                     </v-row>
@@ -51,9 +79,30 @@
           </v-card>
         </v-col>
         <v-col cols="12" md="3" class="pa-0">
-          <v-card elevation="3">
-            <v-toolbar color="white" flat style="justify-self: center;">
+          <v-card elevation="3" class="mb-3">
+            <v-toolbar color="white" flat >
               <v-toolbar-title class="red--text">בניין דרומי</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <v-avatar size="10" tile color="blue"></v-avatar>
+                  <span style="font-size: 12px; color: blue;">תיק דיירים</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <v-avatar size="10" tile color="red"></v-avatar>
+                  <span style="font-size: 12px; color: blue;">תוכניות</span>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <v-avatar size="10" tile color="green"></v-avatar>
+                  <span style="font-size: 12px; color: blue;">הצעת מחיר</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <v-avatar size="10" tile color="yellow"></v-avatar>
+                  <span style="font-size: 12px; color: blue;">שולם</span>
+                </div>
+              </div>
             </v-toolbar>
             <v-container fluid>
               <v-row>
@@ -67,9 +116,28 @@
               </v-row>
               <v-row>
                 <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" 
-                        class="px-0 py-1 j-center" :class="holderList[i+32] && holderList[i+32].payedFile ? 'bck-green' : ''">
-                       <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i+32])">
-                    <v-row class="my-1 mx-5 cntr" :class="getStatus(i+32)"><span>{{i+33}}</span></v-row>
+                        class="px-0 py-1 j-center" :class="holderList[i+32] && holderList[i+32].payedFile ? '' : ''">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i+32])">
+                    <v-row class="my-1 mx-0 cntr" :class="getStatus(i+32)">
+                      <span class="pa-0" style="display: flex; align-items: center; justify-content: space-evenly;">
+                        {{ i + 33 }}
+                        <!-- Avatars in 2x2 grid -->
+                        <div v-if="holderList[i+32].name" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
+                          <v-avatar size="10" tile 
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i+32] && holderList[i+32].payedFile ? 'blue' : 'transparent'}">
+                          </v-avatar>
+                          <v-avatar size="10" tile 
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i+32] && holderList[i+32].sendPlans ? 'red' : 'transparent'}">
+                          </v-avatar>
+                          <v-avatar size="10" tile 
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i+32] && holderList[i+32].gotOffer ? 'green' : 'transparent'}">
+                          </v-avatar>
+                          <v-avatar size="10" tile 
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i+32] && holderList[i+32].payedOffer ? 'yellow' : 'transparent'}">
+                          </v-avatar>
+                        </div>
+                      </span>
+                    </v-row>
                     <v-row class="ma-0 desc-oflow">{{holderList[i+32] ? holderList[i+32].name : ''}}</v-row>
                   </v-sheet>
                 </v-col>
@@ -135,7 +203,12 @@ export default {
       let response = await apiService.getMany({
         model: HOLDER_MODEL,
       });
-      this.holderList = response.data;
+      this.holderList = response.data.sort((a, b) => {
+        const getLastTwoDigits = (id) => { return id.substring(4, 6) };
+        const aLastTwo = getLastTwoDigits(a.flatId);
+        const bLastTwo = getLastTwoDigits(b.flatId);
+        return aLastTwo - bLastTwo; // Sort ascending by last two digits
+      }); 
       this.isLoading = false;
     },
  

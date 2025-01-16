@@ -114,10 +114,19 @@ export default {
         model: LEAD_MODEL,
       });
 			if (response && response.data) {
-				this.leadsList = response.data.sort(function(a, b) {
-            var c = new Date(a.last_update);
-            var d = new Date(b.last_update);
-          return d-c;
+        this.leadsList = response.data.sort(function (a, b) {
+          const dateA = new Date(a.last_update);
+          dateA.setHours(0, 0, 0, 0);
+          const dateB = new Date(b.last_update);
+          dateB.setHours(0, 0, 0, 0);
+          const diff = dateB - dateA; // Sort by last_update in descending order
+          if (diff !== 0) {
+              return diff;
+          }
+          // If last_update is the same, sort by createdAt in descending order
+          const updatedAtA = new Date(a.updatedAt);
+          const updatedAtB = new Date(b.updatedAt);
+          return updatedAtB - updatedAtA;
         });
         this.leadsList.map((item) => {
           item.last_update = moment(new Date(item.last_update)).format('YYYY-MM-DD')

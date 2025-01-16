@@ -40,7 +40,7 @@ export const LEADS_HEADERS = [
     { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "25%"},
     { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
     // { text: "תאור", value: "description",   class: "mobile-headers",    groupable: false,   align: "right", width: "40%"},
-    // { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+    // { text: "עודכן", value: "updatedAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
     { text: "עדכון אחרון", value: "last_update",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
 ];
 export const HOLDER_MOBILE_HEADERS = [
