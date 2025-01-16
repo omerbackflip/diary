@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <span style="float: right;">
     <v-icon v-if="GDFileId" @click="clickToView(GDFileId)" medium>mdi-eye-outline</v-icon>
     <v-icon @click="openDrivePicker" :disabled="!pickerApiLoaded" small>mdi-file</v-icon>
     <modal-dialog ref="modalDialog"/>

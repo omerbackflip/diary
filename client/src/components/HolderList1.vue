@@ -5,6 +5,7 @@
         <v-data-table
           :headers="getHeaders()"
           :items="holderList"
+          :search="search"
           disable-pagination
           hide-default-footer
           fixed-header
@@ -20,13 +21,13 @@
           dense>
           <template v-slot:top>
               <v-toolbar flat style="height: 26px;">
-                <v-col class="pa-0" cols="5">
+                <!-- <v-col class="pa-0" cols="5">
                   <v-toolbar-title>  תיק דיירים  </v-toolbar-title>
-                </v-col>
-                <v-spacer></v-spacer>
-                <v-col class="pa-0" cols="3">
-                  <v-toolbar-title style="text-align-last: center; color: blue;"> סה"כ {{holderList.length.toLocaleString()}} </v-toolbar-title>
-                </v-col>
+                </v-col> -->
+              <v-text-field v-model="search" label="הקלד מילת חיפוש"></v-text-field>
+                <!-- <v-col class="pa-0" cols="3"> -->
+                  <!-- <v-toolbar-title style="text-align-last: center; color: blue;"> סה"כ {{holderList.length.toLocaleString()}} </v-toolbar-title> -->
+                <!-- </v-col> -->
               </v-toolbar>
           </template>
           <template v-slot:item ="{ item, headers }">
@@ -37,8 +38,8 @@
             <td>
               <span>{{item.name}}</span>
             </td>
-            <td @click.stop>
-              <span @click="sendWhatsapp(item.phone)">{{item.phone}}<v-icon>mdi-whatsapp</v-icon></span>
+            <td>
+              <span>{{item.phone}}<v-icon @click.stop="sendWhatsapp(item.phone)" class="green-icon">mdi-whatsapp</v-icon></span>
             </td>  
             <td>
               <v-checkbox v-model="item.payedFile" hide-details color="green" readonly></v-checkbox>
@@ -268,16 +269,6 @@ th > i {
   direction: rtl;
   text-align-last: right;
 }
-.bck-red {
-  background-color: red;
-}
-
-.bck-green {
-  background-color: lightgreen;
-}
-.Checked {
-  background-color: yellow;
-}
 
 .v-input--checkbox {
   padding: 0px;
@@ -323,5 +314,11 @@ th > i {
 }
 .j-center {
   justify-items: center;
+}
+.green-icon {
+  background-color: lightgreen;
+  color: white !important; /* Optional: Change icon color for better visibility */
+  border-radius: 100%; /* Optional: Makes the background circular */
+  padding: 0px; /* Optional: Adds spacing around the icon */
 }
 </style>

@@ -6,55 +6,35 @@
             <v-container>
               <v-form ref="form">
                 <v-row>
-                  <v-col cols="4">
+                  <v-col cols="3">
                     <v-text-field v-model="holder.flatId" dense @focus="$event.target.select()" :disabled="!isNewHolder"></v-text-field>
                   </v-col>
                   <v-col cols="4">
                     <v-text-field v-model="holder.name" dense @focus="$event.target.select()"></v-text-field>
                   </v-col>
-                  <v-col cols="4">
-                    <v-text-field v-model="holder.GDParantFolder" dense @focus="$event.target.select()"></v-text-field>
+                  <v-col cols="5">
+                      <v-select v-model="holder.status" :items="statusList" reverse dense></v-select>
                   </v-col>
-                  <!-- <v-col cols="3">
-                    <v-text-field v-model="holder.phone" dense @focus="$event.target.select()" 
-                                  append-icon="mdi-whatsapp" @click:append="sendWhatsapp(holder.phone)" style="font-size: small;"></v-text-field>
+                  <!-- <v-col cols="4">
+                    <v-text-field v-model="holder.GDParantFolder" dense @focus="$event.target.select()"></v-text-field>
                   </v-col> -->
                   <v-row>
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.payedFile" label="תיק" class="small-checkbox"></v-checkbox>
+                      <v-checkbox v-model="holder.payedFile" label="תיק"></v-checkbox>
                     </v-col>  
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.sendPlans" label="תוכניות" class="small-checkbox"></v-checkbox>
+                      <v-checkbox v-model="holder.sendPlans" label="תוכניות"></v-checkbox>
                     </v-col>
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.gotOffer" label="ה.מחיר" class="small-checkbox"></v-checkbox>
+                      <v-checkbox v-model="holder.gotOffer" label="ה.מחיר"></v-checkbox>
                     </v-col>
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.payedOffer" label="שולם" class="small-checkbox"></v-checkbox>
+                      <v-checkbox v-model="holder.payedOffer" label="שולם"></v-checkbox>
                     </v-col>
                   </v-row>                
                   <v-col cols="8">
                     <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
                   </v-col>
-                  <v-col cols="4">
-                      <v-select v-model="holder.status" :items="statusList" reverse dense></v-select>
-                  </v-col>
-                  <div class="small-checkbox">
-                    <!-- <v-row>
-                      <v-col cols="3">
-                        <v-checkbox v-model="holder.bniya" hide-details label="בניה"></v-checkbox>
-                      </v-col>
-                      <v-col cols="3">
-                        <v-checkbox v-model="holder.hashmal" hide-details label="חשמל"></v-checkbox>
-                      </v-col>
-                      <v-col cols="3">
-                        <v-checkbox v-model="holder.mitbach" hide-details label="מטבח"></v-checkbox>
-                      </v-col>
-                      <v-col cols="3">
-                        <v-checkbox v-model="holder.senitar" hide-details label="סניטרים"></v-checkbox>
-                      </v-col>
-                    </v-row> -->
-                  </div>
                   <v-col cols="12">
                     <v-textarea v-model="holder.remark" :label="holder.remark ? '' : 'עדכון אחרון...'" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
@@ -76,15 +56,16 @@
             <v-container style="padding: 3px;">
                 <div v-for="(doc, i) in holder.documents" :key="i" class="text-fields-row">
                   <v-row style="padding-bottom: 15px;">
-                    <v-col cols="10">
+                    <v-col cols="12">
                       <v-textarea v-model="doc.description" auto-grow rows="1" @focus="$event.target.select()" 
                                   :messages="doc.fname"></v-textarea>
                     </v-col>
-                    <v-col cols="2" style="padding-right: 0px; align-content: center;">
+                    <v-col cols="12" style="text-align: -webkit-left;">
                       <GooglePicker :GDFileId="doc.fid" :pickerNo="i" @onFileSelected="setDocument" :GDParantFolder="holder.GDParantFolder"/>
                       <v-icon @click="removeDocumentRec(i)" small>mdi-delete</v-icon>
                     </v-col>
                   </v-row>
+                  <v-divider v-if="i < holder.documents.length - 1" class="strong-divider"></v-divider>
                 </div>                    
             </v-container>
           </div>
@@ -266,11 +247,13 @@ export default {
     margin-left: 5px !important;
     margin-right: 5px !important;
 }
+
 .small-checkbox {
+  font-size: 12px; /* Smaller label */
   transform: scale(0.75); /* Shrinks the checkbox */
 }
-
-.small-checkbox .v-label {
-  font-size: 12px; /* Smaller label */
+.strong-divider {
+  border-top-width: 5px;
+  border-top-color: blue;
 }
 </style>
