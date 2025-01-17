@@ -6,7 +6,7 @@
             <v-container>
               <v-form ref="form">
                 <v-row>
-                  <v-col cols="3">
+                  <v-col cols="3" class="pb-4">
                     <v-text-field v-model="holder.flatId" dense @focus="$event.target.select()" :disabled="!isNewHolder"></v-text-field>
                   </v-col>
                   <v-col cols="4">
@@ -20,21 +20,35 @@
                   </v-col> -->
                   <v-row>
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.payedFile" label="תיק"></v-checkbox>
+                      <v-checkbox v-model="holder.payedFile" label="ת.דייר" hide-details></v-checkbox>
+                    </v-col>  
+                    <!-- <v-col cols="3">
+                      <v-checkbox v-model="holder.sendPlans" label="תוכניות" hide-details></v-checkbox>
+                    </v-col> -->
+                    <v-col cols="3">
+                      <v-checkbox v-model="holder.gotOffer" label="ה.מחיר" hide-details></v-checkbox>
+                    </v-col>
+                    <v-col cols="3">
+                      <v-checkbox v-model="holder.payedOffer" label="שולם" hide-details></v-checkbox>
+                    </v-col>
+                  </v-row>   
+                  <v-row>
+                    <v-col cols="3">
+                      <v-checkbox v-model="holder.bniya" label="בניה"></v-checkbox>
                     </v-col>  
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.sendPlans" label="תוכניות"></v-checkbox>
+                      <v-checkbox v-model="holder.hashmal" label="חשמל"></v-checkbox>
                     </v-col>
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.gotOffer" label="ה.מחיר"></v-checkbox>
+                      <v-checkbox v-model="holder.mitbach" label="מטבח"></v-checkbox>
                     </v-col>
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.payedOffer" label="שולם"></v-checkbox>
+                      <v-checkbox v-model="holder.senitar" label="סניטר"></v-checkbox>
                     </v-col>
-                  </v-row>                
-                  <v-col cols="8">
+                  </v-row>             
+                  <!-- <v-col cols="8">
                     <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
-                  </v-col>
+                  </v-col> -->
                   <v-col cols="12">
                     <v-textarea v-model="holder.remark" :label="holder.remark ? '' : 'עדכון אחרון...'" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
@@ -60,7 +74,7 @@
                       <v-textarea v-model="doc.description" auto-grow rows="1" @focus="$event.target.select()" 
                                   :messages="doc.fname"></v-textarea>
                     </v-col>
-                    <v-col cols="12" style="text-align: -webkit-left;">
+                    <v-col cols="12" style="text-align: -webkit-left;" class="pb-4">
                       <GooglePicker :GDFileId="doc.fid" :pickerNo="i" @onFileSelected="setDocument" :GDParantFolder="holder.GDParantFolder"/>
                       <v-icon @click="removeDocumentRec(i)" small>mdi-delete</v-icon>
                     </v-col>

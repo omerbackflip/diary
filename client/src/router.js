@@ -17,14 +17,14 @@ export default new Router({
       component: () => import("./components/LeadList")
     },
     {
+      path: "/holdersDash",
+      name: "holders-dash",
+      component: () => import("./components/HoldersDash")
+    },
+    {
       path: "/holderList",
       name: "holder-list",
       component: () => import("./components/HolderList")
-    },
-    {
-      path: "/holderList1",
-      name: "holder-list1",
-      component: () => import("./components/HolderList1")
     },
     {
       path: "/tableList",
