@@ -10,21 +10,21 @@
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="blue"></v-avatar>
-                  <span style="font-size: 12px; color: blue;">תיק דיירים</span>
+                  <span style="font-size: 12px;">תיק דיירים</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="red"></v-avatar>
-                  <span style="font-size: 12px; color: blue;">תוכניות</span>
+                  <span style="font-size: 12px;">תוכניות</span>
                 </div>
               </div>
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="green"></v-avatar>
-                  <span style="font-size: 12px; color: blue;">הצעת מחיר</span>
+                  <span style="font-size: 12px;">הצעת מחיר</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="yellow"></v-avatar>
-                  <span style="font-size: 12px; color: blue;">שולם</span>
+                  <span style="font-size: 12px;">שולם</span>
                 </div>
               </div>
             </v-toolbar>
@@ -34,7 +34,7 @@
                        class="px-0 py-1" :class="holderList[i+28] && holderList[i+28].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+28])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i+28)"><span>{{i+29}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i+28] ? holderList[i+28].name : ''}}</v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+28].name || ""}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
@@ -51,10 +51,10 @@
                             :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].payedFile ? 'blue' : 'transparent'}">
                           </v-avatar>
                           <v-avatar size="10" tile 
-                            :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].sendPlans ? 'red' : 'transparent'}">
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].gotOffer ? 'green' : 'transparent'}">
                           </v-avatar>
                           <v-avatar size="10" tile 
-                            :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].gotOffer ? 'green' : 'transparent'}">
+                            :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].sendPlans ? 'red' : 'transparent'}">
                           </v-avatar>
                           <v-avatar size="10" tile 
                             :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].payedOffer ? 'yellow' : 'transparent'}">
@@ -62,7 +62,7 @@
                         </div>
                       </span>
                     </v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i] ? holderList[i].name : ''}}</v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i].name || ""}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
@@ -71,7 +71,7 @@
                        class="px-0 py-1" :class="holderList[i-1] && holderList[i-1].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i-1])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i-1)"><span>{{i}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i-1] ? holderList[i-1].name : ''}}</v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i-1].name || ""}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
@@ -110,7 +110,7 @@
                        class="px-0 py-1" :class="holderList[i+60] && holderList[i+60].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+60])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i+60)"><span>{{i+61}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i+60] ? holderList[i+60].name : ''}}</v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+60].name || ""}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
@@ -138,7 +138,7 @@
                         </div>
                       </span>
                     </v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i+32] ? holderList[i+32].name : ''}}</v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+32].name || ""}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>
@@ -147,7 +147,7 @@
                        class="px-0 py-1" :class="holderList[i+30] && holderList[i+30].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+30])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i+30)"><span>{{i+31}}</span></v-row>
-                    <v-row class="ma-0 desc-oflow">{{holderList[i+30] ? holderList[i+30].name : ''}}</v-row>
+                    <v-row class="ma-0 desc-oflow">{{holderList[i+30].name || ""}}</v-row>
                   </v-sheet>
                 </v-col>
               </v-row>

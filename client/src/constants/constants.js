@@ -115,4 +115,24 @@ export const sendWhatsapp = async(phone) => {
     let fixedPhone = phone
     if (phone.charAt(0) === '0') fixedPhone = phone.substring(1)
     window.open('https://api.whatsapp.com/send?phone=972'+fixedPhone.replace("-", ""))
-  }
+};
+  
+export async function viewGDFile(fileId, modalDialogRef) {
+    try {
+        const fileView = `https://docs.google.com/file/d/${fileId}/preview?usp=drivesdk`;
+        await modalDialogRef.open(fileView);
+    } catch (error) {
+        console.error('Error viewing file:', error);
+    }
+}
+
+    // Function to open WhatsApp with file link
+export async function shareOnWhatsApp (fileId, msg) {
+    const googleDriveLink = `https://drive.google.com/file/d/${fileId}/view`;
+    const message = msg + ' ' + googleDriveLink;
+    const whatsappURL = `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+    // Open WhatsApp in a new tab
+    window.open(whatsappURL, '_blank');
+}
+

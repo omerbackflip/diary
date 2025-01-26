@@ -1,6 +1,6 @@
 import axios from "axios";
 import http from "../http-common";
-const baseUrl = process.env.VUE_APP_API_URL;
+const baseUrl = process.env.VUE_APP_API_URL; //take the "http://localhost:3004/api"
 class SpecificServiceEndPoints {
  
   async saveExcelBulk(bulk) {

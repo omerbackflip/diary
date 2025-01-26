@@ -28,26 +28,27 @@ function getNewToken(oAuth2Client) {
   return authUrl;
 }
 
-
+// getAuthClient:
+// Creates and returns a new OAuth2Client instance using credentials stored in google-credentials.json.
+// Does not handle the token; it only sets up the client with the necessary credentials.
 exports.getAuthClient = () => {
   const credentials = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'google-credentials.json'));
-  
   const { client_secret, client_id, redirect_uris } = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-
   return oAuth2Client;
 }
 
+
+// getAuth:
+// Uses the OAuth2Client created by getAuthClient and attempts to load and set credentials (tokens) for the client.
+// Handles both existing tokens and the process for obtaining a new token
 exports.getAuth = () => {
-
   const oAuth2Client = this.getAuthClient();
-
   if (fs.existsSync(TOKEN_PATH)) {
     const token = fs.readFileSync(TOKEN_PATH);
     oAuth2Client.setCredentials(JSON.parse(token));
     return oAuth2Client;
   }
-
   return getNewToken(oAuth2Client);
 }
 

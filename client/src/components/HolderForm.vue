@@ -59,13 +59,10 @@
           <div class="payments-wrapper">
             <div>
               <v-row>
-                <v-col>
-                <v-subheader>מסמכים</v-subheader>
-              </v-col>
                 <v-col style="align-content: center;">
-                  <v-btn @click="addDocumentRow" class="primary" x-small><v-icon small>mdi-plus</v-icon></v-btn>
-              </v-col>
-            </v-row>
+                  <GooglePicker @onFileSelected="setDocument" :GDParantFolder="holder.GDParantFolder"/>
+                </v-col>
+              </v-row>
             </div>
             <v-container style="padding: 3px;">
                 <div v-for="(doc, i) in holder.documents" :key="i" class="text-fields-row">
@@ -74,9 +71,9 @@
                       <v-textarea v-model="doc.description" auto-grow rows="1" @focus="$event.target.select()" 
                                   :messages="doc.fname"></v-textarea>
                     </v-col>
-                    <v-col cols="12" style="text-align: -webkit-left;" class="pb-4">
-                      <GooglePicker :GDFileId="doc.fid" :pickerNo="i" @onFileSelected="setDocument" :GDParantFolder="holder.GDParantFolder"/>
-                      <v-icon @click="removeDocumentRec(i)" small>mdi-delete</v-icon>
+                    <v-col cols="2" style="align-content: center;">
+                      <v-icon v-if="doc.fid" @click="openFile(doc.fid)" medium>mdi-file</v-icon>
+                      <v-icon @click="removeDocumentRec(i)" medium>mdi-delete</v-icon>
                     </v-col>
                   </v-row>
                   <v-divider v-if="i < holder.documents.length - 1" class="strong-divider"></v-divider>
@@ -85,26 +82,27 @@
           </div>
 
           <v-card-actions>
-            <v-spacer></v-spacer>
             <v-btn small @click="saveHolder()" :loading="isLoading">
-              {{ holder._id ? "Save" : "Save New" }}
+              {{ holder._id ? "שמור" : "שמור חדש" }}
             </v-btn>
-            <v-btn small v-show="!invoiceID" class="mx-3" @click="clearForm"> Clear </v-btn>
+            <!-- <v-btn small v-show="!invoiceID" class="mx-3" @click="clearForm"> Clear </v-btn> -->
             <v-spacer></v-spacer>
-            <v-icon color="red" @click="deleteOne(holder._id, holder.flatId)">mdi-delete</v-icon>
-            <v-icon color="red" @click="dialogHolderForm = false">mdi-close-box</v-icon>
+            <!-- <v-icon color="red" @click="deleteOne(holder._id, holder.flatId)">mdi-delete</v-icon> -->
+            <v-btn small @click="dialogHolderForm = false">בטל</v-btn>
           </v-card-actions>
         </v-card>
+        <modal-dialog ref="modalDialog"/>
       </v-dialog>
 </template>
 
 <script>
-import { HOLDER_MODEL, loadTable, sendWhatsapp } from "../constants/constants";
+import { HOLDER_MODEL, loadTable, viewGDFile } from "../constants/constants";
 import apiService from "../services/apiService";
 import Vue from "vue";
 import moment from "moment";
 //import GooglePicker from "google-drive-picker";
 import GooglePicker from "./GooglePicker.vue";
+import modalDialog from './Common/ViewFileModal.vue';
 
 Vue.filter("formatDate", function (value) {
 	if (value) {
@@ -115,12 +113,9 @@ Vue.filter("formatDate", function (value) {
 });
 export default {
     name: "holder-form",
-    components: {
-      GooglePicker,
-    },
+    components: {GooglePicker,modalDialog},
     data() {
       return {
-        sendWhatsapp,
         dialogHolderForm: false,
         resolve: null,      // What is this for ?
         isLoading: false,
@@ -155,7 +150,6 @@ export default {
             response = await apiService.create(this.holder, {model: HOLDER_MODEL});
           } else {
             response = await apiService.update(this.holder._id, this.holder, { model: HOLDER_MODEL });
-            // console.log(this.holder)
           } 
           if (response) {
             this.dialogHolderForm = false;
@@ -199,25 +193,22 @@ export default {
           this.holder.documents.splice(index, 1);
         }
       },
-      setDocument(data, pickerNo) {
-        //console.log('setDocument',data);
+      setDocument(data) {
         if (data.action === window.google.picker.Action.PICKED) {
           let selectedFile = data.docs[0];
-          
-          // console.log('Picked File:', data);
-          // console.log('Picked File:', selectedFile);
-
-          this.holder.documents[pickerNo]['fid'] = selectedFile.id;
-          this.holder.documents[pickerNo]['docType'] = selectedFile.type;
-          this.holder.documents[pickerNo]['fname'] = selectedFile.name;
-          this.holder.documents[pickerNo]['url'] = selectedFile.url;
-          this.holder.documents[pickerNo]['description'] = selectedFile.description != "" ? selectedFile.description : selectedFile.name;
+          this.holder.documents.push({ 
+            docType: selectedFile.type, 
+            description: selectedFile.name, 
+            fname: selectedFile.name, 
+            fid: selectedFile.id, 
+            url: selectedFile.url
+          });
         }
       },
 
-      openPicker() {
-        this.$emit('GooglePicker', {GDFileId:"doc.fid" , pickerNo:"i" , onFileSelected:"setDocument" , GDParantFolder:"holder.GDParantFolder"})
-      }
+      async openFile(fileId) {
+            await viewGDFile(fileId, this.$refs.modalDialog);
+        }
     },
 
     async mounted(){
@@ -260,6 +251,7 @@ export default {
     border: 2px solid #85a7ff;
     margin-left: 5px !important;
     margin-right: 5px !important;
+    padding-bottom: 10px;
 }
 
 .small-checkbox {

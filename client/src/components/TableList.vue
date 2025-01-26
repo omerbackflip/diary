@@ -120,6 +120,14 @@
               </div>
             </td>
           </template>
+          <template v-slot:[`item.GDFileId`]="{ item }"> 
+            <div v-if = "itemToEdit === item._id">
+              <v-text-field v-model="item.GDFileId" :id="`itemEdit-${item._id}`"/>
+            </div>
+            <div >
+              <span> {{item.GDFileId}}</span>
+            </div>
+          </template>
           <template v-slot:[`item.description`]="{ item }"> 
             <div v-if = "itemToEdit === item._id">
               <v-text-field v-model="item.description" :id="`itemEdit-${item._id}`"/>
@@ -161,6 +169,9 @@
               <v-col >
                 <v-text-field v-model="tblFields.description" label="Description" required></v-text-field>
               </v-col>
+              <v-col >
+                <v-text-field v-model="tblFields.GDFileId" label="GDFileId" required></v-text-field>
+              </v-col>
             </v-row>
             <v-btn @click="addToTable"> -Add- </v-btn>
             <v-btn class="mx-3" @click="clearForm">Clear</v-btn>
@@ -196,6 +207,7 @@ export default {
         { text: "ID", value: "table_id", class: 'success title'},
         { text: "CODE", value: "table_code", class: 'success title'},
         { text: "Description", value: "description", class: 'success title', groupable: false },
+        { text: "GDFileId", value: "GDFileId", class: 'success title', groupable: false },
         { text: "Act.", value: "actions", sortable: false, class: 'success title', groupable: false  },
       ],
       isLoading: false,

@@ -93,6 +93,7 @@ export default {
                 {icon: 'folder', text: 'רשימת לידים', route: '/leadList'},
                 {icon: 'folder', text: 'דשבורד', route: '/holdersDash'},
                 {icon: 'folder', text: 'רשימת דיירים', route: '/holderList'},
+                {icon: 'folder', text: 'מסמכים לפרויקט', route: '/GlobalDocForm'},
                 {icon: 'folder', text: 'טבלת הטבלאות', route: '/tableList'},
                 {icon: 'folder', text: 'קליטת אקסל', route: null, import: 'EXCEL', onClick: 'runModal'},
             ],

@@ -27,6 +27,11 @@ export default new Router({
       component: () => import("./components/HolderList")
     },
     {
+      path: "/globaldocform",
+      name: "global-docForm",
+      component: () => import("./components/GlobalDocForm")
+    },
+    {
       path: "/tableList",
       name: "table-list",
       component: () => import("./components/TableList")

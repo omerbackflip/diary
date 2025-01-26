@@ -1,22 +1,19 @@
 <template>
-  <span style="float: right;">
-    <v-icon v-if="GDFileId" @click="clickToView(GDFileId)" medium>mdi-eye-outline</v-icon>
-    <v-icon @click="openDrivePicker" :disabled="!pickerApiLoaded" small>mdi-file</v-icon>
-    <modal-dialog ref="modalDialog"/>
+  <span style="float: right; padding-right: 10px;">
+    <v-btn @click="createPicker" :disabled="!pickerApiLoaded" class="primary" x-small>
+      <v-icon small>mdi-plus</v-icon>
+    </v-btn>
   </span>
 </template>
 
 <script>
-import modalDialog from './Common/ViewFileModal.vue';
 export default {
   name: "GooglePicker",
-  components:{ modalDialog },
   props: {
     maxItems: {
       type: Number,
       default: 1,
     },
-    GDFileId: String,
     pickerNo: Number,
     GDParantFolder: String,
   },
@@ -51,10 +48,6 @@ export default {
       this.pickerApiLoaded = true;
     },
 
-    openDrivePicker(){
-      this.createPicker();
-    },
-
     createPicker() {
       let apiKey = localStorage.getItem('developerKey');
       let accessToken = localStorage.getItem('googleAccessToken');
@@ -67,6 +60,7 @@ export default {
           .setParent(folderId) // Set the folder ID to open
           .setIncludeFolders(true) // Include subfolders
           // .setSelectFolderEnabled(true); // Allow folder selection
+          // .setMode(window.google.picker.DocsViewMode.LIST); // Shows files in a list with details
 
         const picker = new window.google.picker.PickerBuilder()
           .addView(view)
@@ -84,18 +78,10 @@ export default {
 
     onFileSelected(data) {
       if (data.action === window.google.picker.Action.PICKED) {
-
-        this.$emit("onFileSelected", data, this.pickerNo); // Emit the selected file details
+        this.$emit("onFileSelected", data); // Emit the selected file details
       }
     },
-          
-    async clickToView(GDFileId) {
-        var fileview = `https://docs.google.com/file/d/${GDFileId}/preview?usp=drivesdk`
-        await this.$refs.modalDialog.open(fileview);
-        // this.filelink = fileview;    
-        // this.iframeSrc = fileview;
-        // this.isModalOpen = true;    
-      },
+
   },
   mounted() {
     this.initGooglePicker();
