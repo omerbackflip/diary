@@ -2,6 +2,8 @@ export const DIARY_MODEL = 'diarydatas';
 export const TABLE_MODEL = 'tables';
 export const LEAD_MODEL = 'leads';
 export const HOLDER_MODEL = 'holders';
+export const PRICE_MODEL = 'prices';
+export const BILL_MODEL = 'bills';
 import apiService from "../services/apiService";
 
 export const DIARY_WEB_HEADERS = [
@@ -39,9 +41,11 @@ export const DIARY_MOBILE_HEADERS = [
 export const LEADS_HEADERS = [
     { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "25%"},
     { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
-    // { text: "תאור", value: "description",   class: "mobile-headers",    groupable: false,   align: "right", width: "40%"},
-    // { text: "עודכן", value: "updatedAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
-    { text: "עדכון אחרון", value: "last_update",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+    { text: "הגיע אלינו", value: "arrivedFrom",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+    { text: "מעונין", value: "interested",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+    { text: "עדכון אחרון", value: "updatedAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+    { text: "קליטה", value: "createdAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
 ];
 export const HOLDER_MOBILE_HEADERS = [
     { text: "דירה", value: "flatId",   class: "mobile-headers px-2",    groupable: false,   align: "right", width: "5%"},
@@ -91,6 +95,17 @@ export const NEW_HOLDER = {
     GDParantFolder: "",
 };
 
+export const NEW_BILL = {
+    holder_id: "",
+    bill_id: "",
+    topic_id: "",
+    amount: "",
+    tprice: "",
+    charge_type: "",
+    toPay: "",
+    remark: "",
+};
+
 export const isMobile = () => {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         return true;
@@ -126,7 +141,6 @@ export async function viewGDFile(fileId, modalDialogRef) {
     }
 }
 
-    // Function to open WhatsApp with file link
 export async function shareOnWhatsApp (fileId, msg) {
     const googleDriveLink = `https://drive.google.com/file/d/${fileId}/view`;
     const message = msg + ' ' + googleDriveLink;

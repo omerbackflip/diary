@@ -29,9 +29,15 @@
                                   append-icon="mdi-whatsapp" @click:append="sendWhatsapp(lead.phone)" style="font-size: small;"></v-text-field>
                   </v-col>
                   <v-col cols="4">
-                    <v-combobox v-model="lead.status" :items="statusList" label="הגיע אלינו מ.." @focus="$event.target.select()" reverse :allow-overflow="false" dense></v-combobox>
+                    <v-combobox v-model="lead.arrivedFrom" :items="arrivedList" label="הגיע אלינו מ.." reverse :allow-overflow="false" dense></v-combobox>
                   </v-col>
-                  <v-col cols="6" style="padding-bottom: 0px;">
+                  <v-col cols="4">
+                    <v-combobox v-model="lead.status" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense></v-combobox>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-combobox v-model="lead.interested" :items="interestedList" label="מעוניין ב.." reverse :allow-overflow="false" dense></v-combobox>
+                  </v-col>
+                  <!-- <v-col cols="6" style="padding-bottom: 0px;">
                     <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="lead.last_update" persistent width="290px">
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field v-model="lead.last_update" readonly v-bind="attrs" v-on="on" hide-details 
@@ -44,7 +50,7 @@
                         <v-btn text color="primary" @click="$refs.dateDialog.save(lead.last_update)"> OK </v-btn>
                       </v-date-picker>
                     </v-dialog>
-                  </v-col>
+                  </v-col> -->
                   <v-col cols="12">
                     <v-text-field v-model="lead.email" label="Email" @focus="$event.target.select()" dense></v-text-field>
                   </v-col>
@@ -98,6 +104,8 @@ export default {
         lead: [],
         newPicsList: [],
         statusList: [],
+        arrivedList: [],
+        interestedList: [],
       };
     },
 
@@ -169,7 +177,9 @@ export default {
     },
 
     async mounted(){
-      this.statusList = (await loadTable(5)).map((code) => code.description)
+      this.interestedList = (await loadTable(2)).map((code) => code.description)
+      this.statusList = (await loadTable(9)).map((code) => code.description)
+      this.arrivedList = (await loadTable(5)).map((code) => code.description)
     },
 
     computed : {

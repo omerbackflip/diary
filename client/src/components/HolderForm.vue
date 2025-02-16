@@ -72,7 +72,7 @@
                                   :messages="doc.fname"></v-textarea>
                     </v-col>
                     <v-col cols="2" style="align-content: center;">
-                      <v-icon v-if="doc.fid" @click="openFile(doc.fid)" medium>mdi-file</v-icon>
+                      <v-icon v-if="doc.fid" @click="openFile(doc.fid)" medium>mdi-eye-outline</v-icon>
                       <v-icon @click="removeDocumentRec(i)" medium>mdi-delete</v-icon>
                     </v-col>
                   </v-row>

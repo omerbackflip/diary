@@ -36,5 +36,15 @@ export default new Router({
       name: "table-list",
       component: () => import("./components/TableList")
     },
+    {
+      path: "/pricelist",
+      name: "price-list",
+      component: () => import("./components/PriceList")
+    },
+    {
+      path: "/billform",
+      name: "bill-form",
+      component: () => import("./components/BillForm")
+    },
   ]
 });

@@ -76,7 +76,7 @@
       </v-flex>
 
       <holder-form ref="holderForm"/>
-
+      <billForm :showBill="showBill" :holder="holder"/>
     </v-layout>
   </div>
 </template>
@@ -88,10 +88,11 @@ import apiService from "../services/apiService";
 import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, sendWhatsapp } from "../constants/constants";
 import holderForm from "./HolderForm.vue"
 import { isMobile } from '../constants/constants';
+import billForm from './BillForm.vue';
 
 export default {
 	name: "holder-List",
-	components: { holderForm },
+	components: { holderForm, billForm },
 	data() {
 		return {
       isMobile,
@@ -106,6 +107,7 @@ export default {
 			itemToEdit: "",
       dateModal : false,
       selected: [],
+      showBill: false,
 		};
 	},
 
@@ -131,7 +133,8 @@ export default {
 		async getHolderForEdit(item) {
 			if (item._id) {
         this.holder = item
-        await this.$refs.holderForm.open(this.holder, false);
+        // await this.$refs.holderForm.open(this.holder, false);
+        this.showBill=true
         this.retrieveHolders();
 			}
 		},

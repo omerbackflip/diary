@@ -1,5 +1,6 @@
 const db = require("../models");
-const LEADS_MODEL = db.leads;
+// const UPLOAD_MODEL = db.prices;
+const UPLOAD_MODEL = db.leads;
 const csv = require('csvtojson');
 var fs = require('fs');
 const XLSX = require('xlsx');
@@ -18,13 +19,13 @@ const googleService = require('../services/google-service');
 
 exports.saveExcelBulk = async (req, res) => {
 	try {
-        await LEADS_MODEL.deleteMany();
+        await UPLOAD_MODEL.deleteMany();
 		var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@'});
 		var sheet_name_list = workbook.SheetNames;
 		const data = transformCSVData(sheet_name_list , workbook);
-        let excelData = specificService.getExcelToSave(data[1]);
+        let excelData = specificService.getExcelToSave(data[0]);
 		if (excelData) {
-			const result = await LEADS_MODEL.insertMany(excelData, { ordered: true });
+			const result = await UPLOAD_MODEL.insertMany(excelData, { ordered: true });
 			unLinkFile(`uploads/${req.file.filename}`);
 			if (result) {
 				return res.send({

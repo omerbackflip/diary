@@ -5,6 +5,8 @@ module.exports = mongoose => {
       phone: String,
       description: String,
       status: String,
+      arrivedFrom: String,
+      interested: String,
       last_update: Date,
       email: String,
     },
