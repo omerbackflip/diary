@@ -6,7 +6,7 @@
             <v-container>
               <v-form ref="form">
                 <v-row>
-                  <v-col cols="3" class="pb-4">
+                  <v-col cols="3">
                     <v-text-field v-model="holder.flatId" dense @focus="$event.target.select()" :disabled="!isNewHolder"></v-text-field>
                   </v-col>
                   <v-col cols="4">
@@ -15,9 +15,9 @@
                   <v-col cols="5">
                       <v-select v-model="holder.status" :items="statusList" reverse dense></v-select>
                   </v-col>
-                  <!-- <v-col cols="4">
-                    <v-text-field v-model="holder.GDParantFolder" dense @focus="$event.target.select()"></v-text-field>
-                  </v-col> -->
+                  <v-col class="pb-4">
+                    <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
+                  </v-col>
                   <v-row>
                     <v-col cols="3">
                       <v-checkbox v-model="holder.payedFile" label="ת.דייר" hide-details></v-checkbox>

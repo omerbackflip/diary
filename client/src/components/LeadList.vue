@@ -21,9 +21,8 @@
         <template v-slot:top>
             <v-toolbar flat>
               <v-toolbar-title> סה"כ - {{leadsList.length.toLocaleString()}} </v-toolbar-title>
-              <v-spacer></v-spacer>
               <v-text-field v-model="search" label="Search"></v-text-field>
-              <v-col v-show="!isMobile()" style="text-align-last: center;">
+              <v-col v-show="!isMobile()" style="text-align-last: center;" cols="1">
                 <export-excel
                 :data="leadsList"
                 type="xlsx">
@@ -31,6 +30,10 @@
                   <v-icon small>mdi-download</v-icon>
                 </v-btn>
                 </export-excel>
+              </v-col>
+              <v-spacer></v-spacer>
+              <v-col cols="4">
+                <v-combobox v-model="statusFilter" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense></v-combobox>
               </v-col>
             </v-toolbar>
         </template>
@@ -80,7 +83,7 @@ import Vue from "vue";
 import moment from "moment";
 import apiService from "../services/apiService";
 // import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
-import { LEAD_MODEL, LEADS_HEADERS, NEW_LEAD } from "../constants/constants";
+import { LEAD_MODEL, LEADS_HEADERS, NEW_LEAD, loadTable } from "../constants/constants";
 import leadForm from "./LeadForm.vue"
 import { isMobile } from '../constants/constants';
 import excel from "vue-excel-export";
@@ -108,6 +111,8 @@ export default {
 			isLoading: true,
 			itemToEdit: "",
       dateModal : false,
+      statusFilter: '',
+      statusList: [],
     }
 	},
 
@@ -122,27 +127,18 @@ export default {
 
 		async retrieveLeads() {
 			this.isLoading = true;
-      let response = await apiService.getMany({
-        model: LEAD_MODEL,
-      });
+      let response
+      this.statusFilter 
+        ? response = await apiService.getMany({model: LEAD_MODEL, status: this.statusFilter }) 
+        : response = await apiService.getMany({model: LEAD_MODEL}) 
+        
 			if (response && response.data) {
         this.leadsList = response.data.sort(function (a, b) {
-          // const dateA = new Date(a.last_update);
-          // dateA.setHours(0, 0, 0, 0);
-          // const dateB = new Date(b.last_update);
-          // dateB.setHours(0, 0, 0, 0);
-          // const diff = dateB - dateA; // Sort by last_update in descending order
-          // if (diff !== 0) {
-          //     return diff;
-          // }
           // sort by updatedAt in descending order
           const updatedAtA = new Date(a.updatedAt);
           const updatedAtB = new Date(b.updatedAt);
           return updatedAtB - updatedAtA;
         });
-        // this.leadsList.map((item) => {
-        //   item.last_update = moment(new Date(item.last_update)).format('YYYY-MM-DD')
-        // })
         this.isLoading = false;
 			}
 		},
@@ -159,7 +155,8 @@ export default {
 	},
 
 	async mounted() {
-		this.retrieveLeads();
+    this.statusList = (await loadTable(9)).map((code) => code.description)
+    this.retrieveLeads();
     this.$root.$on("addNewLead", async () => {
       this.lead = NEW_LEAD;
       // this.lead.last_update = moment(new Date()).format('YYYY-MM-DD')
@@ -168,7 +165,11 @@ export default {
 	},
 	
   watch: {
-
+    statusFilter(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.retrieveLeads();
+      }
+    }
 	},
 };
 </script>

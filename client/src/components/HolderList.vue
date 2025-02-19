@@ -53,12 +53,12 @@
             <td>
               <v-checkbox v-model="item.payedOffer" hide-details color="green" readonly></v-checkbox>
             </td>
-            <td>
+            <!-- <td>
               <v-checkbox v-model="item.bniya" hide-details color="green" readonly></v-checkbox>
             </td>
             <td>
               <v-checkbox v-model="item.hashmal" hide-details color="green" readonly></v-checkbox>
-            </td>
+            </td> -->
             <td>
               <v-checkbox v-model="item.mitbach" hide-details color="green" readonly></v-checkbox>
             </td>
@@ -133,8 +133,8 @@ export default {
 		async getHolderForEdit(item) {
 			if (item._id) {
         this.holder = item
-        // await this.$refs.holderForm.open(this.holder, false);
-        this.showBill=true
+        await this.$refs.holderForm.open(this.holder, false);
+        // this.showBill=true
         this.retrieveHolders();
 			}
 		},

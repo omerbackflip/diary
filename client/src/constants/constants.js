@@ -55,8 +55,8 @@ export const HOLDER_MOBILE_HEADERS = [
     // { text: "תוכניות", value: "sendPlans",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
     { text: "ה. מחיר", value: "gotOffer",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
     { text: "שולם", value: "payedOffer",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
-    { text: "בניה", value: "bniya",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
-    { text: "חשמל", value: "hashmal",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
+    // { text: "בניה", value: "bniya",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
+    // { text: "חשמל", value: "hashmal",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
     { text: "מטבח", value: "mitbach",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
     { text: "סניטרים", value: "senitar",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
 ];
@@ -94,7 +94,6 @@ export const NEW_HOLDER = {
     payedFile: false,
     GDParantFolder: "",
 };
-
 export const NEW_BILL = {
     holder_id: "",
     bill_id: "",
@@ -113,7 +112,6 @@ export const isMobile = () => {
         return false;
     }
 };
-
 export const loadTable = async (table_id) => {
     try {
         const response = await apiService.getMany({ table_id, model: TABLE_MODEL });
@@ -125,13 +123,11 @@ export const loadTable = async (table_id) => {
         console.log(error);
     }
 };
-
 export const sendWhatsapp = async(phone) => {
     let fixedPhone = phone
     if (phone.charAt(0) === '0') fixedPhone = phone.substring(1)
     window.open('https://api.whatsapp.com/send?phone=972'+fixedPhone.replace("-", ""))
 };
-  
 export async function viewGDFile(fileId, modalDialogRef) {
     try {
         const fileView = `https://docs.google.com/file/d/${fileId}/preview?usp=drivesdk`;
@@ -140,7 +136,6 @@ export async function viewGDFile(fileId, modalDialogRef) {
         console.error('Error viewing file:', error);
     }
 }
-
 export async function shareOnWhatsApp (fileId, msg) {
     const googleDriveLink = `https://drive.google.com/file/d/${fileId}/view`;
     const message = msg + ' ' + googleDriveLink;
