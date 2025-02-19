@@ -33,7 +33,7 @@
               </v-col>
               <v-spacer></v-spacer>
               <v-col cols="4">
-                <v-combobox v-model="statusFilter" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense></v-combobox>
+                <v-combobox v-model="statusFilter" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense clearable></v-combobox>
               </v-col>
             </v-toolbar>
         </template>
