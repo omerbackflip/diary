@@ -31,9 +31,14 @@
                 </v-btn>
                 </export-excel>
               </v-col>
-              <v-spacer></v-spacer>
-              <v-col cols="4">
+              <v-col cols="2">
                 <v-combobox v-model="statusFilter" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense clearable></v-combobox>
+              </v-col>
+              <v-col cols="2">
+                <v-combobox v-model="arrivedFilter" :items="arrivedList" label="הגיע אלינו מ..." reverse :allow-overflow="false" dense clearable></v-combobox>
+              </v-col>
+              <v-col cols="2">
+                <v-combobox v-model="interestFilter" :items="interestList" label="מעונין ב..." reverse :allow-overflow="false" dense clearable></v-combobox>
               </v-col>
             </v-toolbar>
         </template>
@@ -112,7 +117,11 @@ export default {
 			itemToEdit: "",
       dateModal : false,
       statusFilter: '',
+      arrivedFilter: '',
+      interestFilter: '',
       statusList: [],
+      arrivedList: [],
+      interestList: [],
     }
 	},
 
@@ -125,12 +134,26 @@ export default {
 			}
 		},
 
-		async retrieveLeads() {
+		async retrieveLeads(filter) {
 			this.isLoading = true;
       let response
-      this.statusFilter 
-        ? response = await apiService.getMany({model: LEAD_MODEL, status: this.statusFilter }) 
-        : response = await apiService.getMany({model: LEAD_MODEL}) 
+
+      switch (filter) {
+        case 'status' :
+          response = await apiService.getMany({model: LEAD_MODEL, status: this.statusFilter }) 
+          break;
+        case 'arrived' :
+          response = await apiService.getMany({model: LEAD_MODEL, arrivedFrom: this.arrivedFilter }) 
+          break;
+        case 'interest' :
+          response = await apiService.getMany({model: LEAD_MODEL, interested: this.interestFilter }) 
+          break;
+        default :
+          response = await apiService.getMany({model: LEAD_MODEL}) 
+      }
+      // this.statusFilter 
+      //   ? response = await apiService.getMany({model: LEAD_MODEL, status: this.statusFilter }) 
+      //   : response = await apiService.getMany({model: LEAD_MODEL}) 
         
 			if (response && response.data) {
         this.leadsList = response.data.sort(function (a, b) {
@@ -156,10 +179,11 @@ export default {
 
 	async mounted() {
     this.statusList = (await loadTable(9)).map((code) => code.description)
+    this.arrivedList = (await loadTable(5)).map((code) => code.description)
+    this.interestList = (await loadTable(2)).map((code) => code.description)
     this.retrieveLeads();
     this.$root.$on("addNewLead", async () => {
       this.lead = NEW_LEAD;
-      // this.lead.last_update = moment(new Date()).format('YYYY-MM-DD')
       await this.$refs.leadForm.open(this.lead, true);
 		});
 	},
@@ -167,7 +191,19 @@ export default {
   watch: {
     statusFilter(newValue, oldValue) {
       if (newValue !== oldValue) {
-        this.retrieveLeads();
+        this.retrieveLeads('status');
+      }
+    },
+    
+    arrivedFilter(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.retrieveLeads('arrived');
+      }
+    },
+    
+    interestFilter(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.retrieveLeads('interest');
       }
     }
 	},

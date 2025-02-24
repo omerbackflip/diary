@@ -155,10 +155,8 @@
           </v-card>
         </v-col>
       </v-row>
-
-      <holder-form ref="holderForm"/>
-
     </v-layout>
+    <bill-form ref="billForm"/>
   </div>
 </template>
 
@@ -167,12 +165,12 @@
 <script>
 import apiService from "../services/apiService";
 import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER } from "../constants/constants";
-import holderForm from "./HolderForm.vue"
+import billForm from "./BillForm.vue"
 import { isMobile } from '../constants/constants';
 
 export default {
 	name: "holders-dash",
-	components: { holderForm },
+	components: { billForm },
 	data() {
 		return {
       isMobile,
@@ -180,12 +178,13 @@ export default {
 			dialog: false,
 			search: "",
 			headers: [],
-			holder: [],
+			holder: {},
 			msg: "",
 			isLoading: true,
 			itemToEdit: "",
       dateModal : false,
       selected: [],
+      showBill: false,
 		};
 	},
 
@@ -212,11 +211,10 @@ export default {
       this.isLoading = false;
     },
  
-    // get holder data before call to holderForm for edit
 		async getHolderForEdit(item) {
 			if (item._id) {
         this.holder = item
-        await this.$refs.holderForm.open(this.holder, false);
+        await this.$refs.billForm.open(this.holder, false);
         this.retrieveHolders();
 			}
 		},
@@ -237,7 +235,7 @@ export default {
 		this.retrieveHolders();
     this.$root.$on("addNewHolder", async () => {
       this.holder = NEW_HOLDER;
-      await this.$refs.holderForm.open(this.holder, true);
+      // await this.$refs.holderForm.open(this.holder, true);
 		});
 
 	},

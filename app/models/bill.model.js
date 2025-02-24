@@ -3,6 +3,7 @@ module.exports = mongoose => {
     {
       flatId: Number,
       bill_id: Number,
+      line: Number,
       topic_id: Number,
       amount: Number,
       tprice: Number,

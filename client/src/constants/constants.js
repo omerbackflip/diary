@@ -95,14 +95,14 @@ export const NEW_HOLDER = {
     GDParantFolder: "",
 };
 export const NEW_BILL = {
-    holder_id: "",
-    bill_id: "",
-    topic_id: "",
-    amount: "",
-    tprice: "",
-    charge_type: "",
-    toPay: "",
-    remark: "",
+    flatId: null,
+    bill_id: null,
+    topic_id: null,
+    amount: null,
+    tprice: null,
+    charge_type: null,
+    toPay: null,
+    remark: null,
 };
 
 export const isMobile = () => {

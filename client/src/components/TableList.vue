@@ -53,7 +53,7 @@
               <v-text-field v-model="item.description"
                             :id="`itemEdit-${item._id}`"/>
             </div>
-            <div >
+            <div v-else>
               <span> {{item.description}}</span>
             </div>
           </template>
@@ -62,7 +62,7 @@
               <v-text-field v-model="item.table_id"
                             :id="`itemEdit-${item._id}`"/>
             </div>
-            <div >
+            <div v-else>
               <span> {{item.table_id}}</span>
             </div>
           </template>
@@ -71,7 +71,7 @@
               <v-text-field v-model="item.table_code"
                             :id="`itemEdit-${item._id}`"/>
             </div>
-            <div >
+            <div v-else>
               <span> {{item.table_code}}</span>
             </div>
           </template>
@@ -124,7 +124,7 @@
             <div v-if = "itemToEdit === item._id">
               <v-text-field v-model="item.GDFileId" :id="`itemEdit-${item._id}`"/>
             </div>
-            <div >
+            <div v-else>
               <span> {{item.GDFileId}}</span>
             </div>
           </template>
@@ -132,7 +132,7 @@
             <div v-if = "itemToEdit === item._id">
               <v-text-field v-model="item.description" :id="`itemEdit-${item._id}`"/>
             </div>
-            <div >
+            <div v-else>
               <span> {{item.description}}</span>
             </div>
           </template>
@@ -140,7 +140,7 @@
             <div v-if = "itemToEdit === item._id">
               <v-text-field v-model="item.table_id" :id="`itemEdit-${item._id}`"/>
             </div>
-            <div >
+            <div v-else>
               <span> {{item.table_id}}</span>
             </div>
           </template>
@@ -148,7 +148,7 @@
             <div v-if = "itemToEdit === item._id">
               <v-text-field v-model="item.table_code" :id="`itemEdit-${item._id}`"/>
             </div>
-            <div>
+            <div v-else>
               <span> {{item.table_code}}</span>
             </div>
           </template>
