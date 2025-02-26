@@ -19,7 +19,7 @@ const googleService = require('../services/google-service');
 
 exports.saveExcelBulk = async (req, res) => {
 	try {
-        // await UPLOAD_MODEL.deleteMany();
+        await UPLOAD_MODEL.deleteMany();
 		var workbook = XLSX.readFile(`uploads/${req.file.filename}`,{type: 'binary', cellDates: true, dateNF: 'dd/mm/yyyy;@'});
 		var sheet_name_list = workbook.SheetNames;
 		const data = transformCSVData(sheet_name_list , workbook);
@@ -144,7 +144,18 @@ exports.googleAuthHandler = async (req, res) => {
 			message: "Error while checking google connection."
 		});
 	}
-}
+};
+
+exports.syncGoogleSheets = async (req, res) => {
+	try {
+		let newLeads = await googleService.fetchNewRows(UPLOAD_MODEL);
+		res.json({ success: true, message: `${newLeads} leads where imported`});
+	} catch (error) {
+		console.error("Error syncing Google Sheets:", error);
+		res.status(500).json({ success: false, message: "Error syncing Google Sheets" });
+	}
+};
+
 
 function unLinkFile(path) {
 	fs.unlinkSync(path);

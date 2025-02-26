@@ -5,6 +5,8 @@ const { google } = require('googleapis');
 const path = require('path');
 const { ServerApp } = require('../config/constants');
 const { auth } = require('google-auth-library');
+const db = require("../models");
+
 
 const SCOPES = [
   'https://www.googleapis.com/auth/drive.file', 
@@ -12,10 +14,13 @@ const SCOPES = [
   'https://www.googleapis.com/auth/drive.readonly',
   'https://www.googleapis.com/auth/drive.metadata',
   'https://www.googleapis.com/auth/drive.metadata.readonly',
-  'https://www.googleapis.com/auth/userinfo.profile'
+  'https://www.googleapis.com/auth/userinfo.profile',
+  "https://www.googleapis.com/auth/spreadsheets.readonly", // access to Google Sheets
 ];
 const TOKEN_PATH = path.join(ServerApp.configFolderPath, 'token.json');
-
+const SPREADSHEET_ID = "1qS8rb0RDkOwVCuH7McXPYrlvrfctLFSaQ2hpFrmtbI0"; // sheet ID
+const RANGE = "'לידים'!A:E"; // Using quotes for Hebrew sheet names
+const SAVED_LAST_PATH = path.join(__dirname, "../config/last_id.txt");
 
 function getNewToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
@@ -37,7 +42,6 @@ exports.getAuthClient = () => {
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
   return oAuth2Client;
 }
-
 
 // getAuth:
 // Uses the OAuth2Client created by getAuthClient and attempts to load and set credentials (tokens) for the client.
@@ -239,4 +243,61 @@ async function findOrCreateFolder(folderName, parentFolderId, drive) {
     console.error(`Error finding or creating folder '${folderName}':`, error.message);
     throw error;
   }
+}
+
+// fatch data from googleSheet and save to UPLOAD_MODEL
+exports.fetchNewRows = async (UPLOAD_MODEL) => {
+  const auth = this.getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: RANGE,
+    });
+
+    let rows = response.data.values;
+    if (!rows || rows.length === 0) {
+      console.log("No data found.");
+      return;
+    }
+    rows = rows.slice(1); // Skip the first row (headers)
+
+    // Filter rows where the first column (datetime) is in the correct format
+    rows = rows.filter(row => {
+      const dateStr = row[0]; // First column should be a datetime
+      return isValidDateFormat(dateStr);
+    });
+
+    // get the last id was read  
+    let lastLoad = await db.tables.findOne({table_id: 99, table_code: 80}) // lastLoad.description contains lastLoad datetime
+    console.log("Last recorded datetime:", lastLoad.description);
+    // Filter new rows by datetime
+    const newRows = rows.filter(row => {
+        const rowDatetime = row[0]; // First column is the datetime
+        return rowDatetime > lastLoad.description;
+    });
+
+    if (newRows.length > 0) {
+      // insert data to db
+      for (const row of newRows) {
+        const [createdAt, name, phone, email, interested] = row;
+        await UPLOAD_MODEL.create({ createdAt, name, phone, email, interested, arrivedFrom:'שיווק' });
+      }
+
+      // Save only the last row's datetime
+      const lastRowDatetime = newRows[newRows.length - 1][0];
+      await db.tables.findOneAndUpdate ({table_id: 99, table_code: 80},{description: lastRowDatetime}) // lastLoad.description contains lastLoad datetime
+    }
+    console.log(`Fetched ${newRows.length} new rows from Google Sheets.`);
+    return newRows.length
+  } catch (error) {
+    console.error("Error fetching Google Sheets data:", error);
+  }
+};
+
+// Helper function to check if a date matches the exact format: "YYYY-MM-DD HH:MM:SS"
+function isValidDateFormat(dateStr) {
+  const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+  return regex.test(dateStr);
 }

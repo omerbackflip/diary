@@ -28,6 +28,10 @@ class SpecificServiceEndPoints {
   deletePic(data) {
     return http.post("specific/delete-pic", data);
   }
+
+  syncGoogleSheets(data) {
+    return http.get("specific/sync-google-sheets", data);
+  }
 }
 
 export default new SpecificServiceEndPoints();

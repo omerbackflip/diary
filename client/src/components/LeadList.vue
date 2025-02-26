@@ -20,26 +20,37 @@
           dense>
         <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title> סה"כ - {{leadsList.length.toLocaleString()}} </v-toolbar-title>
-              <v-text-field v-model="search" label="Search"></v-text-field>
-              <v-col v-show="!isMobile()" style="text-align-last: center;" cols="1">
-                <export-excel
-                :data="leadsList"
-                type="xlsx">
-                <v-btn x-small class="btn btn-danger">
-                  <v-icon small>mdi-download</v-icon>
-                </v-btn>
-                </export-excel>
-              </v-col>
-              <v-col cols="2">
-                <v-combobox v-model="statusFilter" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense clearable></v-combobox>
-              </v-col>
-              <v-col cols="2">
-                <v-combobox v-model="arrivedFilter" :items="arrivedList" label="הגיע אלינו מ..." reverse :allow-overflow="false" dense clearable></v-combobox>
-              </v-col>
-              <v-col cols="2">
-                <v-combobox v-model="interestFilter" :items="interestList" label="מעונין ב..." reverse :allow-overflow="false" dense clearable></v-combobox>
-              </v-col>
+              <!-- <v-row style="align-self: self-start;"> -->
+                <v-col cols="2">
+                  <v-toolbar-title> סה"כ - {{leadsList.length.toLocaleString()}} </v-toolbar-title>
+                </v-col>
+                <v-col cols="2">
+                  <v-text-field v-model="search" label="Search"></v-text-field>
+                </v-col>
+                <v-col  style="text-align-last: center;" cols="1">
+                  <export-excel
+                  :data="leadsList"
+                  type="xlsx">
+                  <v-btn x-small class="btn btn-danger">
+                    <v-icon small>mdi-download</v-icon>
+                  </v-btn>
+                  </export-excel>
+                </v-col>
+                <v-col  style="text-align-last: center;" cols="1">
+                  <v-btn x-small @click="getNewLeads" class="btn btn-danger"> excel
+                    <v-icon small>mdi-refresh</v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col cols="2">
+                  <v-combobox v-model="statusFilter" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense clearable></v-combobox>
+                </v-col>
+                <v-col cols="2">
+                  <v-combobox v-model="arrivedFilter" :items="arrivedList" label="הגיע אלינו מ..." reverse :allow-overflow="false" dense clearable></v-combobox>
+                </v-col>
+                <v-col cols="2">
+                  <v-combobox v-model="interestFilter" :items="interestList" label="מעונין ב..." reverse :allow-overflow="false" dense clearable></v-combobox>
+                </v-col>
+              <!-- </v-row> -->
             </v-toolbar>
         </template>
         <template v-slot:item ="{ item, headers }">
@@ -87,7 +98,7 @@
 import Vue from "vue";
 import moment from "moment";
 import apiService from "../services/apiService";
-// import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
+import specificServiceEndPoints from "../services/specificServiceEndPoints";
 import { LEAD_MODEL, LEADS_HEADERS, NEW_LEAD, loadTable } from "../constants/constants";
 import leadForm from "./LeadForm.vue"
 import { isMobile } from '../constants/constants';
@@ -175,6 +186,11 @@ export default {
 			}
 		},
 
+    async getNewLeads() {
+      let msg = await specificServiceEndPoints.syncGoogleSheets();
+      window.alert(msg.data.message)
+      this.retrieveLeads();
+    }
 	},
 
 	async mounted() {
