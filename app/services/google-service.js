@@ -282,7 +282,7 @@ exports.fetchNewRows = async (UPLOAD_MODEL) => {
       // insert data to db
       for (const row of newRows) {
         const [createdAt, name, phone, email, interested] = row;
-        await UPLOAD_MODEL.create({ createdAt, name, phone, email, interested, arrivedFrom:'שיווק' });
+        await UPLOAD_MODEL.create({ name, phone, email, interested, arrivedFrom:'שיווק' });
       }
 
       // Save only the last row's datetime
