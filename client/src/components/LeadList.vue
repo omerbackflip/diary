@@ -25,7 +25,7 @@
                   <v-toolbar-title> סה"כ - {{leadsList.length.toLocaleString()}} </v-toolbar-title>
                 </v-col>
                 <v-col cols="2">
-                  <v-text-field v-model="search" label="Search"></v-text-field>
+                  <v-text-field v-model="search" label="Search" clearable></v-text-field>
                 </v-col>
                 <v-col  style="text-align-last: center;" cols="1">
                   <export-excel

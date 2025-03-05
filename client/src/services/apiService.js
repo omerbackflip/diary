@@ -24,7 +24,6 @@ class ApiService {
   deleteAll(params) {
     return http.delete(`generic/delete-all`,{params});
   }
-
 }
 
 export default new ApiService();

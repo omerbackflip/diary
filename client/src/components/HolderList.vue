@@ -38,32 +38,20 @@
             <td>
               <span>{{item.name}}</span>
             </td>
-            <!-- <td>
-              <span>{{item.phone}}<v-icon @click.stop="sendWhatsapp(item.phone)" class="green-icon">mdi-whatsapp</v-icon></span>
-            </td>   -->
+            <td>
+              <span>{{ item.mitbach }}</span>
+            </td>
+            <td>
+              <span>{{ item.senitar }}</span>
+            </td>
             <td>
               <v-checkbox v-model="item.payedFile" hide-details color="green" readonly></v-checkbox>
             </td>
-            <!-- <td>
-              <v-checkbox v-model="item.sendPlans" hide-details color="green" readonly></v-checkbox>
-            </td> -->
             <td>
               <v-checkbox v-model="item.gotOffer" hide-details color="green" readonly></v-checkbox>
             </td>
             <td>
               <v-checkbox v-model="item.payedOffer" hide-details color="green" readonly></v-checkbox>
-            </td>
-            <!-- <td>
-              <v-checkbox v-model="item.bniya" hide-details color="green" readonly></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox v-model="item.hashmal" hide-details color="green" readonly></v-checkbox>
-            </td> -->
-            <td>
-              <v-checkbox v-model="item.mitbach" hide-details color="green" readonly></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox v-model="item.senitar" hide-details color="green" readonly></v-checkbox>
             </td>
           </tr>
           <tr>
@@ -134,7 +122,6 @@ export default {
 			if (item._id) {
         this.holder = item
         await this.$refs.holderForm.open(this.holder, false);
-        // this.showBill=true
         this.retrieveHolders();
 			}
 		},

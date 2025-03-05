@@ -40,7 +40,6 @@ export default {
     // Initialize Google Picker
     async initGooglePicker() {
       await this.loadGoogleApi();
-
       window.gapi.load("picker", { callback: this.onPickerApiLoad });
     },
 
@@ -54,14 +53,12 @@ export default {
       let locale = localStorage.getItem('locale');
       let folderId = this.GDParantFolder; // specific holder folder ID 
       if (this.pickerApiLoaded && accessToken) {
-
         // const view = new window.google.picker.View(window.google.picker.ViewId.DOCS);
         const view = new window.google.picker.DocsView()
           .setParent(folderId) // Set the folder ID to open
           .setIncludeFolders(true) // Include subfolders
           // .setSelectFolderEnabled(true); // Allow folder selection
           // .setMode(window.google.picker.DocsViewMode.LIST); // Shows files in a list with details
-
         const picker = new window.google.picker.PickerBuilder()
           .addView(view)
           .setOAuthToken(accessToken)
@@ -86,5 +83,8 @@ export default {
   mounted() {
     this.initGooglePicker();
   },
+  watch: {
+
+  }
 };
 </script>

@@ -57,12 +57,12 @@ exports.savePic = async(req, res) => {
 	try {
 		const media = { ...req.body };
 		if(media && media.fileContent){
-			let picName = storeMedia(media.fileContent); // save the pics 
+			let picName = storeMedia(media.fileContent); // save the pics
 			res.send(picName);
 		}
 	} catch (error) {
 		console.log(error);
-		res.status(500).send({message: error.message || "Some error while savePic function in specifc.controller.js file"});		
+		res.status(500).send({message: error.message || "Some error while savePic function in specifc.controller.js file"});
 	}
 }
 
@@ -74,34 +74,64 @@ exports.deletePic = async(req, res) => {
 		unLinkFile(uploadFolder + fileName)
 	} catch (error) {
 		console.log(error);
-		res.status(500).send({message: error.message || "Some error while deletePic function in specifc.controller.js file"});		
+		res.status(500).send({message: error.message || "Some error while deletePic function in specifc.controller.js file"});
 	}
 }
+
+// exports.googleConnectionStatus = async (req, res) => {
+// 	try {
+// 	  let auth = googleService.getAuth();
+// 	  if (auth instanceof google.auth.OAuth2) {
+// 		const userInfo = await googleService.getUser(auth);
+// 		const username = userInfo ? userInfo.name : null;
+// 		let token = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'token.json'));
+// 		console.log("🛠️ Current token before refresh:", token);
+// 		const { access_token, refresh_token } = token;
+// 		// Force token refresh if expired
+// 		await googleService.refreshAccessToken(auth, refresh_token);
+// 		// Reload token after refresh
+// 		token = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'token.json'));
+// 		console.log("🆕 Token after refresh:", token);
+// 		const credentials = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'google-credentials.json'));
+// 		const { client_secret, client_id } = credentials.web;
+// 		const developer_key = ServerApp.google.apiKeyForPicker;
+// 		const locale = ServerApp.google.locale;
+// 		res.send({
+// 		  connected: true,
+// 		  username: username,
+// 		  client_secret: client_secret,
+// 		  client_id: client_id,
+// 		  developerKey: developer_key,
+// 		  locale: locale,
+// 		  access_token: token.access_token,
+// 		  folderId: ServerApp.google.pickerRootFolder
+// 		});
+// 	  } else {
+// 		res.send({ connected: false, authUrl: auth });
+// 	  }
+// 	} catch (error) {
+// 	  console.error("🚨 Error in googleConnectionStatus:", error);
+// 	  res.status(500).send({ message: "Error while checking Google connection." });
+// 	}
+//   };
+
 
 exports.googleConnectionStatus = async (req, res) => {
 	try{
 		let auth = googleService.getAuth();
-		
 		if(auth instanceof google.auth.OAuth2){
-			
 			const userInfo = await googleService.getUser(auth);
 			const username = (userInfo != false ? userInfo.name : null);
 			let token = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'token.json'));
 			const { access_token,refresh_token } = token;
-			
-			//if(!username){
-				 await googleService.refreshAccessToken(auth,refresh_token);
-				 token = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'token.json'));
-			//}
-
+			await googleService.refreshAccessToken(auth,refresh_token);
+			// Small delay to ensure file is written (only needed if issue persists)
+			await new Promise(resolve => setTimeout(resolve, 50));
+			token = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'token.json'));
 			const credentials = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'google-credentials.json'));
-			
-  
   			const { client_secret, client_id} = credentials.web;
   			const developer_key = ServerApp.google.apiKeyForPicker;
   			const locale = ServerApp.google.locale;
-  			
-
 			res.send({
 				connected: true,
 				username: username,
@@ -112,14 +142,12 @@ exports.googleConnectionStatus = async (req, res) => {
 				access_token:access_token,
 				folderId:ServerApp.google.pickerRootFolder
 			});
-
 		}else{
 			res.send({
 				connected: false,
 				authUrl: auth
 			});
 		}
-
 	} catch (error) {
 		console.log(error)
 		res.status(500).send({
@@ -130,14 +158,14 @@ exports.googleConnectionStatus = async (req, res) => {
 
 exports.googleAuthHandler = async (req, res) => {
 	try{
-		
+
 		const oAuth2Client = googleService.getAuthClient();
 		const code = req.query.code;
 
 		googleService.getToken(oAuth2Client, code);
-		
+
 		res.redirect(`${process.env.CLIENT_URL}?success=true`);
-		
+
 	} catch (error) {
 		console.log(error)
 		res.status(500).send({
@@ -156,6 +184,48 @@ exports.syncGoogleSheets = async (req, res) => {
 	}
 };
 
+
+exports.bulkWriteControl = async (req, res) => {
+	try {
+		const items = req.body
+		const {flatId,bill_id} = items[0]
+		const itemIds = items.filter(i => i._id).map(i => i._id); // Extract existing IDs
+
+		// Step 1: Find existing items for this flatId
+		const existingItems = await db[req.query.model].find({ flatId: flatId, bill_id:bill_id });
+		const existingItemIds = existingItems.map(item => item._id.toString());
+
+		// Step 2: Determine which items to insert, update, or delete
+		const bulkOps = [];
+		items.forEach(item => {
+			if (item._id) { // Update existing item
+				bulkOps.push({
+					updateOne: {filter: { _id: item._id },update: { $set: item }}
+				});
+			} else { // Insert new item
+				bulkOps.push({
+					insertOne: { document: {...item} }
+				});
+			}
+		});
+
+		// Step 3: Delete missing items
+		const itemsToDelete = existingItemIds.filter(id => !itemIds.includes(id));
+		if (itemsToDelete.length > 0) {
+			bulkOps.push({
+				deleteMany: {filter: { _id: { $in: itemsToDelete } }
+				}
+			});
+		}
+		const data = await specificService.bulkWriteService(db[req.query.model], bulkOps);
+		if (data) {
+			res.send(data);
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).send({message: error.message || "Some error occurred while create entity."});
+	}
+};
 
 function unLinkFile(path) {
 	fs.unlinkSync(path);

@@ -32,6 +32,10 @@ class SpecificServiceEndPoints {
   syncGoogleSheets(data) {
     return http.get("specific/sync-google-sheets", data);
   }
+  
+  bulkWriteApi(data,params) {
+    return http.post("specific/bulk-write", data, {params});
+  }
 }
 
 export default new SpecificServiceEndPoints();

@@ -68,25 +68,54 @@ exports.getToken = async (oAuth2Client, code) => {
   return false;
 }
 
-exports.refreshAccessToken = async (oAuth2Client,refreshToken) => {
+// exports.refreshAccessToken = async (oAuth2Client,refreshToken) => {
+//   try {
+    
+//     oAuth2Client.setCredentials({
+//       refresh_token: refreshToken,
+//     });
+//     const response = await oAuth2Client.getAccessToken();
+    
+//     if(response.token && response.res.data){
+//       this.storeToken(JSON.stringify(response.res.data));
+//     }
+//      // Save updated token
+//     console.log("Access token refreshed successfully!");
+//     return response.res.data;
+//   } catch (error) {
+//     console.error("Error refreshing access token:", error);
+//     throw error;
+//   }
+// };
+
+exports.refreshAccessToken = async (oAuth2Client, refreshToken) => {
   try {
-    
-    oAuth2Client.setCredentials({
-      refresh_token: refreshToken,
-    });
+    oAuth2Client.setCredentials({ refresh_token: refreshToken });
+
+    // Get new access token
     const response = await oAuth2Client.getAccessToken();
-    
-    if(response.token && response.res.data){
-      this.storeToken(JSON.stringify(response.res.data));
+
+    if (response.token) {
+      const newToken = {
+        access_token: response.token,
+        refresh_token: refreshToken, // Keep the same refresh token
+        expiry_date: Date.now() + 3600 * 1000 // Assuming 1-hour expiration
+      };
+
+      // Store the new token using your existing function
+      await this.storeToken(JSON.stringify(newToken));
+
+      console.log("Access token refreshed successfully!");
+      return newToken;
     }
-     // Save updated token
-    console.log("Access token refreshed successfully!");
-    return response.res.data;
+
+    throw new Error("Failed to obtain new access token.");
   } catch (error) {
     console.error("Error refreshing access token:", error);
     throw error;
   }
 };
+
 
 exports.storeToken = async (token) => {
   try{

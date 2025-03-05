@@ -14,7 +14,7 @@ exports.create = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
-		res.status(500).send({message: error.message || "Some error occurred while retrieving entity."});
+		res.status(500).send({message: error.message || "Some error occurred while create entity."});
 	}
 };
 
@@ -25,7 +25,7 @@ exports.findAll = async (req, res) => {
 		delete query.model;
 		return res.send(await dbService.getMultipleItems(db[model], req.query));
 	} catch (error) {
-		res.status(500).send({message: error.message || "Some error occurred while retrieving entity."});		
+		res.status(500).send({message: error.message || "Some error occurred while findAll entity."});		
 	}
 };
 
@@ -70,7 +70,6 @@ exports.delete = async (req, res) => {
 		res.status(500).send({ message: "Error updating entity!"});		
 	}
 };
-
 
 //Delete all records with specified year - if year not specified - delete all data from the database:
 exports.deleteAll = async (req, res) => {

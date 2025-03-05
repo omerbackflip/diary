@@ -22,34 +22,31 @@
                     <v-col cols="3">
                       <v-checkbox v-model="holder.payedFile" label="ת.דייר" hide-details></v-checkbox>
                     </v-col>  
-                    <!-- <v-col cols="3">
-                      <v-checkbox v-model="holder.sendPlans" label="תוכניות" hide-details></v-checkbox>
-                    </v-col> -->
                     <v-col cols="3">
                       <v-checkbox v-model="holder.gotOffer" label="ה.מחיר" hide-details></v-checkbox>
                     </v-col>
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.payedOffer" label="שולם" hide-details></v-checkbox>
+                      <v-select v-model="holder.mitbach" :items="mitbachList" dense hide-details label="מטבח" clearable></v-select>
+                    </v-col>
+                    <v-col cols="3">
+                      <v-select v-model="holder.senitar" :items="senitarList" dense hide-details label="סניטרים" clearable></v-select>
                     </v-col>
                   </v-row>   
                   <v-row>
-                    <v-col cols="3">
+                    <!-- <v-col cols="3">
                       <v-checkbox v-model="holder.bniya" label="בניה"></v-checkbox>
                     </v-col>  
                     <v-col cols="3">
                       <v-checkbox v-model="holder.hashmal" label="חשמל"></v-checkbox>
-                    </v-col>
+                    </v-col> -->
                     <v-col cols="3">
-                      <v-checkbox v-model="holder.mitbach" label="מטבח"></v-checkbox>
+                      <v-checkbox v-model="holder.payedOffer" label="שולם" hide-details></v-checkbox>
                     </v-col>
-                    <v-col cols="3">
-                      <v-checkbox v-model="holder.senitar" label="סניטר"></v-checkbox>
-                    </v-col>
-                  </v-row>             
+                  </v-row>
                   <!-- <v-col cols="8">
                     <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
                   </v-col> -->
-                  <v-col cols="12">
+                  <v-col cols="12" class="pa-3">
                     <v-textarea v-model="holder.remark" :label="holder.remark ? '' : 'עדכון אחרון...'" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
                 </v-row>
@@ -85,7 +82,6 @@
             <v-btn small @click="saveHolder()" :loading="isLoading">
               {{ holder._id ? "שמור" : "שמור חדש" }}
             </v-btn>
-            <!-- <v-btn small v-show="!invoiceID" class="mx-3" @click="clearForm"> Clear </v-btn> -->
             <v-spacer></v-spacer>
             <!-- <v-icon color="red" @click="deleteOne(holder._id, holder.flatId)">mdi-delete</v-icon> -->
             <v-btn small @click="dialogHolderForm = false">בטל</v-btn>
@@ -100,7 +96,6 @@ import { HOLDER_MODEL, loadTable, viewGDFile } from "../constants/constants";
 import apiService from "../services/apiService";
 import Vue from "vue";
 import moment from "moment";
-//import GooglePicker from "google-drive-picker";
 import GooglePicker from "./GooglePicker.vue";
 import modalDialog from './Common/ViewFileModal.vue';
 
@@ -119,15 +114,13 @@ export default {
         resolve: null,      // What is this for ?
         isLoading: false,
         isNewHolder: false,
-        isUploadMedia: true,
-        isDisplayMedia: false,
         message: '',
-        dateModal : false,
-        invoiceID: 0,
         pickerDocIndex: false,
         holder: [],
-        newPicsList: [],
         statusList: [],
+        // GDParantFolder: [],
+        mitbachList: ['סמל','אביבי'],
+        senitarList: ['חרש','סטודיו'],
       };
     },
     methods: {
@@ -152,7 +145,6 @@ export default {
           } 
           if (response) {
             this.dialogHolderForm = false;
-            this.newPicsList = [];
             this.isLoading =  false;
             this.resolve(true);
           }
@@ -260,5 +252,13 @@ export default {
 .strong-divider {
   border-top-width: 5px;
   border-top-color: blue;
+}
+.custom-select {
+  background-color: inherit !important; /* Make sure it takes the card's background */
+}
+
+/* Ensure dropdown menu (popup) also inherits the card's background */
+::v-deep(.v-menu__content) {
+  background-color: inherit !important;
 }
 </style>

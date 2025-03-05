@@ -31,4 +31,13 @@ exports.getExcelToSave = (data) => {
         console.log(error)
         throw error;
     }
+},
+
+exports.bulkWriteService = async (model,query) => {
+    try {
+        return await model.bulkWrite(query);
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
 }

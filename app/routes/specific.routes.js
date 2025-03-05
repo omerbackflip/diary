@@ -13,6 +13,7 @@ module.exports = app => {
   router.get("/get-database-info", specific.getDbInfo);
 	router.post("/save-pic", specific.savePic);
 	router.post("/delete-pic", specific.deletePic);
+	router.post("/bulk-write", specific.bulkWriteControl);
 
   //Google auth  
   router.get("/get-google-connection-status", specific.googleConnectionStatus);
