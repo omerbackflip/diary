@@ -1,6 +1,6 @@
 <template>
       <!-- Add New/Update row dialogHolderForm -->
-      <v-dialog v-model="dialogHolderForm" width="500">
+      <v-dialog v-model="dialogHolderForm" width="600">
         <v-card style="direction: rtl;" :class="bck_grnd(holder._id)">
           <v-card-text style="padding: 0px;">
             <v-container>
@@ -43,9 +43,6 @@
                       <v-checkbox v-model="holder.payedOffer" label="שולם" hide-details></v-checkbox>
                     </v-col>
                   </v-row>
-                  <!-- <v-col cols="8">
-                    <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
-                  </v-col> -->
                   <v-col cols="12" class="pa-3">
                     <v-textarea v-model="holder.remark" :label="holder.remark ? '' : 'עדכון אחרון...'" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
@@ -252,13 +249,5 @@ export default {
 .strong-divider {
   border-top-width: 5px;
   border-top-color: blue;
-}
-.custom-select {
-  background-color: inherit !important; /* Make sure it takes the card's background */
-}
-
-/* Ensure dropdown menu (popup) also inherits the card's background */
-::v-deep(.v-menu__content) {
-  background-color: inherit !important;
 }
 </style>
