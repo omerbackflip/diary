@@ -19,29 +19,29 @@
                     <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
                   </v-col>
                   <v-row>
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <v-checkbox v-model="holder.payedFile" label="ת.דייר" hide-details></v-checkbox>
                     </v-col>  
-                    <v-col cols="3">
+                    <v-col cols="4">
                       <v-checkbox v-model="holder.gotOffer" label="ה.מחיר" hide-details></v-checkbox>
                     </v-col>
-                    <v-col cols="3">
-                      <v-select v-model="holder.mitbach" :items="mitbachList" dense hide-details label="מטבח" clearable></v-select>
-                    </v-col>
-                    <v-col cols="3">
-                      <v-select v-model="holder.senitar" :items="senitarList" dense hide-details label="סניטרים" clearable></v-select>
+                    <v-col cols="4">
+                      <v-checkbox v-model="holder.payedOffer" label="שולם"></v-checkbox>
                     </v-col>
                   </v-row>   
                   <v-row>
+                    <v-col cols="6">
+                      <v-select v-model="holder.mitbach" :items="mitbachList" dense hide-details label="מטבח" clearable></v-select>
+                    </v-col>
+                    <v-col cols="6">
+                      <v-select v-model="holder.senitar" :items="senitarList" dense hide-details label="סניטרים" clearable></v-select>
+                    </v-col>
                     <!-- <v-col cols="3">
                       <v-checkbox v-model="holder.bniya" label="בניה"></v-checkbox>
                     </v-col>  
                     <v-col cols="3">
                       <v-checkbox v-model="holder.hashmal" label="חשמל"></v-checkbox>
                     </v-col> -->
-                    <v-col cols="3">
-                      <v-checkbox v-model="holder.payedOffer" label="שולם" hide-details></v-checkbox>
-                    </v-col>
                   </v-row>
                   <v-col cols="12" class="pa-3">
                     <v-textarea v-model="holder.remark" :label="holder.remark ? '' : 'עדכון אחרון...'" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
