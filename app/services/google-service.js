@@ -20,7 +20,6 @@ const SCOPES = [
 const TOKEN_PATH = path.join(ServerApp.configFolderPath, 'token.json');
 const SPREADSHEET_ID = "1qS8rb0RDkOwVCuH7McXPYrlvrfctLFSaQ2hpFrmtbI0"; // sheet ID
 const RANGE = "'לידים'!A:E"; // Using quotes for Hebrew sheet names
-const SAVED_LAST_PATH = path.join(__dirname, "../config/last_id.txt");
 
 function getNewToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
@@ -67,26 +66,6 @@ exports.getToken = async (oAuth2Client, code) => {
 
   return false;
 }
-
-// exports.refreshAccessToken = async (oAuth2Client,refreshToken) => {
-//   try {
-    
-//     oAuth2Client.setCredentials({
-//       refresh_token: refreshToken,
-//     });
-//     const response = await oAuth2Client.getAccessToken();
-    
-//     if(response.token && response.res.data){
-//       this.storeToken(JSON.stringify(response.res.data));
-//     }
-//      // Save updated token
-//     console.log("Access token refreshed successfully!");
-//     return response.res.data;
-//   } catch (error) {
-//     console.error("Error refreshing access token:", error);
-//     throw error;
-//   }
-// };
 
 exports.refreshAccessToken = async (oAuth2Client, refreshToken) => {
   try {

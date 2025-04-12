@@ -91,6 +91,7 @@ export default {
             links: [
                 {icon: 'folder', text: 'יומן עבודה', route: '/'},
                 {icon: 'folder', text: 'רשימת לידים', route: '/leadList'},
+                {icon: 'folder', text: 'יומן פגישות', route: '/leadCalendar'},
                 {icon: 'folder', text: 'דשבורד', route: '/holdersDash'},
                 {icon: 'folder', text: 'רשימת דיירים', route: '/holderList'},
                 {icon: 'folder', text: 'חשבון דיירים', route: '/billForm'},

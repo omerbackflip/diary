@@ -3,7 +3,7 @@
         <v-card style="direction: rtl;" :class="bck_grnd(lead._id)">
           <v-card-title>
             <!--  Date  -->
-            <v-col cols="5" style="padding-bottom: 0px;">
+            <!-- <v-col cols="5" style="padding-bottom: 0px;">
               <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="lead.last_update" persistent width="290px">
                 <v-date-picker v-model="lead.last_update" scrollable>
                   <v-spacer></v-spacer>
@@ -11,7 +11,7 @@
                   <v-btn text color="primary" @click="$refs.dateDialog.save(lead.last_update)"> OK </v-btn>
                 </v-date-picker>
               </v-dialog>
-            </v-col>
+            </v-col> -->
 
             <!-- <v-btn small v-show="lead._id" @click="copyToNew"> Copy </v-btn> -->
           </v-card-title>
@@ -36,25 +36,29 @@
                   <v-col cols="4">
                     <v-combobox v-model="lead.interested" :items="interestedList" label="מעוניין ב.." reverse :allow-overflow="false" dense></v-combobox>
                   </v-col>
-                  <!-- <v-col cols="6" style="padding-bottom: 0px;">
-                    <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="lead.last_update" persistent width="290px">
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field v-model="lead.last_update" readonly v-bind="attrs" v-on="on" hide-details 
-                                      style="padding-top: 0px; margin-top: -4px;">
-                        </v-text-field>
-                      </template>
-                      <v-date-picker v-model="lead.last_update" scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="dateModal = false"> Cancel </v-btn>
-                        <v-btn text color="primary" @click="$refs.dateDialog.save(lead.last_update)"> OK </v-btn>
-                      </v-date-picker>
-                    </v-dialog>
-                  </v-col> -->
                   <v-col cols="12">
                     <v-text-field v-model="lead.email" label="Email" @focus="$event.target.select()" dense></v-text-field>
                   </v-col>
                   <v-col cols="12">
                     <v-textarea v-model="lead.description" label="תאור" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
+                  </v-col>
+                  <v-col cols="8">
+                    <v-textarea v-model="lead.trackRemark" label="הערת מעקב" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
+                  </v-col>
+                  <!--  Date  -->
+                  <v-col cols="4" style="padding-bottom: 0px;">
+                    <v-dialog ref="dateDialog" v-model="dateModal" :return-value.sync="lead.trackDate" persistent width="290px">
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field v-model="lead.trackDate" readonly v-bind="attrs" v-on="on"
+                                      style="padding-top: 0px;" label="ת. מעקב" clearable @click:clear="clearDate">
+                        </v-text-field>
+                      </template>
+                      <v-date-picker v-model="lead.trackDate" scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="dateModal = false"> Cancel </v-btn>
+                        <v-btn text color="primary" @click="$refs.dateDialog.save(lead.trackDate)"> OK </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
                   </v-col>
                 </v-row>
               </v-form>
@@ -113,6 +117,7 @@ export default {
         this.isNewLead = isNewLead;
         this.lead = lead 
         this.lead.last_update = moment(this.lead.last_update).format('YYYY-MM-DD');
+        this.lead.trackDate = this.lead.trackDate ? moment(this.lead.trackDate).format('YYYY-MM-DD') : null;
         this.dialogLeadForm = true;
         return new Promise((resolve) => {
           this.resolve = resolve;
@@ -165,6 +170,11 @@ export default {
 
       clearForm() {
         this.$refs.form.reset();
+      },
+
+      clearDate() {
+        this.lead.trackDate = null;
+        this.lead.trackRemark = null;
       },
 
       //Background of card

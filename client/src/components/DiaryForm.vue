@@ -29,7 +29,7 @@
               </v-dialog>
             </v-col>
 
-            <v-btn small v-show="diary._id" @click="copyToNew"> Copy </v-btn>
+            <!-- <v-btn small v-show="diary._id" @click="copyToNew"> Copy </v-btn> -->
           </v-card-title>
 
           <v-card-text>

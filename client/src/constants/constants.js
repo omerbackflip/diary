@@ -39,12 +39,13 @@ export const DIARY_MOBILE_HEADERS = [
     // { text: "תאור יום", value: "description",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"}
 ];
 export const LEADS_HEADERS = [
-    { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "25%"},
-    { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
-    { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
-    { text: "הגיע אלינו", value: "arrivedFrom",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
-    { text: "מעונין", value: "interested",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
-    { text: "עדכון אחרון", value: "updatedAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},
+    { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "20%"},
+    { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "20%"},
+    { text: "הגיע אלינו", value: "arrivedFrom",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "מעונין", value: "interested",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "ת. מעקב", value: "trackDate",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "עדכון אחרון", value: "updatedAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
     { text: "קליטה", value: "createdAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
 ];
 export const HOLDER_MOBILE_HEADERS = [
@@ -74,7 +75,7 @@ export const BILL_HEADERS = [
     { text: "לתשלום", value: "toPay", sortable: false, class: 'success title', groupable: false, width: "1%"  },
     { text: "הערה", value: "remark", sortable: false, class: 'success title', groupable: false, width: "15%"  },
     { text: "מחק", value: "actions", sortable: false, class: 'success title', groupable: false, width: "1%"  },
-  ];
+];
 export const NEW_DIARY = {
     date: new Date(),
     director: null,
@@ -119,7 +120,6 @@ export const NEW_BILL = {
     toPay: null,
     remark: null,
 };
-
 export const isMobile = () => {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         return true;
@@ -147,6 +147,7 @@ export async function viewGDFile(fileId, modalDialogRef) {
     try {
         const fileView = `https://docs.google.com/file/d/${fileId}/preview?usp=drivesdk`;
         await modalDialogRef.open(fileView);
+        // window.open(fileView, '_blank'); // Opens the file in a new tab
     } catch (error) {
         console.error('Error viewing file:', error);
     }

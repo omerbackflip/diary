@@ -17,6 +17,11 @@ export default new Router({
       component: () => import("./components/LeadList")
     },
     {
+      path: "/leadCalendar",
+      name: "lead-calendar",
+      component: () => import("./components/LeadCalendar")
+    },
+    {
       path: "/holdersDash",
       name: "holders-dash",
       component: () => import("./components/HoldersDash")

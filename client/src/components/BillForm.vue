@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialogBillForm" max-width="80%" attach="body"> <!-- attach="body" ensures it behaves as a modal overlay without restrictions of parent component -->
-    <card>
+    <v-card>
       <v-data-table :headers=getHeaders() 
                     :items="billItems"
                     disable-pagination
@@ -70,10 +70,11 @@
         <v-chip @click="dialogBillForm=false">בטל</v-chip>
         <v-chip style="margin-left: 5px;" @click="writeBillData">עדכן</v-chip>
         <v-spacer></v-spacer>
-        <v-chip>סה"כ: {{ subtotal.toLocaleString() }}
-        </v-chip>
+        <v-chip>סה"כ חשבון : {{ totaltPrice.toLocaleString() }}</v-chip>
+        <v-spacer></v-spacer>
+        <v-chip>סה"כ לתשלום : {{ totalToPay.toLocaleString() }}</v-chip>
       </v-card-actions>
-     </card>
+     </v-card>
   </v-dialog>
 </template>
 
@@ -179,7 +180,7 @@ export default {
     
     updateTotal(item){
       item.tprice = item.price * item.amount
-      item.charge_type != 'ע"ח זיכוי' ? (item.toPay = item.price * item.amount) : (item.toPay = 0)
+      item.charge_type === 'רגיל' ? (item.toPay = item.price * item.amount) : (item.toPay = 0)
     },
 
     addRow(holder) {
@@ -217,8 +218,11 @@ export default {
   },
 
   computed: {
-    subtotal() {
+    totaltPrice() {
       return this.billItems.reduce((sum, item) => sum + (item.tprice || 0), 0);
+    },
+    totalToPay() {
+      return this.billItems.reduce((sum, item) => sum + (item.toPay || 0), 0);
     }
   },
 

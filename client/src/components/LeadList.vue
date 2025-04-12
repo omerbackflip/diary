@@ -69,7 +69,10 @@
             </td>
             <td>
               <span>{{item.interested}}</span>
-            </td> 
+            </td>
+            <td>
+              <span>{{item.trackDate | formatDate}}</span>
+            </td>
             <td>
               <span>{{item.updatedAt | formatDate}}</span>
             </td>

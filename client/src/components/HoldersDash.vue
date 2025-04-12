@@ -2,6 +2,7 @@
   <div class="list row hebrew">
     <v-layout style="padding: 5px;">
       <v-row class="ma-0" style="place-content: space-around ;">
+        <!-- בניין צפוני -->
         <v-col cols="12" md="3" class="pa-0">
           <v-card elevation="3" class="mb-3">
             <v-toolbar color="white" flat >
@@ -78,6 +79,8 @@
             </v-container>
           </v-card>
         </v-col>
+
+        <!-- בניין דרומי -->
         <v-col cols="12" md="3" class="pa-0">
           <v-card elevation="3" class="mb-3">
             <v-toolbar color="white" flat >

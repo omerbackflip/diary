@@ -5,7 +5,7 @@ exports.getExcelToSave = (data) => {
         let documents = [];
         data.forEach(item => {
         let document = { 
-                // price Table
+                // ///// price Table
                 // topic: item.topic,
                 // topic_id: item.topic_id,
                 // description: item.description,
@@ -23,6 +23,18 @@ exports.getExcelToSave = (data) => {
                 arrivedFrom: item.arrivedFrom,
                 createdAt: item.createdAt,
                 updatedAt: item.updatedAt,
+
+                // // bills table
+                // flatId: item.flatId,
+                // bill_id: item.bill_id,
+                // date: (Date.parse(item.date)), 
+                // line: item.line,
+                // topic_id: item.topic_id,
+                // amount: item.amount,
+                // tprice: item.tprice,
+                // charge_type: item.charge_type,
+                // toPay: item.toPay,
+                // remark: item.remark,
             };
             documents.push(document);
         });

@@ -9,6 +9,8 @@ module.exports = mongoose => {
       interested: String,
       last_update: Date,
       email: String,
+      trackDate: Date,
+      trackRemark: String,
     },
     { timestamps: true }
   );

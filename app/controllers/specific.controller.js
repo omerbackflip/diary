@@ -1,6 +1,7 @@
 const db = require("../models");
 // const UPLOAD_MODEL = db.prices;
 const UPLOAD_MODEL = db.leads;
+// const UPLOAD_MODEL = db.bills;
 const csv = require('csvtojson');
 var fs = require('fs');
 const XLSX = require('xlsx');
@@ -30,7 +31,7 @@ exports.saveExcelBulk = async (req, res) => {
 			if (result) {
 				return res.send({
 					success: true,
-					message: `Total ${result.length} DIARIES successfully Imported`
+					message: `Total ${result.length} to ${UPLOAD_MODEL} successfully Imported`
 				})
 			}
 		}
@@ -77,44 +78,6 @@ exports.deletePic = async(req, res) => {
 		res.status(500).send({message: error.message || "Some error while deletePic function in specifc.controller.js file"});
 	}
 }
-
-// exports.googleConnectionStatus = async (req, res) => {
-// 	try {
-// 	  let auth = googleService.getAuth();
-// 	  if (auth instanceof google.auth.OAuth2) {
-// 		const userInfo = await googleService.getUser(auth);
-// 		const username = userInfo ? userInfo.name : null;
-// 		let token = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'token.json'));
-// 		console.log("🛠️ Current token before refresh:", token);
-// 		const { access_token, refresh_token } = token;
-// 		// Force token refresh if expired
-// 		await googleService.refreshAccessToken(auth, refresh_token);
-// 		// Reload token after refresh
-// 		token = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'token.json'));
-// 		console.log("🆕 Token after refresh:", token);
-// 		const credentials = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'google-credentials.json'));
-// 		const { client_secret, client_id } = credentials.web;
-// 		const developer_key = ServerApp.google.apiKeyForPicker;
-// 		const locale = ServerApp.google.locale;
-// 		res.send({
-// 		  connected: true,
-// 		  username: username,
-// 		  client_secret: client_secret,
-// 		  client_id: client_id,
-// 		  developerKey: developer_key,
-// 		  locale: locale,
-// 		  access_token: token.access_token,
-// 		  folderId: ServerApp.google.pickerRootFolder
-// 		});
-// 	  } else {
-// 		res.send({ connected: false, authUrl: auth });
-// 	  }
-// 	} catch (error) {
-// 	  console.error("🚨 Error in googleConnectionStatus:", error);
-// 	  res.status(500).send({ message: "Error while checking Google connection." });
-// 	}
-//   };
-
 
 exports.googleConnectionStatus = async (req, res) => {
 	try{

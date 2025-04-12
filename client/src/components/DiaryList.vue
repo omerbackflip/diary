@@ -39,7 +39,7 @@
                 <v-select :items="months" item-text="name" item-value="id" v-model="month" hide-details 
                           style="contain: inline-size; background-color: aqua; font-size: small;"></v-select>
               </v-col>
-              <v-col style="font-size: small;">
+              <v-col style="font-size: small;" v-if="month">
                 <v-row class="summary">
                   <v-col class="pa-0" cols="8">מחפרון - </v-col>
                   <v-col class="pa-0" style="text-align-last: center;" cols="4">{{totals[month-1].traktor}}</v-col>
