@@ -51,7 +51,7 @@ export const LEADS_HEADERS = [
 export const HOLDER_MOBILE_HEADERS = [
     { text: "דירה", value: "flatId",   class: "mobile-headers px-2",    groupable: false,   align: "right", width: "5%"},
     { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "35%"},
-    // { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "30%"},
+    { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "מטבח", value: "mitbach",   class: "mobile-headers",    groupable: false, width: "5%"},
     { text: "סניטרים", value: "senitar",   class: "mobile-headers",    groupable: false, width: "5%"},
     { text: "ת.דייר", value: "payedFile",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
