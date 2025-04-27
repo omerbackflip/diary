@@ -31,35 +31,53 @@
               </v-toolbar>
           </template>
           <template v-slot:item ="{ item, headers }">
-          <tr style="border-bottom: hidden;" @click="getHolderForEdit(item)">
-            <td style="text-align-last: center;">
-              <span>{{item.flatId.substr(4, 2)}}</span>
-            </td>
-            <td>
-              <span>{{item.name}}</span>
-            </td>
-            <td>
-              <span>{{ item.mitbach }}</span>
-            </td>
-            <td>
-              <span>{{ item.senitar }}</span>
-            </td>
-            <td>
-              <v-checkbox v-model="item.payedFile" hide-details color="green" readonly></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox v-model="item.gotOffer" hide-details color="green" readonly></v-checkbox>
-            </td>
-            <td>
-              <v-checkbox v-model="item.payedOffer" hide-details color="green" readonly></v-checkbox>
-            </td>
-          </tr>
-          <tr>
-            <td :colspan="headers.length" @click="getHolderForEdit(item)" style="text-align: center">
-              <span>{{item.remark}}</span>
-            </td>            
-          </tr>
-        </template>
+            <tr style="border-bottom: hidden;" @click="getHolderForEdit(item)">
+              <td style="text-align-last: center;">
+                <span>{{item.flatId.substr(4, 2)}}</span>
+              </td>
+              <td>
+                <span>{{item.name}}</span>
+              </td>
+              <td>
+                <span>{{ item.mitbach }}</span>
+              </td>
+              <td>
+                <span>{{ item.senitar }}</span>
+              </td>
+              <td>
+                <v-checkbox v-model="item.payedFile" hide-details color="green" readonly></v-checkbox>
+              </td>
+              <td>
+                <v-checkbox v-model="item.gotOffer" hide-details color="green" readonly></v-checkbox>
+              </td>
+              <td>
+                <v-checkbox v-model="item.payedOffer" hide-details color="green" readonly></v-checkbox>
+              </td>
+            </tr>
+            <tr>
+              <td :colspan="headers.length" @click="getHolderForEdit(item)" style="text-align: center">
+                <span>{{item.remark}}</span>
+              </td>            
+            </tr>
+          </template>
+          <template v-slot:footer>
+            <div style="width: 100%; place-items: center;; padding: 12px; border-top: 1px solid #ddd; 
+                  background-color: #f9f9f9; font-size: 14px; font-weight: 600; color: #555;">
+              <div style="margin-bottom: 5px;">
+                סיכום מטבחים:
+                <span v-for="(count, i) in totalMitbachSummary" :key="i" style="margin: 0 8px;">
+                  {{ count }}
+                </span>
+              </div>
+              <div>
+                סיכום סניטרים:
+                <span v-for="(count, i) in totalSenitarSummary" :key="i" style="margin: 0 8px;">
+                  {{ count }}
+                </span>
+              </div>
+            </div>
+          </template>
+
         </v-data-table>
       </v-flex>
 
@@ -108,15 +126,28 @@ export default {
 			}
 		},
 
-		async retrieveHolders() {
-			this.isLoading = true;
-      let response = await apiService.getMany({
+    async retrieveHolders() {
+      this.isLoading = true;
+      const response = await apiService.getMany({
         model: HOLDER_MODEL,
       });
-      this.holderList = response.data.filter((item) => {return item.name});
+      this.holderList = response.data
+        .filter(item => item.name)
+        .map(item => {
+          const totals = {};
+          (item.documents || []).forEach(doc => {
+            const type = doc.docType;
+            const amount = doc.amount || 0;
+            if (!totals[`total${type}`]) {
+              totals[`total${type}`] = 0;
+            }
+            totals[`total${type}`] += amount;
+          });
+          return {...item,...totals};
+        });
       this.isLoading = false;
     },
- 
+
     // get holder data before call to holderForm for edit
 		async getHolderForEdit(item) {
 			if (item._id) {
@@ -139,6 +170,33 @@ export default {
   watch: {
 
 	},
+
+  computed: {
+    totalMitbachSummary() {
+      const summary = {};
+      let total = 0;
+      this.holderList.forEach(item => {
+        if (item.mitbach) {
+          total++;
+          summary[item.mitbach] = (summary[item.mitbach] || 0) + 1;
+        }
+      });
+      return { total, summary };
+    },
+    
+    totalSenitarSummary() {
+      const summary = {};
+      let total = 0;
+      this.holderList.forEach(item => {
+        if (item.senitar) {
+          total++;
+          summary[item.senitar] = (summary[item.senitar] || 0) + 1;
+        }
+      });
+      return { total, summary };
+    }
+  }
+
 };
 </script>
 

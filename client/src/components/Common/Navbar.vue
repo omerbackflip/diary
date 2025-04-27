@@ -76,8 +76,8 @@ import { checkGoogleStatus } from "@/utils/commonService";
 Vue.filter("formatDate", function (value) {
 	if (value) {
         moment.locale('he')
-        //return moment(String(value)).format('MM/DD/YYYY hh:mm')
-		return moment(String(value)).format("DD/MM/YYYY - dddd");
+        // return moment(value).format("DD/MM/YYYY - hh:mm");
+        return moment(value).format("DD/MM/YYYY - dddd");
 	}
 });
 export default {

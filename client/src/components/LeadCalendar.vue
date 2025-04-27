@@ -12,7 +12,7 @@
             </v-sheet>
         </div>
   
-        <v-sheet height="750">
+        <v-sheet style="height: 85vh">
             <v-calendar
             ref="calendar"
             v-model="value"
@@ -24,9 +24,12 @@
             />
         </v-sheet>
 
-        <v-dialog v-model="showDialog" max-width="600px" persistent>
+        <v-dialog v-model="getMoreDialog" max-width="600px" persistent>
             <v-card>
-                <v-card-title>Events for {{ selectedDate }}</v-card-title>
+                <v-card-title>Events for {{ selectedDate }}
+                    <v-spacer />
+                    <v-btn text @click="getMoreDialog = false">Close</v-btn>
+                </v-card-title>
                 <v-card-text>
                 <v-list>
                     <v-list-item v-for="event in selectedEvents" :key="event.id" @click="getLeadForEdit({ event })">
@@ -38,7 +41,7 @@
                 </v-card-text>
                 <v-card-actions>
                 <v-spacer />
-                <v-btn text @click="showDialog = false">Close</v-btn>
+                <v-btn text @click="getMoreDialog = false">Close</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -64,7 +67,7 @@ export default {
             value: new Date().toISOString().substr(0, 10),
             events: [],
             leadsList: [],
-            showDialog: false,
+            getMoreDialog: false,
             selectedDate: null,
             selectedEvents: []
         }
@@ -111,7 +114,7 @@ export default {
             this.selectedDate = clickedDate;
             
             this.$nextTick(() => { // Give Vuetify a moment to settle the DOM
-                this.showDialog = true;
+                this.getMoreDialog = true;
             });
         }
     },
@@ -125,7 +128,8 @@ export default {
             const date = new Date(this.value);
             return date.toLocaleDateString('default', {
                 month: 'long',
-                year: 'numeric'
+                year: 'numeric',
+                day: 'numeric'
             });
         }
     }

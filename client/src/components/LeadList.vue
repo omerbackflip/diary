@@ -4,8 +4,8 @@
       <v-flex>
         <v-data-table
           :headers="getHeaders()"
-          :items="leadsList"
-          :search="search"
+          :items="filteredLeads"
+          :search="''"
           disable-pagination
           hide-default-footer
           fixed-header
@@ -18,84 +18,65 @@
           @click:row="getLeadForEdit"
           item-key="_id"
           dense>
-        <template v-slot:top>
-          <v-toolbar flat class="mt-5 mb-3" >
-          <v-row no-gutters style="justify-content: stretch;">
-            <v-col cols="4" md="2">
-              <v-toolbar-title> סה"כ - {{leadsList.length.toLocaleString()}} </v-toolbar-title>
-            </v-col>
-            <v-col cols="4" md="2">
-              <v-text-field v-model="search" label="Search" clearable></v-text-field>
-            </v-col>
-            <v-col v-if="!isMobile()" style="text-align-last: center;" cols="2" md="1">
-              <export-excel
-              :data="leadsList"
-              type="xlsx">
-              <v-btn x-small class="btn btn-danger">
-                <v-icon small>mdi-download</v-icon>
-              </v-btn>
-              </export-excel>
-            </v-col>
-            <v-col  style="text-align-last: center;" cols="2" md="1">
-              <v-btn x-small @click="getNewLeads" class="btn btn-danger"> excel
-                <v-icon small>mdi-refresh</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col cols="4" md="2">
-              <v-combobox v-model="statusFilter" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense clearable></v-combobox>
-            </v-col>
-            <v-col cols="4" md="2" class="px-3">
-              <v-combobox v-model="arrivedFilter" :items="arrivedList" label="הגיע אלינו מ..." reverse :allow-overflow="false" dense clearable></v-combobox>
-            </v-col>
-            <v-col cols="4" md="2">
-              <v-combobox v-model="interestFilter" :items="interestList" label="מעונין ב..." reverse :allow-overflow="false" dense clearable></v-combobox>
-            </v-col>
-          </v-row>
-          </v-toolbar>
-        </template>
-        <template v-slot:item ="{ item, headers }">
-          <tr style="border-bottom: hidden; vertical-align: text-top;" @click="getLeadForEdit(item)">
-            <td>
-              <span>{{item.name}}</span>
-            </td>
-            <td>
-              <span>{{item.phone}}</span>
-            </td>
-            <td>
-              <span>{{item.status}}</span>
-            </td>
-            <td>
-              <span>{{item.arrivedFrom}}</span>
-            </td>
-            <td>
-              <span>{{item.interested}}</span>
-            </td>
-            <td>
-              <span>{{item.trackDate | formatDate}}</span>
-            </td>
-            <td>
-              <span>{{item.updatedAt | formatDate}}</span>
-            </td>
-            <td>
-              <span>{{item.createdAt | formatDate}}</span>
-            </td>
-          </tr>
-          <tr style="border-bottom-width: thick;">
-            <td :colspan="headers.length" @click="getLeadForEdit(item)" style="text-align: right">
-              <span>{{item.description}}</span>
-            </td>            
-          </tr>
-        </template>
+
+          <template v-slot:top>
+            <v-toolbar flat class="mt-5 mb-3" >
+              <v-row no-gutters style="justify-content: stretch;">
+                <v-col cols="4" md="2">
+                  <v-toolbar-title>  סה"כ - {{ filteredLeads.length.toLocaleString() }} מתוך {{ leadsList.length.toLocaleString() }} </v-toolbar-title>
+                </v-col>
+                <v-col cols="4" md="2">
+                  <v-text-field v-model="search" label="Search" clearable></v-text-field>
+                </v-col>
+                <v-col v-if="!isMobile()" style="text-align-last: center;" cols="2" md="1">
+                  <export-excel :data="leadsList" type="xlsx">
+                    <v-btn x-small class="btn btn-danger">
+                      <v-icon small>mdi-download</v-icon>
+                    </v-btn>
+                  </export-excel>
+                </v-col>
+                <v-col  style="text-align-last: center;" cols="2" md="1">
+                  <v-btn x-small @click="getNewLeads" class="btn btn-danger"> excel
+                    <v-icon small>mdi-refresh</v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col cols="4" md="2">
+                  <v-combobox v-model="statusFilter" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense clearable></v-combobox>
+                </v-col>
+                <v-col cols="4" md="2" class="px-3">
+                  <v-combobox v-model="arrivedFilter" :items="arrivedList" label="הגיע אלינו מ..." reverse :allow-overflow="false" dense clearable></v-combobox>
+                </v-col>
+                <v-col cols="4" md="2">
+                  <v-combobox v-model="interestFilter" :items="interestList" label="מעונין ב..." reverse :allow-overflow="false" dense clearable></v-combobox>
+                </v-col>
+              </v-row>
+            </v-toolbar>
+          </template>
+
+          <template v-slot:item="{ item, headers }">
+            <tr style="border-bottom: hidden; vertical-align: text-top;" @click="getLeadForEdit(item)">
+              <td><span>{{item.name}}</span></td>
+              <td><span>{{item.phone}}</span></td>
+              <td><span>{{item.status}}</span></td>
+              <td><span>{{item.arrivedFrom}}</span></td>
+              <td><span>{{item.interested}}</span></td>
+              <td><span>{{item.trackDate | formatDate}}</span></td>
+              <td><span>{{item.updatedAt | formatDate}}</span></td>
+              <td><span>{{item.createdAt | formatDate}}</span></td>
+            </tr>
+            <tr style="border-bottom-width: thick;">
+              <td :colspan="headers.length" @click="getLeadForEdit(item)" style="text-align: right">
+                <span>{{item.description}}</span>
+              </td>
+            </tr>
+          </template>
+
         </v-data-table>
       </v-flex>
-
       <lead-form ref="leadForm"/>
-
     </v-layout>
   </div>
 </template>
-
-
 
 <script>
 import Vue from "vue";
@@ -109,26 +90,25 @@ import excel from "vue-excel-export";
 Vue.use(excel);
 
 Vue.filter("formatDate", function (value) {
-	if (value) {
-    // moment.locale('he')
-		return moment(String(value)).format("DD/MM/YY");
-	}
+  if (value) {
+    return moment(value).format("DD/MM/YY");
+  }
 });
 
 export default {
-	name: "lead-list",
-	components: { leadForm },
-	data() {
-		return {
+  name: "lead-list",
+  components: { leadForm },
+  data() {
+    return {
       isMobile,
-			leadsList: [],
-			dialog: false,
-			search: "",
-			headers: [],
-			lead: [],
-			msg: "",
-			isLoading: true,
-			itemToEdit: "",
+      leadsList: [],
+      dialog: false,
+      search: "",
+      headers: [],
+      lead: [],
+      msg: "",
+      isLoading: true,
+      itemToEdit: "",
       dateModal : false,
       statusFilter: '',
       arrivedFilter: '',
@@ -137,95 +117,78 @@ export default {
       arrivedList: [],
       interestList: [],
     }
-	},
+  },
 
-	methods: {
-		getHeaders() {
-			if (this.isMobile()) {
-				return LEADS_HEADERS;
-			} else {
-				return LEADS_HEADERS;
-			}
-		},
+  computed: {
+    filteredLeads() {
+      return this.leadsList.filter(lead => {
+        const matchesStatus = !this.statusFilter || lead.status === this.statusFilter;
+        const matchesArrived = !this.arrivedFilter || lead.arrivedFrom === this.arrivedFilter;
+        const matchesInterest = !this.interestFilter || lead.interested === this.interestFilter;
+        const matchesSearch = !this.search || [
+          lead.name,
+          lead.phone,
+          lead.status,
+          lead.arrivedFrom,
+          lead.interested,
+          lead.trackDate,
+          lead.updatedAt,
+          lead.createdAt,
+          lead.description
+        ]
+          .filter(Boolean)
+          .some(field => String(field).toLowerCase().includes(this.search.toLowerCase()));
 
-		async retrieveLeads(filter) {
-			this.isLoading = true;
-      let response
+        return matchesStatus && matchesArrived && matchesInterest && matchesSearch;
+      });
+    }
+  },
 
-      switch (filter) {
-        case 'status' :
-          response = await apiService.getMany({model: LEAD_MODEL, status: this.statusFilter }) 
-          break;
-        case 'arrived' :
-          response = await apiService.getMany({model: LEAD_MODEL, arrivedFrom: this.arrivedFilter }) 
-          break;
-        case 'interest' :
-          response = await apiService.getMany({model: LEAD_MODEL, interested: this.interestFilter }) 
-          break;
-        default :
-          response = await apiService.getMany({model: LEAD_MODEL}) 
-      }
-      // this.statusFilter 
-      //   ? response = await apiService.getMany({model: LEAD_MODEL, status: this.statusFilter }) 
-      //   : response = await apiService.getMany({model: LEAD_MODEL}) 
-        
-			if (response && response.data) {
-        this.leadsList = response.data.sort(function (a, b) {
-          // sort by updatedAt in descending order
-          const updatedAtA = new Date(a.updatedAt);
-          const updatedAtB = new Date(b.updatedAt);
-          return updatedAtB - updatedAtA;
-        });
+  methods: {
+    getHeaders() {
+      return LEADS_HEADERS;
+    },
+
+    async retrieveLeads() {
+      this.isLoading = true;
+      let response;
+      response = await apiService.getMany({model: LEAD_MODEL}); 
+      if (response && response.data) {
+        this.leadsList = response.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
         this.isLoading = false;
-			}
-		},
+      }
+    },
 
-    // get lead data before call to leadForm for edit
-		async getLeadForEdit(item) {
-			if (item._id) {
+    async getLeadForEdit(item) {
+      if (item._id) {
         this.lead = item
         await this.$refs.leadForm.open(this.lead, false);
         this.retrieveLeads();
-			}
-		},
+      }
+    },
 
     async getNewLeads() {
       let msg = await specificServiceEndPoints.syncGoogleSheets();
-      window.alert(msg.data.message)
+      window.alert(msg.data.message);
       this.retrieveLeads();
     }
-	},
 
-	async mounted() {
-    this.statusList = (await loadTable(9)).map((code) => code.description)
-    this.arrivedList = (await loadTable(5)).map((code) => code.description)
-    this.interestList = (await loadTable(2)).map((code) => code.description)
+  },
+
+  async mounted() {
+    this.statusList = (await loadTable(9)).map((code) => code.description);
+    this.arrivedList = (await loadTable(5)).map((code) => code.description);
+    this.interestList = (await loadTable(2)).map((code) => code.description);
     this.retrieveLeads();
     this.$root.$on("addNewLead", async () => {
       this.lead = NEW_LEAD;
       await this.$refs.leadForm.open(this.lead, true);
-		});
-	},
-	
+    });
+  },
+
   watch: {
-    statusFilter(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.retrieveLeads('status');
-      }
-    },
-    
-    arrivedFilter(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.retrieveLeads('arrived');
-      }
-    },
-    
-    interestFilter(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.retrieveLeads('interest');
-      }
-    }
-	},
+
+  },
 };
 </script>
 

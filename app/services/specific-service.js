@@ -24,7 +24,7 @@ exports.getExcelToSave = (data) => {
                 createdAt: item.createdAt,
                 updatedAt: item.updatedAt,
 
-                // // bills table
+                // // bills table excel in the תוכניות עבודה diecroty
                 // flatId: item.flatId,
                 // bill_id: item.bill_id,
                 // date: (Date.parse(item.date)), 

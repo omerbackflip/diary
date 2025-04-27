@@ -127,7 +127,7 @@ Vue.use(excel);
 Vue.filter("formatDate", function (value) {
 	if (value) {
     // moment.locale('he')
-		return moment(String(value)).format("DD/MM/YY dddd");
+		return moment(value).format("DD/MM/YYYY - dddd");
 	}
 });
 

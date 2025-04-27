@@ -4,8 +4,8 @@
       <v-row class="ma-0" style="place-content: space-around ;">
         <!-- בניין צפוני -->
         <v-col cols="12" md="3" class="pa-0">
-          <v-card elevation="3" class="mb-3">
-            <v-toolbar color="white" flat >
+          <v-card elevation="3" class="mb-3" color="blue lighten-4">
+            <v-toolbar color="transparent" flat>
               <v-toolbar-title class="red--text">בניין צפוני</v-toolbar-title>
               <v-spacer></v-spacer>
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
@@ -82,8 +82,8 @@
 
         <!-- בניין דרומי -->
         <v-col cols="12" md="3" class="pa-0">
-          <v-card elevation="3" class="mb-3">
-            <v-toolbar color="white" flat >
+          <v-card elevation="3" class="mb-3" color="green lighten-4">
+            <v-toolbar color="transparent" flat >
               <v-toolbar-title class="red--text">בניין דרומי</v-toolbar-title>
               <v-spacer></v-spacer>
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">

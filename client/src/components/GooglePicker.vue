@@ -51,7 +51,7 @@ export default {
       let apiKey = localStorage.getItem('developerKey');
       let accessToken = localStorage.getItem('googleAccessToken');
       let locale = localStorage.getItem('locale');
-      let folderId = this.GDParantFolder; // specific holder folder ID 
+      let folderId = this.GDParantFolder; // specific holder folder ID
       if (this.pickerApiLoaded && accessToken) {
         // const view = new window.google.picker.View(window.google.picker.ViewId.DOCS);
         const view = new window.google.picker.DocsView()
@@ -69,7 +69,7 @@ export default {
           .build();
         picker.setVisible(true);
       }else{
-        alert("Please connect your google account.");
+        alert("Please connect your google account. pickerApiLoad=", this.pickerApiLoaded, "accessToken=",accessToken);
       }
     },
 

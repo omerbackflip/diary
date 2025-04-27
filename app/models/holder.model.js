@@ -21,7 +21,9 @@ module.exports = mongoose => {
                     description: String, 
                     fname: String, 
                     fid: String, 
-                    url: String}],
+                    url: String,
+                    amount: Number,
+                  }],
     },
     { timestamps: true }
   );
