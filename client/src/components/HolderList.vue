@@ -11,7 +11,7 @@
           fixed-header
           mobile-breakpoint="0"
           height="80vh"
-          class="mt-0 hebrew custom-headers table-bordered"
+          class="mt-0 hebrew custom-headers"
           :loading="isLoading"
           loading-text="Loading... Please wait"
           loader-height="20"
@@ -383,15 +383,5 @@ th > i {
   color: white !important; /* Optional: Change icon color for better visibility */
   border-radius: 100%; /* Optional: Makes the background circular */
   padding: 0px; /* Optional: Adds spacing around the icon */
-}
-.table-bordered td, 
-.table-bordered th {
-  border-right: 1px solid #ccc; /* קו אפור בין עמודות */
-}
-
-/* כדי שלא ייראה קו בצד ימין של העמודה האחרונה */
-.table-bordered td:last-child, 
-.table-bordered th:last-child {
-  border-right: none;
 }
 </style>

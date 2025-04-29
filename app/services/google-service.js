@@ -19,7 +19,8 @@ const SCOPES = [
 ];
 const TOKEN_PATH = path.join(ServerApp.configFolderPath, 'token.json');
 const SPREADSHEET_ID = "1qS8rb0RDkOwVCuH7McXPYrlvrfctLFSaQ2hpFrmtbI0"; // sheet ID
-const RANGE = "'לידים'!A:E"; // Using quotes for Hebrew sheet names
+// const SPREADSHEET_ID = "1QIohCKC9MLZZtvzQqH7HlZza8kPCM_dZ"; // test sheet ID located in "שיווק"
+const RANGE = "'לידים'!A:G"; // Using quotes for Hebrew sheet names
 
 function getNewToken(oAuth2Client) {
   const authUrl = oAuth2Client.generateAuthUrl({
@@ -276,21 +277,23 @@ exports.fetchNewRows = async (UPLOAD_MODEL) => {
       const dateStr = row[0]; // First column should be a datetime
       return isValidDateFormat(dateStr);
     });
-
     // get the last id was read  
     let lastLoad = await db.tables.findOne({table_id: 99, table_code: 80}) // lastLoad.description contains lastLoad datetime
     console.log("Last recorded datetime:", lastLoad.description);
-    // Filter new rows by datetime
+    const lastDate = lastLoad.description;
     const newRows = rows.filter(row => {
-        const rowDatetime = row[0]; // First column is the datetime
-        return rowDatetime > lastLoad.description;
+      const rowDate = row[0];
+      return rowDate > lastDate;
     });
+    
+    console.log("rows.lentgh:", rows.length);
+    console.log("newRows.length:", newRows.length);
 
     if (newRows.length > 0) {
       // insert data to db
       for (const row of newRows) {
-        const [createdAt, name, phone, email, interested] = row;
-        await UPLOAD_MODEL.create({ name, phone, email, interested, arrivedFrom:'שיווק' });
+        const [createdAt, name, phone, email, interested, dummyFld, arrivedFrom] = row;
+        await UPLOAD_MODEL.create({ name, phone, email, interested, arrivedFrom });
       }
 
       // Save only the last row's datetime

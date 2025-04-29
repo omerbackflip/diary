@@ -53,7 +53,7 @@ export const HOLDER_MOBILE_HEADERS = [
     { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "35%"},
     { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "מטבח", value: "mitbach",   class: "mobile-headers",    groupable: false, width: "5%"},
-    { text: "סניטרים", value: "senitar",   class: "mobile-headers",    groupable: false, width: "5%"},
+    { text: "סניטרים", value: "senitar",   class: "mobile-headers",    groupable: false, width: "2%"},
     { text: "ת.דייר", value: "payedFile",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
     // { text: "תוכניות", value: "sendPlans",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
     { text: "ה. מחיר", value: "gotOffer",   class: "mobile-headers rotated-header",    groupable: false, width: "1%"},
