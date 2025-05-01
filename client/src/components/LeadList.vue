@@ -26,6 +26,9 @@
                   <v-toolbar-title>  סה"כ - {{ filteredLeads.length.toLocaleString() }} מתוך {{ leadsList.length.toLocaleString() }} </v-toolbar-title>
                 </v-col>
                 <v-col cols="4" md="2">
+                  <v-btn color="primary" @click="barChartDailog = true">Show Summary</v-btn>
+                </v-col>
+                <v-col cols="4" md="2">
                   <v-text-field v-model="search" label="Search" clearable></v-text-field>
                 </v-col>
                 <v-col v-if="!isMobile()" style="text-align-last: center;" cols="2" md="1">
@@ -74,6 +77,35 @@
         </v-data-table>
       </v-flex>
       <lead-form ref="leadForm"/>
+      <v-dialog v-model="barChartDailog" max-width="1000">
+        <v-card>
+          <v-card-title class="text-h6">Leads Summary by Source</v-card-title>
+          <v-card-text>
+            <!-- <v-simple-table dense>
+              <thead>
+                <tr>
+                  <th class="text-left">Source</th>
+                  <th class="text-right">Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(count, index) in summaryLeads" :key="index">
+                  <td>{{ summaryLabels[index] }}</td>
+                  <td class="text-right">{{ count }}</td>
+                </tr>
+              </tbody>
+            </v-simple-table> -->
+          <v-data-table
+            :headers="getSummaryHeaders()"
+            :items="summaryLeads"
+          ></v-data-table>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn text @click="dialog = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-layout>
   </div>
 </template>
@@ -83,7 +115,7 @@ import Vue from "vue";
 import moment from "moment";
 import apiService from "../services/apiService";
 import specificServiceEndPoints from "../services/specificServiceEndPoints";
-import { LEAD_MODEL, LEADS_HEADERS, NEW_LEAD, loadTable } from "../constants/constants";
+import { LEAD_MODEL, LEADS_HEADERS, LEADS_SUMMARY_HEADERS, NEW_LEAD, loadTable } from "../constants/constants";
 import leadForm from "./LeadForm.vue"
 import { isMobile } from '../constants/constants';
 import excel from "vue-excel-export";
@@ -102,7 +134,7 @@ export default {
     return {
       isMobile,
       leadsList: [],
-      dialog: false,
+      barChartDailog: false,
       search: "",
       headers: [],
       lead: [],
@@ -116,6 +148,7 @@ export default {
       statusList: [],
       arrivedList: [],
       interestList: [],
+      summaryLeads: [],
     }
   },
 
@@ -147,6 +180,10 @@ export default {
   methods: {
     getHeaders() {
       return LEADS_HEADERS;
+    },
+
+    getSummaryHeaders() {
+      return LEADS_SUMMARY_HEADERS
     },
 
     async retrieveLeads() {
@@ -187,8 +224,26 @@ export default {
   },
 
   watch: {
+    leadsList: {
+      handler(newLeads) {
+        if (!Array.isArray(newLeads) || newLeads.length === 0) return;
 
-  },
+        const summaryMap = {};
+
+        newLeads.forEach((lead) => {
+          const source = lead.arrivedFrom || 'Unknown';
+          summaryMap[source] = (summaryMap[source] || 0) + 1;
+        });
+
+        this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
+          source,
+          count
+        }));
+      },
+      immediate: true,
+      deep: true
+    }
+  }
 };
 </script>
 

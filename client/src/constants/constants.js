@@ -48,6 +48,10 @@ export const LEADS_HEADERS = [
     { text: "עדכון אחרון", value: "updatedAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
     { text: "קליטה", value: "createdAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
 ];
+export const LEADS_SUMMARY_HEADERS = [
+    { text: "הגיע אלינו", value: "source", class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "כמות", value: "count", class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+];
 export const HOLDER_MOBILE_HEADERS = [
     { text: "דירה", value: "flatId",   class: "mobile-headers px-2",    groupable: false,   align: "right", width: "5%"},
     { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "35%"},

@@ -19,7 +19,7 @@ const SCOPES = [
 ];
 const TOKEN_PATH = path.join(ServerApp.configFolderPath, 'token.json');
 const SPREADSHEET_ID = "1qS8rb0RDkOwVCuH7McXPYrlvrfctLFSaQ2hpFrmtbI0"; // sheet ID
-// const SPREADSHEET_ID = "1QIohCKC9MLZZtvzQqH7HlZza8kPCM_dZ"; // test sheet ID located in "שיווק"
+// const SPREADSHEET_ID = "10wuqAFC59GPQgRAoDt5pZRKkXzo8celDQx4Kb9Sh7GQ"; // test sheet ID located in "שיווק"
 const RANGE = "'לידים'!A:G"; // Using quotes for Hebrew sheet names
 
 function getNewToken(oAuth2Client) {
@@ -57,7 +57,7 @@ exports.getAuth = () => {
 }
 
 exports.getToken = async (oAuth2Client, code) => {
-  
+
   const {tokens} = await oAuth2Client.getToken(code)
 
   if(tokens && tokens.access_token){
@@ -143,7 +143,7 @@ exports.uploadToGoogleDrive = async (oAuth2Client, filename) => {
       fields: 'id',
       supportsAllDrives: true,
     });
-    
+
     // console.log('file.data', file.data);
     // console.log('file', file);
 
@@ -155,10 +155,10 @@ exports.uploadToGoogleDrive = async (oAuth2Client, filename) => {
 }
 
 exports.uploadInvoiceToGoogleDrive = async (oAuth2Client, filename, folderPath = null) => {
-  
+
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-   
-  let parentFolderId = ServerApp.google.storeInvoiceFolderIds; 
+
+  let parentFolderId = ServerApp.google.storeInvoiceFolderIds;
   parentFolderId = parentFolderId[0];
   //console.log(folderPath,parentFolderId[0]);
   if(folderPath){
@@ -172,13 +172,13 @@ exports.uploadInvoiceToGoogleDrive = async (oAuth2Client, filename, folderPath =
   if(parentFolderId){
 
       const fileMetadata = {
-        name: filename, 
-        parents: [parentFolderId], 
+        name: filename,
+        parents: [parentFolderId],
       };
       const filePath = path.join(ServerApp.uploadFolderPath, filename);
       const media = {
-        mimeType: 'application/octet-stream', 
-        body: fs.createReadStream(filePath), 
+        mimeType: 'application/octet-stream',
+        body: fs.createReadStream(filePath),
       };
 
       try {
@@ -187,24 +187,24 @@ exports.uploadInvoiceToGoogleDrive = async (oAuth2Client, filename, folderPath =
           resource: fileMetadata,
           media: media,
           fields: 'id, name',
-          supportsAllDrives: true, 
+          supportsAllDrives: true,
         });
 
         await drive.permissions.create({
           fileId: file.data.id,
           requestBody: {
             role: 'reader',
-            type: 'anyone', 
+            type: 'anyone',
           },
         });
 
         const readableUrl = `https://docs.google.com/file/d/${file.data.id}/preview?usp=drivesdk`;
-        
+
         return { id: file.data.id, name: file.data.name, url: readableUrl };
 
     } catch (error) {
       console.error('Error uploading the file to Google Drive:', error);
-      
+
     }
   }else{
     return false;
@@ -254,7 +254,7 @@ async function findOrCreateFolder(folderName, parentFolderId, drive) {
   }
 }
 
-// fatch data from googleSheet and save to UPLOAD_MODEL
+// fetch data from Google Sheet and save to UPLOAD_MODEL
 exports.fetchNewRows = async (UPLOAD_MODEL) => {
   const auth = this.getAuth();
   const sheets = google.sheets({ version: "v4", auth });
@@ -270,42 +270,43 @@ exports.fetchNewRows = async (UPLOAD_MODEL) => {
       console.log("No data found.");
       return;
     }
-    rows = rows.slice(1); // Skip the first row (headers)
 
-    // Filter rows where the first column (datetime) is in the correct format
-    rows = rows.filter(row => {
-      const dateStr = row[0]; // First column should be a datetime
-      return isValidDateFormat(dateStr);
-    });
-    // get the last id was read  
-    let lastLoad = await db.tables.findOne({table_id: 99, table_code: 80}) // lastLoad.description contains lastLoad datetime
-    console.log("Last recorded datetime:", lastLoad.description);
-    const lastDate = lastLoad.description;
-    const newRows = rows.filter(row => {
-      const rowDate = row[0];
-      return rowDate > lastDate;
-    });
-    
-    console.log("rows.lentgh:", rows.length);
-    console.log("newRows.length:", newRows.length);
+    // Skip the first row (headers)
+    rows = rows.slice(1);
+
+    // Fetch last loaded row index from db (use description as stringified index)
+    let lastLoad = await db.tables.findOne({ table_id: 99, table_code: 80 });
+    const lastRowIndex = parseInt(lastLoad?.description || '0', 10);
+
+    console.log("Last loaded row index:", lastRowIndex);
+
+    // Get new rows from the last loaded position + 1
+    const newRows = rows.slice(lastRowIndex + 1);
+
+    console.log("Total rows:", rows.length);
+    console.log("New rows to upload:", newRows.length);
 
     if (newRows.length > 0) {
-      // insert data to db
       for (const row of newRows) {
         const [createdAt, name, phone, email, interested, dummyFld, arrivedFrom] = row;
         await UPLOAD_MODEL.create({ name, phone, email, interested, arrivedFrom });
       }
 
-      // Save only the last row's datetime
-      const lastRowDatetime = newRows[newRows.length - 1][0];
-      await db.tables.findOneAndUpdate ({table_id: 99, table_code: 80},{description: lastRowDatetime}) // lastLoad.description contains lastLoad datetime
+      // Save the last loaded row index
+      const newLastIndex = lastRowIndex + newRows.length;
+      await db.tables.findOneAndUpdate(
+        { table_id: 99, table_code: 80 },
+        { description: newLastIndex.toString() }
+      );
     }
+
     console.log(`Fetched ${newRows.length} new rows from Google Sheets.`);
-    return newRows.length
+    return newRows.length;
   } catch (error) {
     console.error("Error fetching Google Sheets data:", error);
   }
 };
+
 
 // Helper function to check if a date matches the exact format: "YYYY-MM-DD HH:MM:SS"
 function isValidDateFormat(dateStr) {
