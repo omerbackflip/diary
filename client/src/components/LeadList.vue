@@ -23,23 +23,23 @@
             <v-toolbar flat class="mt-5 mb-3" >
               <v-row no-gutters style="justify-content: stretch;">
                 <v-col cols="4" md="2">
-                  <v-toolbar-title>  סה"כ - {{ filteredLeads.length.toLocaleString() }} מתוך {{ leadsList.length.toLocaleString() }} </v-toolbar-title>
+                  <v-toolbar-title>({{ filteredLeads.length.toLocaleString() }}) {{ leadsList.length.toLocaleString() }} </v-toolbar-title>
                 </v-col>
-                <v-col cols="4" md="2">
-                  <v-btn color="primary" @click="barChartDailog = true">Show Summary</v-btn>
+                <v-col cols="5" md="1">
+                  <v-text-field v-model="search" label="Search" clearable hide-details ></v-text-field>
                 </v-col>
-                <v-col cols="4" md="2">
-                  <v-text-field v-model="search" label="Search" clearable></v-text-field>
-                </v-col>
-                <v-col v-if="!isMobile()" style="text-align-last: center;" cols="2" md="1">
+                <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
                   <export-excel :data="leadsList" type="xlsx">
                     <v-btn x-small class="btn btn-danger">
                       <v-icon small>mdi-download</v-icon>
                     </v-btn>
                   </export-excel>
                 </v-col>
-                <v-col  style="text-align-last: center;" cols="2" md="1">
-                  <v-btn x-small @click="getNewLeads" class="btn btn-danger"> excel
+                <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
+                  <v-btn x-small class="btn btn-danger" @click="barChartDailog = true"><v-icon small>mdi-pulse</v-icon></v-btn>
+                </v-col>
+                <v-col cols="3" md="1" style="text-align-last: center;">
+                  <v-btn x-small @click="getNewLeads" class="btn btn-danger"> Leads
                     <v-icon small>mdi-refresh</v-icon>
                   </v-btn>
                 </v-col>
@@ -77,7 +77,7 @@
         </v-data-table>
       </v-flex>
       <lead-form ref="leadForm"/>
-      <v-dialog v-model="barChartDailog" max-width="1000">
+      <v-dialog v-model="barChartDailog" max-width="500">
         <v-card>
           <v-card-title class="text-h6">Leads Summary by Source</v-card-title>
           <v-card-text>
@@ -98,11 +98,17 @@
           <v-data-table
             :headers="getSummaryHeaders()"
             :items="summaryLeads"
+            disable-pagination
+            hide-default-footer
+            fixed-header
+            mobile-breakpoint="0"
+            height="80vh"
+            class="elevation-3 mt-0 hebrew"
           ></v-data-table>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn text @click="dialog = false">Close</v-btn>
+            <v-btn text @click="barChartDailog = false">Close</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -227,14 +233,11 @@ export default {
     leadsList: {
       handler(newLeads) {
         if (!Array.isArray(newLeads) || newLeads.length === 0) return;
-
         const summaryMap = {};
-
         newLeads.forEach((lead) => {
           const source = lead.arrivedFrom || 'Unknown';
           summaryMap[source] = (summaryMap[source] || 0) + 1;
         });
-
         this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
           source,
           count
