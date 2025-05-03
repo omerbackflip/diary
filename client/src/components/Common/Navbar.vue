@@ -16,6 +16,9 @@
                         <v-btn x-small @click="callAddNewRow()">
                             <v-icon small>mdi-plus</v-icon>
                         </v-btn>
+                        <v-btn x-small @click="$emit('logout')" icon>
+                            <v-icon small>mdi-logout</v-icon>
+                        </v-btn>
                     </div>
                 </v-col>
                 <v-menu offset-y>
@@ -81,6 +84,7 @@ Vue.filter("formatDate", function (value) {
 	}
 });
 export default {
+    name: 'Navbar',
     components: { ImportXLS },
     data() {
         return {
