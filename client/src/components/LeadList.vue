@@ -23,20 +23,20 @@
             <v-toolbar flat class="mt-5 mb-3" >
               <v-row no-gutters style="justify-content: stretch;">
                 <v-col cols="4" md="2">
-                  <v-toolbar-title>({{ filteredLeads.length.toLocaleString() }}) {{ leadsList.length.toLocaleString() }} </v-toolbar-title>
+                  <v-toolbar-title>({{ filteredLeads.length.toLocaleString() }}) {{ allLeadList.length.toLocaleString() }} </v-toolbar-title>
                 </v-col>
                 <v-col cols="5" md="1">
                   <v-text-field v-model="search" label="Search" clearable hide-details ></v-text-field>
                 </v-col>
                 <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
-                  <export-excel :data="leadsList" type="xlsx">
+                  <export-excel :data="allLeadList" type="xlsx">
                     <v-btn x-small class="btn btn-danger">
                       <v-icon small>mdi-download</v-icon>
                     </v-btn>
                   </export-excel>
                 </v-col>
                 <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
-                  <v-btn x-small class="btn btn-danger" @click="barChartDailog = true"><v-icon small>mdi-pulse</v-icon></v-btn>
+                  <v-btn small class="btn btn-danger" @click="callStatistics"><v-icon>mdi-google-analytics</v-icon></v-btn>
                 </v-col>
                 <v-col cols="3" md="1" style="text-align-last: center;">
                   <v-btn x-small @click="getNewLeads" class="btn btn-danger"> Leads
@@ -81,30 +81,71 @@
         <v-card>
           <v-card-title class="text-h6">Leads Summary by Source</v-card-title>
           <v-card-text>
-            <!-- <v-simple-table dense>
-              <thead>
-                <tr>
-                  <th class="text-left">Source</th>
-                  <th class="text-right">Count</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(count, index) in summaryLeads" :key="index">
-                  <td>{{ summaryLabels[index] }}</td>
-                  <td class="text-right">{{ count }}</td>
-                </tr>
-              </tbody>
-            </v-simple-table> -->
-          <v-data-table
-            :headers="getSummaryHeaders()"
-            :items="summaryLeads"
-            disable-pagination
-            hide-default-footer
-            fixed-header
-            mobile-breakpoint="0"
-            height="80vh"
-            class="elevation-3 mt-0 hebrew"
-          ></v-data-table>
+            <v-row dense>
+              <!-- From Date -->
+              <v-col cols="6" class="py-1">
+                <v-menu
+                  v-model="fromMenu"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="fromDate"
+                      label="מתאריך"
+                      prepend-icon="mdi-calendar"
+                      clearable
+                      dense
+                      hide-details
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    />
+                  </template>
+                  <v-date-picker v-model="fromDate" @input="fromMenu = false" />
+                </v-menu>
+              </v-col>
+
+              <!-- To Date -->
+              <v-col cols="6" class="py-1">
+                <v-menu
+                  v-model="toMenu"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="toDate"
+                      label="עד תאריך"
+                      prepend-icon="mdi-calendar"
+                      clearable
+                      dense
+                      hide-details
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    />
+                  </template>
+                  <v-date-picker v-model="toDate" @input="toMenu = false" />
+                </v-menu>
+              </v-col>
+            </v-row>
+            <v-data-table
+              :headers="getSummaryHeaders()"
+              :items="summaryLeads"
+              disable-pagination
+              hide-default-footer
+              fixed-header
+              mobile-breakpoint="0"
+              height="60vh"
+              class="elevation-3 mt-0 hebrew"
+            />
           </v-card-text>
           <v-card-actions>
             <v-spacer />
@@ -139,7 +180,7 @@ export default {
   data() {
     return {
       isMobile,
-      leadsList: [],
+      allLeadList: [],
       barChartDailog: false,
       search: "",
       headers: [],
@@ -155,12 +196,16 @@ export default {
       arrivedList: [],
       interestList: [],
       summaryLeads: [],
+      fromDate: null,
+    toDate: null,
+    fromMenu: false,
+    toMenu: false,
     }
   },
 
   computed: {
     filteredLeads() {
-      return this.leadsList.filter(lead => {
+      return this.allLeadList.filter(lead => {
         const matchesStatus = !this.statusFilter || lead.status === this.statusFilter;
         const matchesArrived = !this.arrivedFilter || lead.arrivedFrom === this.arrivedFilter;
         const matchesInterest = !this.interestFilter || lead.interested === this.interestFilter;
@@ -197,7 +242,7 @@ export default {
       let response;
       response = await apiService.getMany({model: LEAD_MODEL}); 
       if (response && response.data) {
-        this.leadsList = response.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        this.allLeadList = response.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
         this.isLoading = false;
       }
     },
@@ -214,8 +259,37 @@ export default {
       let msg = await specificServiceEndPoints.syncGoogleSheets();
       window.alert(msg.data.message);
       this.retrieveLeads();
-    }
+    },
 
+    async callStatistics () {
+      this.fromDate = null
+this.toDate = null
+await this.getStatistics()
+this.barChartDailog = true
+    },
+
+    async getStatistics() {
+    const summaryMap = {};
+    const from = this.fromDate ? new Date(this.fromDate) : null;
+    const to = this.toDate ? new Date(this.toDate) : null;
+
+    this.allLeadList.forEach((lead) => {
+      const createdAt = new Date(lead.createdAt);
+      if (
+        (!from || createdAt >= from) &&
+        (!to || createdAt <= to)
+      ) {
+        const source = lead.arrivedFrom || 'Unknown';
+        summaryMap[source] = (summaryMap[source] || 0) + 1;
+      }
+    });
+
+    this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
+      source,
+      count
+    }));
+    // this.barChartDailog = true;
+  }
   },
 
   async mounted() {
@@ -230,22 +304,28 @@ export default {
   },
 
   watch: {
-    leadsList: {
-      handler(newLeads) {
-        if (!Array.isArray(newLeads) || newLeads.length === 0) return;
-        const summaryMap = {};
-        newLeads.forEach((lead) => {
-          const source = lead.arrivedFrom || 'Unknown';
-          summaryMap[source] = (summaryMap[source] || 0) + 1;
-        });
-        this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
-          source,
-          count
-        }));
-      },
-      immediate: true,
-      deep: true
-    }
+    // allLeadList: {
+    //   handler(newLeads) {
+    //     if (!Array.isArray(newLeads) || newLeads.length === 0) return;
+    //     const summaryMap = {};
+    //     newLeads.forEach((lead) => {
+    //       const source = lead.arrivedFrom || 'Unknown';
+    //       summaryMap[source] = (summaryMap[source] || 0) + 1;
+    //     });
+    //     this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
+    //       source,
+    //       count
+    //     }));
+    //   },
+    //   immediate: true,
+    //   deep: true
+    // }
+    fromDate() {
+    this.getStatistics();
+  },
+  toDate() {
+    this.getStatistics();
+  }
   }
 };
 </script>
