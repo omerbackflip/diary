@@ -61,6 +61,7 @@
               <td><span>{{item.name}}</span></td>
               <td><span>{{item.phone}}</span></td>
               <td><span>{{item.status}}</span></td>
+              <td><span>{{item.adName}}</span></td>
               <td><span>{{item.arrivedFrom}}</span></td>
               <td><span>{{item.interested}}</span></td>
               <td><span>{{item.trackDate | formatDate}}</span></td>

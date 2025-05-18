@@ -11,6 +11,7 @@ module.exports = mongoose => {
       email: String,
       trackDate: Date,
       trackRemark: String,
+      adName: String,
     },
     { timestamps: true }
   );

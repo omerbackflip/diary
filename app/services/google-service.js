@@ -288,8 +288,8 @@ exports.fetchNewRows = async (UPLOAD_MODEL) => {
 
     if (newRows.length > 0) {
       for (const row of newRows) {
-        const [createdAt, name, phone, email, interested, dummyFld, arrivedFrom] = row;
-        await UPLOAD_MODEL.create({ name, phone, email, interested, arrivedFrom });
+        const [createdAt, name, phone, email, interested, adName, arrivedFrom] = row;
+        await UPLOAD_MODEL.create({ name, phone, email, interested, adName, arrivedFrom });
       }
 
       // Save the last loaded row index

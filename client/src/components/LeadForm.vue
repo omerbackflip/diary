@@ -20,10 +20,13 @@
             <v-container>
               <v-form ref="form">
                 <v-row>
-                  <v-col cols="6">
+                  <v-col cols="4">
                     <v-text-field v-model="lead.name" label="שם" @focus="$event.target.select()"></v-text-field>
                   </v-col>
-                  <v-col cols="6">
+                  <v-col cols="4">
+                    <v-text-field v-model="lead.adName" label="מודעה" disabled></v-text-field>
+                  </v-col>
+                  <v-col cols="4">
                     <v-text-field v-model="lead.phone" label="טלפון" @focus="$event.target.select()"
                                   append-icon="mdi-whatsapp" @click:append="sendWhatsapp(lead.phone)" style="font-size: small;"></v-text-field>
                   </v-col>
