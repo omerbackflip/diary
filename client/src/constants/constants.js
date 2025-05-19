@@ -48,6 +48,7 @@ export const LEADS_HEADERS = [
     { text: "ת. מעקב", value: "trackDate",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
     { text: "עדכון אחרון", value: "updatedAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
     { text: "קליטה", value: "createdAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "פגישה", value: "meatting",   class: "mobile-headers",    groupable: false,   align: "right", width: "3%"},
 ];
 export const LEADS_SUMMARY_HEADERS = [
     { text: "הגיע אלינו", value: "source", class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},

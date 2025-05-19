@@ -45,7 +45,13 @@
                   <v-col cols="12">
                     <v-textarea v-model="lead.description" label="תאור" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
-                  <v-col cols="8">
+                  <v-col cols="2">
+                    <div class="d-flex flex-column align-end">
+                      <label class="caption mb-1" style="margin-inline-end: 4px;">פגישה</label>
+                      <v-checkbox v-model="lead.meeting" dense hide-details class="ma-0 pa-0"></v-checkbox>
+                    </div>
+                  </v-col>
+                  <v-col cols="6">
                     <v-textarea v-model="lead.trackRemark" label="הערת מעקב" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
                   <!--  Date  -->

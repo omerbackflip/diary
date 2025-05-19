@@ -67,6 +67,10 @@
               <td><span>{{item.trackDate | formatDate}}</span></td>
               <td><span>{{item.updatedAt | formatDate}}</span></td>
               <td><span>{{item.createdAt | formatDate}}</span></td>
+              <td @click.stop>
+                <v-checkbox v-model="item.meeting" :input-value="item.meeting" hide-details dense class="ma-0 pa-0" 
+                            @click="toggleMeeting(item)"></v-checkbox>
+              </td>
             </tr>
             <tr style="border-bottom-width: thick;">
               <td :colspan="headers.length" @click="getLeadForEdit(item)" style="text-align: right">
@@ -264,9 +268,13 @@ export default {
 
     async callStatistics () {
       this.fromDate = null
-this.toDate = null
-await this.getStatistics()
-this.barChartDailog = true
+      this.toDate = null
+      await this.getStatistics()
+      this.barChartDailog = true
+    },
+
+    async toggleMeeting (item) {
+      await apiService.update(item._id,{meeting: item.meeting},{model: LEAD_MODEL}); 
     },
 
     async getStatistics() {

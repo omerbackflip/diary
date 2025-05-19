@@ -12,6 +12,7 @@ module.exports = mongoose => {
       trackDate: Date,
       trackRemark: String,
       adName: String,
+      meeting: Boolean,
     },
     { timestamps: true }
   );
