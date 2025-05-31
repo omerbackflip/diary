@@ -7,3 +7,7 @@
 [submodule "client/src/components/shared/mongoose"]
 	path = client/src/components/shared/mongoose
 	url = https://github.com/omerbackflip/mongoose.git
+[submodule "client/src/components/shared/google"]
+	path = client/src/components/shared/google
+	url = https://github.com/omerbackflip/google.git
+	branch = master
