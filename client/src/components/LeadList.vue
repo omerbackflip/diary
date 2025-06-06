@@ -238,8 +238,6 @@ export default {
       lead: [],
       msg: "",
       isLoading: true,
-      itemToEdit: "",
-      dateModal : false,
       statusFilter: '',
       arrivedFilter: '',
       interestFilter: '',
@@ -249,10 +247,8 @@ export default {
       summaryLeads: [],
       fromDate: null,
       toDate: null,
-      chartType: 'bar',
-      // fromMenu: false,
-      // toMenu: false,
-      dateRange: [], // ← use array instead of object
+      chartType: 'pie',
+      dateRange: [],
       rangeMenu: false,
       dateRangeText: ''
     }
@@ -329,11 +325,8 @@ export default {
 
     async getStatistics() {
       const summaryMap = {};
-      // const from = this.fromDate ? new Date(this.fromDate) : null;
-      // const to = this.toDate ? new Date(this.toDate) : null;
       const from = this.fromDate ? new Date(this.fromDate + 'T00:00:00') : null;
       const to = this.toDate ? new Date(this.toDate + 'T23:59:59') : null;
-
 
       this.allLeadList.forEach((lead) => {
         const createdAt = new Date(lead.createdAt);
@@ -345,12 +338,10 @@ export default {
           summaryMap[source] = (summaryMap[source] || 0) + 1;
         }
       });
-
       this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
         source,
         count
       }));
-      // this.barChartDialog = true;
     },
 
     applyDateRange() {
@@ -386,22 +377,6 @@ export default {
   },
 
   watch: {
-    // allLeadList: {
-    //   handler(newLeads) {
-    //     if (!Array.isArray(newLeads) || newLeads.length === 0) return;
-    //     const summaryMap = {};
-    //     newLeads.forEach((lead) => {
-    //       const source = lead.arrivedFrom || 'Unknown';
-    //       summaryMap[source] = (summaryMap[source] || 0) + 1;
-    //     });
-    //     this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
-    //       source,
-    //       count
-    //     }));
-    //   },
-    //   immediate: true,
-    //   deep: true
-    // }
     fromDate() {
     this.getStatistics();
     },

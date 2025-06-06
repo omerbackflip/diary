@@ -6,18 +6,16 @@
 
 <script>
 import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+Chart.plugins.unregister(ChartDataLabels); // optional cleanup
+Chart.plugins.register(ChartDataLabels);   // register globally
 
 export default {
   name: 'BarChart',
   props: {
-    data: {
-      type: Array,
-      required: true
-    },
-    type: {
-      type: String,
-      default: 'bar' // or 'pie'
-    }
+    data: {type: Array, required: true},
+    type: {type: String, default: 'pie'},
   },
 
   data() {
@@ -63,9 +61,28 @@ export default {
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false
-        }
+          maintainAspectRatio: false,
+          plugins: {
+            datalabels: {
+              color: '#000',
+              anchor: this.type === 'pie' ? 'center' : 'end',
+              align: this.type === 'pie' ? 'center' : 'top',
+              font: {
+                weight: 'bold',
+                size: 14
+              },
+              formatter: (value, context) => {
+                const data = context.chart.data.datasets[0].data;
+                const total = data.reduce((a, b) => a + b, 0);
+                const percent = (value / total * 100).toFixed(1) + '%';
+                return percent;
+              }
+            }
+          }
+        },
+        plugins: [ChartDataLabels]
       });
+
 
     },
 
@@ -84,7 +101,7 @@ export default {
   },
 
   mounted() {
-    this.getStatistics(); // Loads full data (no filters)
+    this.renderChart(); // Loads full data (no filters)
   }
 
 };
