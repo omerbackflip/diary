@@ -41,6 +41,11 @@ export default {
     renderChart() {
       const ctx = this.$refs.chart;
 
+      // Defensive: exit early if data is invalid
+      if (!Array.isArray(this.data) || this.data.length === 0 || !ctx) {
+        return;
+      }
+
       // Destroy existing chart if any
       if (this.chartInstance) {
         this.chartInstance.destroy();
@@ -82,8 +87,6 @@ export default {
         },
         plugins: [ChartDataLabels]
       });
-
-
     },
 
     generateColors(count) {

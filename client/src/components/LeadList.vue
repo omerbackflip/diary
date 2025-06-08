@@ -82,118 +82,64 @@
         </v-data-table>
       </v-flex>
       <lead-form ref="leadForm"/>
-      <!-- <v-dialog v-model="barChartDialog" max-width="500">
-        <v-card>
-          <v-card-title class="text-h6">Leads Summary by Source</v-card-title>
-          <v-card-text>
-            <v-row dense>
-              <v-col cols="6" class="py-1">
-                <v-menu
-                  v-model="fromMenu"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="fromDate"
-                      label="מתאריך"
-                      prepend-icon="mdi-calendar"
-                      clearable
-                      dense
-                      hide-details
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    />
-                  </template>
-                  <v-date-picker v-model="fromDate" @input="fromMenu = false" />
-                </v-menu>
-              </v-col>
-
-              <v-col cols="6" class="py-1">
-                <v-menu
-                  v-model="toMenu"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="toDate"
-                      label="עד תאריך"
-                      prepend-icon="mdi-calendar"
-                      clearable
-                      dense
-                      hide-details
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    />
-                  </template>
-                  <v-date-picker v-model="toDate" @input="toMenu = false" />
-                </v-menu>
-              </v-col>
-            </v-row>
-            <v-data-table
-              :headers="getSummaryHeaders()"
-              :items="summaryLeads"
-              disable-pagination
-              hide-default-footer
-              fixed-header
-              mobile-breakpoint="0"
-              height="60vh"
-              class="elevation-3 mt-0 hebrew"
-            />
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text @click="barChartDialog = false">Close</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog> -->
       <v-dialog v-model="barChartDialog" max-width="600px">
         <v-card>
-          <v-card-title>Lead Source Statistics</v-card-title>
+      <v-card-title>
+        <div class="d-flex justify-space-between align-center w-100">
+          <strong>Statistics By {{ summaryBy }}</strong>
+          <strong>Total: {{ totalCount }}</strong>
+        </div>
+      </v-card-title>
           <v-card-text>
-            <v-menu
-              ref="rangeMenu"
-              v-model="rangeMenu"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="dateRangeText"
-                  label="Date Range"
-                  prepend-icon="mdi-calendar"
-                  readonly
-                  clearable
-                  @click:clear="clearDateRange"
-                  v-bind="attrs"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateRange"
-                range
-                @change="applyDateRange"
-                no-title
-                scrollable
-              ></v-date-picker>
-            </v-menu>
+          <v-row class="mb-4" align="center" no-gutters>
+            <v-col cols="12" md="6">
+              <v-menu
+                ref="rangeMenu"
+                v-model="rangeMenu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="dateRangeText"
+                    label="בחר טווח תאריכים"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    clearable
+                    @click:clear="clearDateRange"
+                    v-bind="attrs"
+                    v-on="on"
+                    dense
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="dateRange"
+                  range
+                  @change="applyDateRange"
+                  no-title
+                  scrollable
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
 
-            <v-btn-toggle v-model="chartType" dense>
-              <v-btn value="bar">Bar</v-btn>
-              <v-btn value="pie">Pie</v-btn>
-            </v-btn-toggle>
+            <v-col cols="6" md="3" class="text-center">
+              <v-btn-toggle v-model="chartType" dense>
+                <v-btn value="bar">Bar</v-btn>
+                <v-btn value="pie">Pie</v-btn>
+              </v-btn-toggle>
+            </v-col>
+
+            <v-col cols="6" md="3" class="text-center">
+              <v-btn-toggle v-model="summaryBy" dense>
+                <v-btn value="arrivedFrom">הגיע מ</v-btn>
+                <v-btn value="status">סטטוס</v-btn>
+              </v-btn-toggle>
+            </v-col>
+          </v-row>
+
             <BarChart :data="summaryLeads" :type="chartType" />
 
           </v-card-text>
@@ -245,6 +191,8 @@ export default {
       arrivedList: [],
       interestList: [],
       summaryLeads: [],
+      totalCount: 0,
+      summaryBy: 'arrivedFrom',
       fromDate: null,
       toDate: null,
       chartType: 'pie',
@@ -323,26 +271,28 @@ export default {
       await apiService.update(item._id,{meeting: item.meeting},{model: LEAD_MODEL}); 
     },
 
-    async getStatistics() {
-      const summaryMap = {};
-      const from = this.fromDate ? new Date(this.fromDate + 'T00:00:00') : null;
-      const to = this.toDate ? new Date(this.toDate + 'T23:59:59') : null;
+  async getStatistics() {
+    const summaryMap = {};
+    const from = this.fromDate ? new Date(this.fromDate + 'T00:00:00') : null;
+    const to = this.toDate ? new Date(this.toDate + 'T23:59:59') : null;
 
-      this.allLeadList.forEach((lead) => {
-        const createdAt = new Date(lead.createdAt);
-        if (
-          (!from || createdAt >= from) &&
-          (!to || createdAt <= to)
-        ) {
-          const source = lead.arrivedFrom || 'Unknown';
-          summaryMap[source] = (summaryMap[source] || 0) + 1;
-        }
-      });
-      this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
-        source,
-        count
-      }));
-    },
+    this.allLeadList.forEach((lead) => {
+      const createdAt = new Date(lead.createdAt);
+      if (
+        (!from || createdAt >= from) &&
+        (!to || createdAt <= to)
+      ) {
+        // Dynamic key by summaryBy
+        const key = lead[this.summaryBy] || 'Unknown'; // NEW
+        summaryMap[key] = (summaryMap[key] || 0) + 1;
+      }
+    });
+    this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
+      source,
+      count
+    }));
+    this.totalCount = this.summaryLeads.reduce((sum, lead) => sum + lead.count, 0);
+  },
 
     applyDateRange() {
       if (this.dateRange.length === 2) {
@@ -381,6 +331,9 @@ export default {
     this.getStatistics();
     },
     toDate() {
+      this.getStatistics();
+    },
+    summaryBy() { // NEW
       this.getStatistics();
     }
   }
