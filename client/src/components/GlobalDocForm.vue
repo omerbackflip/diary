@@ -94,7 +94,7 @@ export default {
       let table_id = 8;
       apiService.getMany({table_id,model: TABLE_MODEL})
         .then((response) => {
-          this.documentList = response.data;
+          this.documentList = response.data.sort((a, b) => a.table_code - b.table_code);
         })
         .catch((e) => {
           console.log(e);
