@@ -22,10 +22,10 @@
           <template v-slot:top>
             <v-toolbar flat class="mt-5 mb-3" >
               <v-row no-gutters style="justify-content: stretch;">
-                <v-col cols="4" md="2">
+                <v-col cols="4" md="1">
                   <v-toolbar-title>({{ filteredLeads.length.toLocaleString() }}) {{ allLeadList.length.toLocaleString() }} </v-toolbar-title>
                 </v-col>
-                <v-col cols="5" md="1">
+                <v-col cols="4" md="2">
                   <v-text-field v-model="search" label="Search" clearable hide-details ></v-text-field>
                 </v-col>
                 <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
@@ -35,13 +35,11 @@
                     </v-btn>
                   </export-excel>
                 </v-col>
-                <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
-                  <v-btn small class="btn btn-danger" @click="callStatistics"><v-icon>mdi-google-analytics</v-icon></v-btn>
+                <v-col cols="2" md="1" style="text-align-last: center;">
+                  <v-btn x-small class="btn btn-danger" @click="callStatistics"><v-icon small>mdi-google-analytics</v-icon></v-btn>
                 </v-col>
-                <v-col cols="3" md="1" style="text-align-last: center;">
-                  <v-btn x-small @click="getNewLeads" class="btn btn-danger"> Leads
-                    <v-icon small>mdi-refresh</v-icon>
-                  </v-btn>
+                <v-col cols="2" md="1" style="text-align-last: center;">
+                  <v-btn x-small @click="getNewLeads" class="btn btn-danger"> Leads <v-icon small>mdi-refresh</v-icon></v-btn>
                 </v-col>
                 <v-col cols="4" md="2">
                   <v-combobox v-model="statusFilter" :items="statusList" label="סטטוס" reverse :allow-overflow="false" dense clearable></v-combobox>
@@ -67,10 +65,7 @@
               <td><span>{{item.trackDate | formatDate}}</span></td>
               <td><span>{{item.updatedAt | formatDate}}</span></td>
               <td><span>{{item.createdAt | formatDate}}</span></td>
-              <td @click.stop>
-                <v-checkbox v-model="item.meeting" :input-value="item.meeting" hide-details dense class="ma-0 pa-0" 
-                            @click="toggleMeeting(item)"></v-checkbox>
-              </td>
+              <td><v-checkbox :input-value="item.meeting" hide-details dense class="ma-0 pa-0" disabled></v-checkbox></td>
             </tr>
             <tr style="border-bottom-width: thick;">
               <td :colspan="headers.length" @click="getLeadForEdit(item)" style="text-align: right">
@@ -86,13 +81,13 @@
         <v-card>
       <v-card-title>
         <div class="d-flex justify-space-between align-center w-100">
-          <strong>Statistics By {{ summaryBy }}</strong>
-          <strong>Total: {{ totalCount }}</strong>
+          <strong>{{ summaryBy }}</strong>
+          <span>Total: {{ totalCount }}</span>
         </div>
       </v-card-title>
           <v-card-text>
-          <v-row class="mb-4" align="center" no-gutters>
-            <v-col cols="12" md="6">
+          <v-row class="mb-4" style="justify-content: space-evenly;" align="center" no-gutters>
+            <v-col cols="6" md="6">
               <v-menu
                 ref="rangeMenu"
                 v-model="rangeMenu"
@@ -126,16 +121,9 @@
             </v-col>
 
             <v-col cols="6" md="3" class="text-center">
-              <v-btn-toggle v-model="chartType" dense>
-                <v-btn value="bar">Bar</v-btn>
-                <v-btn value="pie">Pie</v-btn>
-              </v-btn-toggle>
-            </v-col>
-
-            <v-col cols="6" md="3" class="text-center">
               <v-btn-toggle v-model="summaryBy" dense>
-                <v-btn value="arrivedFrom">הגיע מ</v-btn>
-                <v-btn value="status">סטטוס</v-btn>
+                <v-btn value="arrivedFrom" x-small>הגיע מ</v-btn>
+                <v-btn value="status" x-small>סטטוס</v-btn>
               </v-btn-toggle>
             </v-col>
           </v-row>
@@ -195,7 +183,7 @@ export default {
       summaryBy: 'arrivedFrom',
       fromDate: null,
       toDate: null,
-      chartType: 'pie',
+      chartType: 'bar', // 'pie'
       dateRange: [],
       rangeMenu: false,
       dateRangeText: ''
@@ -271,28 +259,42 @@ export default {
       await apiService.update(item._id,{meeting: item.meeting},{model: LEAD_MODEL}); 
     },
 
-  async getStatistics() {
-    const summaryMap = {};
-    const from = this.fromDate ? new Date(this.fromDate + 'T00:00:00') : null;
-    const to = this.toDate ? new Date(this.toDate + 'T23:59:59') : null;
+    async getStatistics() {
+      const summaryMap = {};
+      const from = this.fromDate ? new Date(this.fromDate + 'T00:00:00') : null;
+      const to = this.toDate ? new Date(this.toDate + 'T23:59:59') : null;
 
-    this.allLeadList.forEach((lead) => {
-      const createdAt = new Date(lead.createdAt);
-      if (
-        (!from || createdAt >= from) &&
-        (!to || createdAt <= to)
-      ) {
-        // Dynamic key by summaryBy
-        const key = lead[this.summaryBy] || 'Unknown'; // NEW
-        summaryMap[key] = (summaryMap[key] || 0) + 1;
-      }
-    });
-    this.summaryLeads = Object.entries(summaryMap).map(([source, count]) => ({
-      source,
-      count
-    }));
-    this.totalCount = this.summaryLeads.reduce((sum, lead) => sum + lead.count, 0);
-  },
+      this.allLeadList.forEach((lead) => {
+        const createdAt = new Date(lead.createdAt);
+        if (
+          (!from || createdAt >= from) &&
+          (!to || createdAt <= to)
+        ) {
+          const key = lead[this.summaryBy] || 'Unknown';
+
+          if (!summaryMap[key]) {
+            summaryMap[key] = { count: 0, meetingCount: 0 };
+          }
+
+          summaryMap[key].count += 1;
+
+          if (this.summaryBy === 'arrivedFrom' && lead.meeting===true) {
+            summaryMap[key].meetingCount += 1;
+          }
+        }
+      });
+
+      this.summaryLeads = Object.entries(summaryMap).map(([source, { count, meetingCount }]) => {
+        const summary = { source, count };
+        if (this.summaryBy === 'arrivedFrom') {
+          summary.meetingCount = meetingCount;
+        }
+        return summary;
+      });
+
+      this.totalCount = this.summaryLeads.reduce((sum, lead) => sum + lead.count, 0);
+    },
+
 
     applyDateRange() {
       if (this.dateRange.length === 2) {

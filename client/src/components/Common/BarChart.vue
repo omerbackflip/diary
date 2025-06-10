@@ -7,15 +7,15 @@
 <script>
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { isMobile } from '../../constants/constants';
 
-Chart.plugins.unregister(ChartDataLabels); // optional cleanup
-Chart.plugins.register(ChartDataLabels);   // register globally
+Chart.plugins.unregister(ChartDataLabels);
+Chart.plugins.register(ChartDataLabels);
 
 export default {
   name: 'BarChart',
   props: {
-    data: {type: Array, required: true},
-    type: {type: String, default: 'pie'},
+    data: { type: Array, required: true }
   },
 
   data() {
@@ -31,82 +31,111 @@ export default {
       handler() {
         this.renderChart();
       }
-    },
-    type() {
-      this.renderChart(); // Re-render when chart type changes
     }
   },
 
   methods: {
-    renderChart() {
-      const ctx = this.$refs.chart;
+renderChart() {
+  const ctx = this.$refs.chart;
 
-      // Defensive: exit early if data is invalid
-      if (!Array.isArray(this.data) || this.data.length === 0 || !ctx) {
-        return;
-      }
+  if (!Array.isArray(this.data) || this.data.length === 0 || !ctx) return;
 
-      // Destroy existing chart if any
-      if (this.chartInstance) {
-        this.chartInstance.destroy();
-      }
+  if (this.chartInstance) {
+    this.chartInstance.destroy();
+  }
 
-      const labels = this.data.map(item => item.source);
-      const counts = this.data.map(item => item.count);
+  const labels = this.data.map(item => item.source);
+  const counts = this.data.map(item => item.count);
+  const hasMeetings = this.data.some(item => typeof item.meetingCount === 'number');
+  const meetingCounts = hasMeetings ? this.data.map(item => item.meetingCount || 0) : [];
 
-      this.chartInstance = new Chart(ctx, {
-        type: this.type,
-        data: {
-          labels,
-          datasets: [{
-            label: 'Leads by Source',
-            data: counts,
-            backgroundColor: this.generateColors(counts.length)
-          }]
+  const totalLeads = counts.reduce((a, b) => a + b, 0);
+  const totalMeetings = hasMeetings ? meetingCounts.reduce((a, b) => a + b, 0) : 0;
+
+  const datasets = [
+    {
+      label: `Total Leads - ${totalLeads} ${!isMobile() ? `         ` : ``}`,
+      data: counts,
+      backgroundColor: 'blue',
+      categoryPercentage: 0.7,
+      barPercentage: 0.6
+    }
+  ];
+
+  if (hasMeetings) {
+    datasets.push({
+      label: `Meetings - ${totalMeetings}`,
+      data: meetingCounts,
+      backgroundColor: 'red',
+      categoryPercentage: 0.7,
+      barPercentage: 0.6
+    });
+  }
+
+  this.chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          beginAtZero: true
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: {
-              color: '#000',
-              anchor: this.type === 'pie' ? 'center' : 'end',
-              align: this.type === 'pie' ? 'center' : 'top',
-              font: {
-                weight: 'bold',
-                size: 14
-              },
-              formatter: (value, context) => {
-                const data = context.chart.data.datasets[0].data;
-                const total = data.reduce((a, b) => a + b, 0);
-                const percent = (value / total * 100).toFixed(1) + '%';
-                return percent;
-              }
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0
+          }
+        }
+      },
+      plugins: {
+        datalabels: {
+          color: '#000',
+          anchor: 'end',
+          align: 'top',
+          font: {
+            weight: 'bold',
+            size: 12
+          },
+          formatter: value => value
+        },
+        legend: {
+          labels: {
+            // Override the default legend labels
+            generateLabels: chart => {
+              const datasets = chart.data.datasets;
+              return datasets.map((dataset, i) => ({
+                text: dataset.label,
+                fillStyle: dataset.backgroundColor,
+                hidden: !chart.isDatasetVisible(i),
+                lineCap: 'butt',
+                lineDash: [],
+                lineDashOffset: 0,
+                lineJoin: 'miter',
+                strokeStyle: dataset.borderColor,
+                pointStyle: 'rect',
+                datasetIndex: i
+              }));
             }
           }
-        },
-        plugins: [ChartDataLabels]
-      });
-    },
-
-    generateColors(count) {
-      const baseColors = [
-        '#1976D2', '#E53935', '#43A047', '#FB8C00',
-        '#8E24AA', '#00ACC1', '#FDD835', '#6D4C41'
-      ];
-      const colors = [];
-      for (let i = 0; i < count; i++) {
-        colors.push(baseColors[i % baseColors.length]);
+        }
       }
-      return colors;
-    }
+    },
+    plugins: [ChartDataLabels]
+  });
+}
+
+
 
   },
 
   mounted() {
-    this.renderChart(); // Loads full data (no filters)
+    this.renderChart();
   }
-
 };
 </script>
 

@@ -39,16 +39,16 @@ export const DIARY_MOBILE_HEADERS = [
     // { text: "תאור יום", value: "description",   class: "mobile-headers",    groupable: false,   align: "right", width: "15%"}
 ];
 export const LEADS_HEADERS = [
-    { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
-    { text: "טלפון", value: "phone",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
-    { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
-    { text: "מודעה", value: "adName",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
-    { text: "הגיע אלינו", value: "arrivedFrom",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
-    { text: "מעונין", value: "interested",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
-    { text: "ת. מעקב", value: "trackDate",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
-    { text: "עדכון אחרון", value: "updatedAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
-    { text: "קליטה", value: "createdAt",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
-    { text: "פגישה", value: "meatting",   class: "mobile-headers",    groupable: false,   align: "right", width: "3%"},
+    { text: "שם", value: "name",                class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "טלפון", value: "phone",            class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "סטטוס", value: "status",           class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "מודעה", value: "adName",           class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "הגיע אלינו", value: "arrivedFrom", class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "מעונין", value: "interested",      class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "ת. מעקב", value: "trackDate",      class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "עדכון אחרון", value: "updatedAt",  class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "קליטה", value: "createdAt",        class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
+    { text: "פגישה", value: "meatting",         class: "mobile-headers",    groupable: false,   align: "right", width: "3%"},
 ];
 export const LEADS_SUMMARY_HEADERS = [
     { text: "הגיע אלינו", value: "source", class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
