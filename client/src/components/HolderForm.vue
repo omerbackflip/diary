@@ -16,8 +16,11 @@
                     <!-- <v-text-field v-model="holder.phone" dense @focus="$event.target.select()"></v-text-field> -->
                     <v-select v-model="holder.status" :items="statusList" reverse dense></v-select>
                   </v-col>
-                  <v-col class="pb-4">
+                  <v-col class="pb-4" cols="8">
                     <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
+                  </v-col>
+                  <v-col class="pb-4 pr-0" cols="4">
+                    <v-text-field v-model="holder.phone" dense @focus="$event.target.select()"></v-text-field>
                   </v-col>
                   <v-row class="mx-0">
                     <v-col cols="4">
@@ -136,17 +139,9 @@
 <script>
 import { HOLDER_MODEL, loadTable, viewGDFile } from "../constants/constants";
 import apiService from "../services/apiService";
-import Vue from "vue";
-import moment from "moment";
 import GooglePicker from "./GooglePicker.vue";
 import modalDialog from './Common/ViewFileModal.vue';
 
-Vue.filter("formatDate", function (value) {
-	if (value) {
-    moment.locale('he')
-		return moment(value).format("DD/MM/YYYY");
-	}
-});
 export default {
     name: "holder-form",
     components: {GooglePicker,modalDialog},
@@ -168,6 +163,7 @@ export default {
         selectedDocIndex: null,
       };
     },
+
     methods: {
       open(holder, isNewHolder) {
         this.isNewHolder = isNewHolder;

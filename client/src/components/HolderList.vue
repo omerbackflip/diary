@@ -20,15 +20,18 @@
           :sort-by="['flatId']"
           dense>
           <template v-slot:top>
-              <v-toolbar flat style="height: 26px;">
-                <!-- <v-col class="pa-0" cols="5">
-                  <v-toolbar-title>  תיק דיירים  </v-toolbar-title>
-                </v-col> -->
-              <v-text-field v-model="search" label="הקלד מילת חיפוש"></v-text-field>
-                <!-- <v-col class="pa-0" cols="3"> -->
-                  <!-- <v-toolbar-title style="text-align-last: center; color: blue;"> סה"כ {{holderList.length.toLocaleString()}} </v-toolbar-title> -->
-                <!-- </v-col> -->
-              </v-toolbar>
+          <v-toolbar flat style="height: 26px;">
+            <v-row no-gutters align="center" class="w-100">
+              <v-col cols="10" class="pl-10">
+                <v-text-field v-model="search" label="הקלד מילת חיפוש" dense hide-details></v-text-field>
+              </v-col>
+              <v-col cols="2">
+                <v-toolbar-title style="text-align-last: left; color: blue; font-size: 15px;"> 
+                  סה"כ {{ holderList.length.toLocaleString() }} 
+                </v-toolbar-title>
+              </v-col>
+            </v-row>
+          </v-toolbar>
           </template>
           <template v-slot:item ="{ item, headers }">
             <tr style="border-bottom: hidden;" @click="getHolderForEdit(item)">
@@ -37,6 +40,11 @@
               </td>
               <td>
                 <span>{{item.name}}</span>
+              </td>
+              <td @click.stop="openMesiraDateDialog(item)">
+                <span style="margin-left: 0.5rem;">
+                  {{ item.mesiraDate | formatDate }}
+                </span>
               </td>
               <td>
                 <span>{{item.status}}</span>
@@ -82,6 +90,18 @@
           </template>
 
         </v-data-table>
+<v-dialog v-model="mesiraDialog" persistent max-width="290px">
+  <v-card v-if="selectedItem">
+    <v-date-picker
+      v-model="selectedItem.mesiraDate"
+      scrollable
+    >
+      <v-spacer></v-spacer>
+      <v-btn text color="primary" @click="mesiraDialog = false">Cancel</v-btn>
+      <v-btn text color="primary" @click="saveMesiraDate">OK</v-btn>
+    </v-date-picker>
+  </v-card>
+</v-dialog>
       </v-flex>
 
       <holder-form ref="holderForm"/>
@@ -98,6 +118,14 @@ import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, sendWhatsapp } from ".
 import holderForm from "./HolderForm.vue"
 import { isMobile } from '../constants/constants';
 import billForm from './BillForm.vue';
+import Vue from "vue";
+import moment from "moment";
+Vue.filter("formatDate", function (value) {
+	if (value) {
+    // moment.locale('he')
+		return moment(value).format("YYYY-MM-DD");
+	}
+});
 
 export default {
 	name: "holder-List",
@@ -117,6 +145,9 @@ export default {
       dateModal : false,
       selected: [],
       showBill: false,
+      mesiraDialog: false,
+      selectedItem: null,          // temp copy of clicked item
+      selectedIndex: null,         // index of item in holderList
 		};
 	},
 
@@ -159,6 +190,36 @@ export default {
         this.retrieveHolders();
 			}
 		},
+
+    openMesiraDateDialog(item) {
+      const index = this.holderList.findIndex(h => h._id === item._id);
+      if (index === -1) return;
+      this.selectedIndex = index;
+      
+      this.selectedItem = { ...item };// Clone to avoid mutating original immediately if needed
+
+      // Extract only YYYY-MM-DD part
+      const isoDate = this.selectedItem.mesiraDate;
+      if (isoDate && typeof isoDate === 'string') {
+        this.selectedItem.mesiraDate = isoDate.substr(0, 10); // "YYY-MM-DD"
+      }
+      this.mesiraDialog = true;
+    },
+
+    async saveMesiraDate() {
+      if (this.selectedItem && this.selectedIndex !== null) {
+        // You can convert to ISO if needed
+        const pickedDate = this.selectedItem.mesiraDate;
+        this.holderList[this.selectedIndex].mesiraDate = `${pickedDate}T00:00:00.000Z` // if ISO needed
+      }
+      let response = await apiService.update(this.holderList[this.selectedIndex]._id, this.holderList[this.selectedIndex], { model: HOLDER_MODEL });
+      if (response) {
+        this.mesiraDialog = false;
+        this.selectedItem = null;
+        this.selectedIndex = null;
+      }
+    },
+
 	},
 
 	async mounted() {

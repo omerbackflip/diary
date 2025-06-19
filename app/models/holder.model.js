@@ -24,6 +24,7 @@ module.exports = mongoose => {
                     url: String,
                     amount: Number,
                   }],
+      mesiraDate: Date,
     },
     { timestamps: true }
   );

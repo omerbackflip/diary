@@ -79,56 +79,51 @@
       <lead-form ref="leadForm"/>
       <v-dialog v-model="barChartDialog" max-width="600px">
         <v-card>
-      <v-card-title>
-        <div class="d-flex justify-space-between align-center w-100">
-          <strong>{{ summaryBy }}</strong>
-          <span>Total: {{ totalCount }}</span>
-        </div>
-      </v-card-title>
+          <v-card-title style="justify-content: center;"><strong>חיתוך לפי {{ summaryBy==='status' ? 'סטטוס' : 'מקור הגעה' }}</strong></v-card-title>
           <v-card-text>
-          <v-row class="mb-4" style="justify-content: space-evenly;" align="center" no-gutters>
-            <v-col cols="6" md="6">
-              <v-menu
-                ref="rangeMenu"
-                v-model="rangeMenu"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="dateRangeText"
-                    label="בחר טווח תאריכים"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                    clearable
-                    @click:clear="clearDateRange"
-                    v-bind="attrs"
-                    v-on="on"
-                    dense
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="dateRange"
-                  range
-                  @change="applyDateRange"
-                  no-title
-                  scrollable
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
+            <v-row class="mb-4" style="justify-content: space-evenly;" align="center" no-gutters>
+              <v-col cols="6" md="6">
+                <v-menu
+                  ref="rangeMenu"
+                  v-model="rangeMenu"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="dateRangeText"
+                      label="בחר טווח תאריכים"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      clearable
+                      @click:clear="clearDateRange"
+                      v-bind="attrs"
+                      v-on="on"
+                      dense
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="dateRange"
+                    range
+                    @change="applyDateRange"
+                    no-title
+                    scrollable
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
 
-            <v-col cols="6" md="3" class="text-center">
-              <v-btn-toggle v-model="summaryBy" dense>
-                <v-btn value="arrivedFrom" x-small>הגיע מ</v-btn>
-                <v-btn value="status" x-small>סטטוס</v-btn>
-              </v-btn-toggle>
-            </v-col>
-          </v-row>
+              <v-col cols="6" md="3" class="text-center">
+                <v-btn-toggle v-model="summaryBy" dense>
+                  <v-btn value="arrivedFrom" x-small>הגיע מ</v-btn>
+                  <v-btn value="status" x-small>סטטוס</v-btn>
+                </v-btn-toggle>
+              </v-col>
+            </v-row>
 
-            <BarChart :data="summaryLeads" :type="chartType" />
+            <BarChart :data="summaryLeads"/>
 
           </v-card-text>
           <v-card-actions>
@@ -255,10 +250,6 @@ export default {
       this.barChartDialog = true
     },
 
-    async toggleMeeting (item) {
-      await apiService.update(item._id,{meeting: item.meeting},{model: LEAD_MODEL}); 
-    },
-
     async getStatistics() {
       const summaryMap = {};
       const from = this.fromDate ? new Date(this.fromDate + 'T00:00:00') : null;
@@ -286,9 +277,7 @@ export default {
 
       this.summaryLeads = Object.entries(summaryMap).map(([source, { count, meetingCount }]) => {
         const summary = { source, count };
-        if (this.summaryBy === 'arrivedFrom') {
-          summary.meetingCount = meetingCount;
-        }
+        summary.meetingCount = meetingCount;
         return summary;
       });
 
@@ -486,5 +475,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .hebrew {
   direction: rtl;
   text-align-last: right;
+}
+.centered{
+  justify-content: space-evenly !important;
 }
 </style>

@@ -57,6 +57,7 @@ export const LEADS_SUMMARY_HEADERS = [
 export const HOLDER_MOBILE_HEADERS = [
     { text: "דירה", value: "flatId",   class: "mobile-headers px-2",    groupable: false,   align: "right", width: "5%"},
     { text: "שם", value: "name",   class: "mobile-headers",    groupable: false,   align: "right", width: "35%"},
+    { text: "ת.מסירה", value: "mesiraDate",   class: "mobile-headers",    groupable: false,   align: "right", width: "10%"},
     { text: "סטטוס", value: "status",   class: "mobile-headers",    groupable: false,   align: "right", width: "5%"},
     { text: "מטבח", value: "mitbach",   class: "mobile-headers",    groupable: false, width: "5%"},
     { text: "סניטרים", value: "senitar",   class: "mobile-headers",    groupable: false, width: "2%"},
@@ -115,6 +116,7 @@ export const NEW_HOLDER = {
     remark: "",
     payedFile: false,
     GDParantFolder: "",
+    mesiraDate: new Date(),
 };
 export const NEW_BILL = {
     flatId: null,
