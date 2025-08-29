@@ -159,7 +159,22 @@
         </v-col>
       </v-row>
     </v-layout>
-    <bill-form ref="billForm"/>
+    <v-dialog v-model="dialog" max-width="1000px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">תצוגה לפני הדפסה</span>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
+        </v-card-title>
+        <v-card-text>
+          <PdfPreview :holder="holder" :key="holder.flatId" /> <!-- :key is passing so the child component will execute the mounted() -->
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="exportPdf">יצא כ־PDF</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -168,12 +183,12 @@
 <script>
 import apiService from "../services/apiService";
 import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER } from "../constants/constants";
-import billForm from "./BillForm.vue"
 import { isMobile } from '../constants/constants';
-
+import { generatePdfFromElement } from "../components/shared/pdf";
+import PdfPreview from "./PdfPreview.vue";
 export default {
 	name: "holders-dash",
-	components: { billForm },
+  components: {PdfPreview},
 	data() {
 		return {
       isMobile,
@@ -200,27 +215,42 @@ export default {
 			}
 		},
 
-		async retrieveHolders() {
-			this.isLoading = true;
-      let response = await apiService.getMany({
-        model: HOLDER_MODEL,
+    async retrieveHolders() {
+      this.isLoading = true;
+
+      const response = await apiService.getMany({model: HOLDER_MODEL});
+
+      let holderList = response.data;
+
+      holderList.sort((a, b) => {
+        return (a.flatId) - (b.flatId);
       });
-      this.holderList = response.data.sort((a, b) => {
-        const getLastTwoDigits = (id) => { return id.substring(4, 6) };
-        const aLastTwo = getLastTwoDigits(a.flatId);
-        const bLastTwo = getLastTwoDigits(b.flatId);
-        return aLastTwo - bLastTwo; // Sort ascending by last two digits
-      }); 
+
+      // // For each holder, fetch bills and attach them
+      // for (const holder of holderList) {
+      //   const billResponse = await apiService.getMany({
+      //     model: BILL_MODEL, flatId: holder.flatId
+      //   });
+      //   holder.bills = billResponse.data || [];
+      // }
+
+      this.holderList = holderList;
       this.isLoading = false;
     },
  
-		async getHolderForEdit(item) {
-			if (item._id) {
-        this.holder = item
-        await this.$refs.billForm.open(this.holder, false);
-        this.retrieveHolders();
-			}
-		},
+    async getHolderForEdit(item) {
+      if (!item?._id) return;
+      this.holder = item;
+      this.dialog = true; // open preview dialog
+    },
+
+    async exportPdf() {
+      await this.$nextTick();
+      const previewElement = document.querySelector(".pdf-preview");
+      if (previewElement) {
+        await generatePdfFromElement(previewElement, `holder-${this.holder.flatId}.pdf`);
+      }
+    },
 
     getStatus (i) {
       switch (this.holderList[i] && this.holderList[i].status) {

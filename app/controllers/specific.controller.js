@@ -81,7 +81,7 @@ exports.deletePic = async(req, res) => {
 
 exports.googleConnectionStatus = async (req, res) => {
 	try{
-		let auth = googleService.getAuth();
+		let auth = await googleService.getAuth();
 		if(auth instanceof google.auth.OAuth2){
 			const userInfo = await googleService.getUser(auth);
 			const username = (userInfo != false ? userInfo.name : null);

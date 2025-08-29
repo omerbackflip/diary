@@ -98,7 +98,6 @@ export default {
                 {icon: 'folder', text: 'יומן פגישות', route: '/leadCalendar'},
                 {icon: 'folder', text: 'דשבורד', route: '/holdersDash'},
                 {icon: 'folder', text: 'רשימת דיירים', route: '/holderList'},
-                {icon: 'folder', text: 'חשבון דיירים', route: '/billForm'},
                 {icon: 'folder', text: 'מסמכים לפרויקט', route: '/GlobalDocForm'},
                 {icon: 'folder', text: 'טבלת הטבלאות', route: '/tableList'},
                 {icon: 'folder', text: 'מחירון שינויים', route: '/priceList'},

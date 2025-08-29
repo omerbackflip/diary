@@ -1,27 +1,35 @@
 <template>
     <div>
         <div class="d-flex justify-center">
-            <v-sheet tile height="54" class="d-flex align-center px-2" style="max-width: 300px; width: 100%;">
-                <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
-                    <v-icon>mdi-chevron-left</v-icon>
-                </v-btn>
-                <div class="text-h6 flex-grow-1 text-center">{{ currentMonth }}</div>
-                <v-btn icon class="ma-2" @click="$refs.calendar.next()">
-                    <v-icon>mdi-chevron-right</v-icon>
-                </v-btn>
-            </v-sheet>
+        <v-sheet tile height="54" class="d-flex align-center px-2" style="max-width: 300px; width: 100%;">
+            <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
+            <v-icon>mdi-chevron-left</v-icon>
+            </v-btn>
+            <div class="text-h6 flex-grow-1 text-center">{{ currentMonth }}</div>
+            <v-btn icon class="ma-2" @click="$refs.calendar.next()">
+            <v-icon>mdi-chevron-right</v-icon>
+            </v-btn>
+        </v-sheet>
+        <v-text-field
+            v-model="search"
+            label="חיפוש פגישה"
+            clearable
+            dense
+            hide-details
+            style="max-width: 300px; width: 100%; margin-top: 12px;"
+        />
         </div>
   
         <v-sheet style="height: 85vh">
-            <v-calendar
+        <v-calendar
             ref="calendar"
             v-model="value"
             :weekdays="weekday"
             :type="type"
-            :events="events"
+            :events="filteredEvents"
             @click:event="getLeadForEdit"
             @click:more="getMore"
-            />
+        />
         </v-sheet>
 
         <v-dialog v-model="getMoreDialog" max-width="600px" persistent>
@@ -69,7 +77,8 @@ export default {
             leadsList: [],
             getMoreDialog: false,
             selectedDate: null,
-            selectedEvents: []
+            selectedEvents: [],
+            search: ""   // הוספנו state לחיפוש
         }
     },
 
@@ -131,6 +140,13 @@ export default {
                 year: 'numeric',
                 day: 'numeric'
             });
+        },
+        // אירועים מסוננים לפי החיפוש
+        filteredEvents() {
+            if (!this.search) return this.events;
+            return this.events.filter(ev =>
+                ev.name.toLowerCase().includes(this.search.toLowerCase())
+            );
         }
     }
 }

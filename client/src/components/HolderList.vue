@@ -36,7 +36,7 @@
           <template v-slot:item ="{ item, headers }">
             <tr style="border-bottom: hidden;" @click="getHolderForEdit(item)">
               <td style="text-align-last: center;">
-                <span>{{item.flatId.substr(4, 2)}}</span>
+                <span>{{ formatFlatId(item.flatId) }}</span>
               </td>
               <td>
                 <span>{{item.name}}</span>
@@ -90,22 +90,21 @@
           </template>
 
         </v-data-table>
-<v-dialog v-model="mesiraDialog" persistent max-width="290px">
-  <v-card v-if="selectedItem">
-    <v-date-picker
-      v-model="selectedItem.mesiraDate"
-      scrollable
-    >
-      <v-spacer></v-spacer>
-      <v-btn text color="primary" @click="mesiraDialog = false">Cancel</v-btn>
-      <v-btn text color="primary" @click="saveMesiraDate">OK</v-btn>
-    </v-date-picker>
-  </v-card>
-</v-dialog>
+        <v-dialog v-model="mesiraDialog" persistent max-width="290px">
+          <v-card v-if="selectedItem">
+            <v-date-picker
+              v-model="selectedItem.mesiraDate"
+              scrollable
+            >
+              <v-spacer></v-spacer>
+              <v-btn text color="primary" @click="mesiraDialog = false">Cancel</v-btn>
+              <v-btn text color="primary" @click="saveMesiraDate">OK</v-btn>
+            </v-date-picker>
+          </v-card>
+        </v-dialog>
       </v-flex>
 
       <holder-form ref="holderForm"/>
-      <billForm :showBill="showBill" :holder="holder"/>
     </v-layout>
   </div>
 </template>
@@ -117,7 +116,6 @@ import apiService from "../services/apiService";
 import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, sendWhatsapp } from "../constants/constants";
 import holderForm from "./HolderForm.vue"
 import { isMobile } from '../constants/constants';
-import billForm from './BillForm.vue';
 import Vue from "vue";
 import moment from "moment";
 Vue.filter("formatDate", function (value) {
@@ -129,7 +127,7 @@ Vue.filter("formatDate", function (value) {
 
 export default {
 	name: "holder-List",
-	components: { holderForm, billForm },
+	components: { holderForm },
 	data() {
 		return {
       isMobile,
@@ -219,6 +217,10 @@ export default {
         this.selectedIndex = null;
       }
     },
+
+    formatFlatId(id) {
+      return id < 10 ? '0' + id : id;
+    }
 
 	},
 
