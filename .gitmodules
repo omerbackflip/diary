@@ -3,4 +3,4 @@
 	url = https://github.com/omerbackflip/login
 [submodule "client/src/components/shared/pdf"]
 	path = client/src/components/shared/pdf
-	url = https://github.com/omerbackflip/pdf
+	url = https://github.com/omerbackflip/pdf.git
