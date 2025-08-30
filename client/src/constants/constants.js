@@ -108,7 +108,7 @@ export const NEW_LEAD = {
     email: "",
 };
 export const NEW_HOLDER = {
-    flatId: '',
+    flatId: null,
     name: "",
     phone: "",
     email: "",

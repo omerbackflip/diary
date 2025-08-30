@@ -147,7 +147,6 @@ exports.syncGoogleSheets = async (req, res) => {
 	}
 };
 
-
 exports.bulkWriteControl = async (req, res) => {
 	try {
 		const items = req.body

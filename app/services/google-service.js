@@ -46,15 +46,39 @@ exports.getAuthClient = () => {
 // getAuth:
 // Uses the OAuth2Client created by getAuthClient and attempts to load and set credentials (tokens) for the client.
 // Handles both existing tokens and the process for obtaining a new token
-exports.getAuth = () => {
+
+exports.getAuth = async () => {
+
   const oAuth2Client = this.getAuthClient();
+
   if (fs.existsSync(TOKEN_PATH)) {
-    const token = fs.readFileSync(TOKEN_PATH);
+    let token = fs.readFileSync(TOKEN_PATH);
     oAuth2Client.setCredentials(JSON.parse(token));
-    return oAuth2Client;
+
+    console.log('oAuth2Client.isTokenExpiring()', oAuth2Client.isTokenExpiring());
+    
+    //Checking If access token is expired
+    if(oAuth2Client.isTokenExpiring()){
+      try{
+        //Requesting, new access token.
+        await this.refreshAccessToken(oAuth2Client, JSON.parse(token)['refresh_token']);
+        const oAuth2ClientUpd = await this.getAuthClient();
+        token = fs.readFileSync(TOKEN_PATH);
+        oAuth2ClientUpd.setCredentials(JSON.parse(token));
+
+        return oAuth2ClientUpd;
+      }catch(authError){
+        //authError.message
+        //console.log("Auth Error:", authError.message);
+      }
+    }else{
+      return oAuth2Client;
+    }
   }
+
   return getNewToken(oAuth2Client);
 }
+
 
 exports.getToken = async (oAuth2Client, code) => {
 
@@ -68,34 +92,30 @@ exports.getToken = async (oAuth2Client, code) => {
   return false;
 }
 
-exports.refreshAccessToken = async (oAuth2Client, refreshToken) => {
+exports.refreshAccessToken = async (oAuth2Client,refreshToken) => {
   try {
-    oAuth2Client.setCredentials({ refresh_token: refreshToken });
-
-    // Get new access token
+    
+    oAuth2Client.setCredentials({
+      refresh_token: refreshToken,
+    });
     const response = await oAuth2Client.getAccessToken();
-
-    if (response.token) {
-      const newToken = {
-        access_token: response.token,
-        refresh_token: refreshToken, // Keep the same refresh token
-        expiry_date: Date.now() + 3600 * 1000 // Assuming 1-hour expiration
-      };
-
-      // Store the new token using your existing function
-      await this.storeToken(JSON.stringify(newToken));
-
-      console.log("Access token refreshed successfully!");
-      return newToken;
+    
+    if(response.token && response.res.data){
+      this.storeToken(JSON.stringify(response.res.data));
     }
-
-    throw new Error("Failed to obtain new access token.");
+     // Save updated token
+    console.log("Access token refreshed successfully!");
+    return response.res.data;
   } catch (error) {
     console.error("Error refreshing access token:", error);
+
+    if(error.message == 'invalid_grant'){
+      return false;
+    }
+
     throw error;
   }
 };
-
 
 exports.storeToken = async (token) => {
   try{
@@ -256,7 +276,7 @@ async function findOrCreateFolder(folderName, parentFolderId, drive) {
 
 // fetch data from Google Sheet and save to UPLOAD_MODEL
 exports.fetchNewRows = async (UPLOAD_MODEL) => {
-  const auth = this.getAuth();
+  const auth = await this.getAuth();
   const sheets = google.sheets({ version: "v4", auth });
 
   try {
