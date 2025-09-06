@@ -57,7 +57,7 @@
           <template v-slot:item="{ item, headers }">
             <tr style="border-bottom: hidden; vertical-align: text-top;" @click="getLeadForEdit(item)">
               <td><span>{{item.name}}</span></td>
-              <td><span>{{item.phone}}</span></td>
+              <td><span :class="{ 'red--text font-weight-bold': item.isDuplicate }">{{item.phone}}</span></td>
               <td><span>{{item.status}}</span></td>
               <td><span>{{item.adName}}</span></td>
               <td><span>{{item.arrivedFrom}}</span></td>
@@ -223,7 +223,6 @@ export default {
       this.isLoading = true;
       let response;
       let role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
-      console.log('User role:', role);
       if (role === 'viewer') {
         response = await apiService.getMany({ model: LEAD_MODEL,  arrivedFrom: 'יד1' });
       } else {
@@ -234,6 +233,16 @@ export default {
         this.allLeadList = response.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
         this.isLoading = false;
       }
+      // חישוב כמה פעמים כל טלפון מופיע
+      const counts = {};
+      this.allLeadList.forEach(l => {
+        counts[l.phone] = (counts[l.phone] || 0) + 1;
+      });
+      this.allLeadList = this.allLeadList.map(l => ({
+        ...l,
+        isDuplicate: counts[l.phone] > 1
+      }));
+    
     },
 
     async getLeadForEdit(item) {

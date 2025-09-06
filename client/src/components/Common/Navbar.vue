@@ -114,14 +114,14 @@ export default {
     methods:{
         callAddNewRow() {
             switch (this.$route.path) {
-                case '/leadList' :
-                    this.$root.$emit('addNewLead');
+                case '/diaryList' :
+                    this.$root.$emit('addNewDiary');
                     break;
                 case '/holderList' :
                     this.$root.$emit('addNewHolder');
                     break;
                 default :
-                    this.$root.$emit('addNewDiary');
+                    this.$root.$emit('addNewLead');
             }
         },
 

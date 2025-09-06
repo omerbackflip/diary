@@ -84,7 +84,13 @@ export default {
 
     methods: {
         async getEvents () {
-            let response = await apiService.getMany({model: LEAD_MODEL})
+            let response;
+            let role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
+            if (role === 'viewer') {
+                response = await apiService.getMany({ model: LEAD_MODEL,  arrivedFrom: 'יד1' });
+            } else {
+                response = await apiService.getMany({ model: LEAD_MODEL });
+            }
             if (response && response.data) {
                 this.leadsList = response.data.sort(function (a, b) {
                     const updatedAtA = new Date(a.updatedAt);
