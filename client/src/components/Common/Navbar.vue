@@ -13,6 +13,7 @@
                 <v-col col="10">
                     <div class="text-center" style="text-align-last: justify;">
                         {{ new Date() | formatDate  }}
+                        {{ role }}
                         <v-btn x-small @click="callAddNewRow()">
                             <v-icon small>mdi-plus</v-icon>
                         </v-btn>
@@ -93,9 +94,9 @@ export default {
             googleConnectMenuItem: 'Google (Not Connected)',
             importData: [], // EXCEL
             links: [
-                {icon: 'folder', text: 'יומן עבודה', route: '/'},
-                {icon: 'folder', text: 'רשימת לידים', route: '/leadList'},
+                {icon: 'folder', text: 'רשימת לידים', route: '/'},
                 {icon: 'folder', text: 'יומן פגישות', route: '/leadCalendar'},
+                {icon: 'folder', text: 'יומן עבודה', route: '/diaryList'},
                 {icon: 'folder', text: 'דשבורד', route: '/holdersDash'},
                 {icon: 'folder', text: 'רשימת דיירים', route: '/holderList'},
                 {icon: 'folder', text: 'מסמכים לפרויקט', route: '/GlobalDocForm'},
@@ -107,6 +108,7 @@ export default {
             local: false,
             isMobile,
             activeComponent: '',
+            role: '', // 'admin' or 'viewer'
         }
     },
     methods:{
@@ -178,6 +180,7 @@ export default {
     async mounted() {
         this.getDatabaseInformation();
         this.checkGoogleConnection();
+        this.role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
     },
 }
 </script>

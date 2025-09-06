@@ -222,7 +222,14 @@ export default {
     async retrieveLeads() {
       this.isLoading = true;
       let response;
-      response = await apiService.getMany({model: LEAD_MODEL}); 
+      let role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
+      console.log('User role:', role);
+      if (role === 'viewer') {
+        response = await apiService.getMany({ model: LEAD_MODEL,  arrivedFrom: 'יד1' });
+      } else {
+        response = await apiService.getMany({ model: LEAD_MODEL });
+      }
+      // response = await apiService.getMany({model: LEAD_MODEL}); // old - get all leads
       if (response && response.data) {
         this.allLeadList = response.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
         this.isLoading = false;

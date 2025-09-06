@@ -33,28 +33,35 @@ export default {
     };
   },
   async mounted() {
-    this.userInfo = (await loadTable(90)).map((code) => code.description);
+    this.userInfo = (await loadTable(90));
   },
   created() {
     const authFlag = localStorage.getItem('DiaryAuthenticated');
-    if (authFlag === 'true') {
+    if (authFlag === 'admin' || authFlag === 'viewer') { // viewer will be filtetred to יד1 only
       this.isAuthenticated = true;
     }
   },
   methods: {
-    async handleLogin({ username, password }) {
-      if (username === this.userInfo[0] && password === this.userInfo[1]) {
-        this.isAuthenticated = true;
-        localStorage.setItem('DiaryAuthenticated', 'true');
-      } else {
-        window.alert ("Wrong user/password");
-      }
-    },
-    logout() {
-      this.isAuthenticated = false;
-      localStorage.removeItem('DiaryAuthenticated');
+  async handleLogin({ username, password }) {
+    // חפש את המשתמש הנכון מתוך רשימת המשתמשים
+    const foundUser = this.userInfo.find(u => u.table_id === 90 && u.description === username && u.GDFileId === password);
+
+    if (foundUser) {
+      this.isAuthenticated = true;
+      const role = foundUser.table_code === 1 ? 'admin' : 'viewer';
+      localStorage.setItem('DiaryAuthenticated', role)
+    } else {
+      window.alert("Wrong user/password");
     }
+  },
+
+  logout() {
+    this.isAuthenticated = false;
+    localStorage.removeItem('DiaryAuthenticated');
   }
+}
+
+
 }
 </script>
 

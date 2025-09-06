@@ -8,13 +8,13 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "diaryList",
-      component: () => import("./components/DiaryList")
-    },
-    {
-      path: "/leadList",
       name: "lead-list",
       component: () => import("./components/LeadList")
+    },
+    {
+      path: "/diaryList",
+      name: "diaryList",
+      component: () => import("./components/DiaryList")
     },
     {
       path: "/leadCalendar",
