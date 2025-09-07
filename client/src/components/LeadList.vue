@@ -38,7 +38,7 @@
                 <v-col cols="2" md="1" style="text-align-last: center;">
                   <v-btn x-small class="btn btn-danger" @click="callStatistics"><v-icon small>mdi-google-analytics</v-icon></v-btn>
                 </v-col>
-                <v-col cols="2" md="1" style="text-align-last: center;">
+                <v-col cols="2" md="1" style="text-align-last: center;" v-if="role==='admin'">
                   <v-btn x-small @click="getNewLeads" class="btn btn-danger"> Leads <v-icon small>mdi-refresh</v-icon></v-btn>
                 </v-col>
                 <v-col cols="4" md="2">
@@ -58,7 +58,7 @@
             <tr style="border-bottom: hidden; vertical-align: text-top;" @click="getLeadForEdit(item)">
               <td><span>{{item.name}}</span></td>
               <td><span :class="{ 'red--text font-weight-bold': item.isDuplicate }">{{item.phone}}</span></td>
-              <td><span>{{item.status}}</span></td>
+              <td :style="item.status ? {} : { backgroundColor: 'pink' }"><span>{{item.status}}</span></td>
               <td><span>{{item.adName}}</span></td>
               <td><span>{{item.arrivedFrom}}</span></td>
               <td><span>{{item.interested}}</span></td>
@@ -181,7 +181,8 @@ export default {
       chartType: 'bar', // 'pie'
       dateRange: [],
       rangeMenu: false,
-      dateRangeText: ''
+      dateRangeText: '',
+      role: 'admin' // or 'viewer'
     }
   },
 
@@ -222,8 +223,7 @@ export default {
     async retrieveLeads() {
       this.isLoading = true;
       let response;
-      let role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
-      if (role === 'viewer') {
+      if (this.role === 'viewer') {
         response = await apiService.getMany({ model: LEAD_MODEL,  arrivedFrom: 'יד1' });
       } else {
         response = await apiService.getMany({ model: LEAD_MODEL });
@@ -322,6 +322,7 @@ export default {
   },
 
   async mounted() {
+    this.role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
     this.statusList = (await loadTable(9)).map((code) => code.description);
     this.arrivedList = (await loadTable(5)).map((code) => code.description);
     this.interestList = (await loadTable(2)).map((code) => code.description);
