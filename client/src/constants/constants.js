@@ -146,10 +146,18 @@ export const loadTable = async (table_id) => {
         console.log(error);
     }
 };
-export const sendWhatsapp = async(phone) => {
-    let fixedPhone = phone
-    if (phone.charAt(0) === '0') fixedPhone = phone.substring(1)
-    window.open('https://api.whatsapp.com/send?phone=972'+fixedPhone.replace("-", ""))
+export const sendWhatsapp = (phone) => {
+  let fixedPhone = phone;
+  if (phone.charAt(0) === '0') fixedPhone = phone.substring(1);
+
+  const message = 'Hello, from GadotSKY:';
+  const encodedMessage = encodeURIComponent(message);
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const baseUrl = isMobile
+    ? `https://wa.me/972${fixedPhone.replace(/-/g, '')}`
+    : `https://web.whatsapp.com/send?phone=972${fixedPhone.replace(/-/g, '')}`;
+
+  window.open(`${baseUrl}&text=${encodedMessage}`);
 };
 export async function viewGDFile(fileId, modalDialogRef) {
     try {

@@ -39,6 +39,9 @@
                 <v-icon small @click="sendFile(item)">mdi-whatsapp</v-icon>
               </v-col>
               <v-col>
+                <v-icon small @click="sendFileByEmail(item)">mdi-email</v-icon>
+              </v-col>
+              <v-col>
                 <v-icon small @click="deleteOne(item._id)">mdi-delete</v-icon>
               </v-col>
             </v-row>
@@ -150,6 +153,20 @@ export default {
       await shareOnWhatsApp(item.GDFileId, msg);
     },
 
+    async sendFileByEmail(item) {
+      try {
+        const fileUrl = `https://drive.google.com/uc?id=${item.GDFileId}&export=download`;
+
+        // Compose an email with subject and body
+        const subject = encodeURIComponent('מסמך מגדות סקיי');
+        const body = encodeURIComponent(`שלום,\n\nמצורף המסמך המבוקש:\n${fileUrl}`);
+
+        // Open the user’s default email client with prefilled email
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+      } catch (err) {
+        console.error('Failed to send email', err);
+      }
+    }
   },
 
   computed: {
