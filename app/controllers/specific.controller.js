@@ -46,7 +46,8 @@ exports.saveExcelBulk = async (req, res) => {
 
 exports.getDbInfo = (req,res) => {
 	try {
-		const local = url.includes('localhost'); //retuens true/false
+		// const local = url.includes('localhost'); //retuens true/false
+		const local = url.includes('127.0.0.1'); //retuens true/false
 		return res.send({ success: true, local});
 	} catch (error) {
 		console.log(error)
