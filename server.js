@@ -2,7 +2,7 @@ require('dotenv').config(); // Load environment variables from .env file
 
 const express = require("express");
 const cors = require("cors");
-
+const mongoose = require("mongoose"); // <-- ADD THIS
 const app = express();
 
 // var corsOptions = {
@@ -17,6 +17,8 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+// ==== ADD THIS LINE TO FIX DEPRECATION WARNING ====
+mongoose.set('strictQuery', true); // or false if you prefer
 
 // Don’t forget to call connect() method in server.js (here, this file):
 const db = require("./app/models");
