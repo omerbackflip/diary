@@ -77,9 +77,9 @@
         </v-data-table>
       </v-flex>
       <lead-form ref="leadForm"/>
-      <v-dialog v-model="barChartDialog" max-width="600px">
+      <v-dialog v-model="barChartDialog" max-width="1210px">
         <v-card>
-          <v-card-title style="justify-content: center;"><strong>חיתוך לפי {{ summaryBy==='status' ? 'סטטוס' : 'מקור הגעה' }}</strong></v-card-title>
+          <v-card-title style="justify-content: center;"><strong> {{ summaryBy }} - חיתוך לפי</strong></v-card-title>
           <v-card-text>
             <v-row class="mb-4" style="justify-content: space-evenly;" align="center" no-gutters>
               <v-col cols="6" md="6">
@@ -119,6 +119,7 @@
                 <v-btn-toggle v-model="summaryBy" dense>
                   <v-btn value="arrivedFrom" x-small>הגיע מ</v-btn>
                   <v-btn value="status" x-small>סטטוס</v-btn>
+                  <v-btn value="adName" x-small>מודעה</v-btn>
                 </v-btn-toggle>
               </v-col>
             </v-row>
@@ -285,7 +286,7 @@ export default {
 
           summaryMap[key].count += 1;
 
-          if (this.summaryBy === 'arrivedFrom' && lead.meeting===true) {
+          if (lead.meeting===true) {
             summaryMap[key].meetingCount += 1;
           }
         }
@@ -298,6 +299,15 @@ export default {
       });
 
       this.totalCount = this.summaryLeads.reduce((sum, lead) => sum + lead.count, 0);
+
+      this.summaryLeads = Object.entries(summaryMap)
+        .map(([source, { count, meetingCount }]) => ({
+          source,
+          count,
+          meetingCount,
+        }))
+        .filter(summary => summary.source !== 'Unknown');
+
     },
 
 
