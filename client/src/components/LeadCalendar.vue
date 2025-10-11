@@ -87,9 +87,9 @@ export default {
             let response;
             let role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
             if (role === 'viewer') {
-                response = await apiService.getMany({ model: LEAD_MODEL,  arrivedFrom: 'יד1' });
+                response = await apiService.getEntities(LEAD_MODEL, { arrivedFrom: 'יד1' });
             } else {
-                response = await apiService.getMany({ model: LEAD_MODEL });
+                response = await apiService.getEntities(LEAD_MODEL);
             }
             if (response && response.data) {
                 this.leadsList = response.data.sort(function (a, b) {

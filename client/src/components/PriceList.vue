@@ -75,7 +75,7 @@ export default {
 
   methods: {
     retrievePrices() {
-      apiService.getMany({model: PRICE_MODEL})
+      apiService.getEntities(PRICE_MODEL)
         .then((response) => {
           this.priceList = response.data;
         })

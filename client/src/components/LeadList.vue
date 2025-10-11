@@ -225,11 +225,10 @@ export default {
       this.isLoading = true;
       let response;
       if (this.role === 'viewer') {
-        response = await apiService.getMany({ model: LEAD_MODEL,  arrivedFrom: 'יד1' });
+        response = await apiService.getEntities(LEAD_MODEL, { arrivedFrom: 'יד1' });
       } else {
-        response = await apiService.getMany({ model: LEAD_MODEL });
+        response = await apiService.getEntities(LEAD_MODEL);
       }
-      // response = await apiService.getMany({model: LEAD_MODEL}); // old - get all leads
       if (response && response.data) {
         this.allLeadList = response.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
         this.isLoading = false;

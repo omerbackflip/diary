@@ -160,9 +160,7 @@ export default {
 
     async retrieveHolders() {
       this.isLoading = true;
-      const response = await apiService.getMany({
-        model: HOLDER_MODEL,
-      });
+      const response = await apiService.getEntities(HOLDER_MODEL);
       this.holderList = response.data
         .filter(item => item.name)
         .map(item => {

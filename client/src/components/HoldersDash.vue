@@ -217,22 +217,13 @@ export default {
 
     async retrieveHolders() {
       this.isLoading = true;
-
-      const response = await apiService.getMany({model: HOLDER_MODEL});
+      const response = await apiService.getEntities(HOLDER_MODEL);
 
       let holderList = response.data;
 
       holderList.sort((a, b) => {
         return (a.flatId) - (b.flatId);
       });
-
-      // // For each holder, fetch bills and attach them
-      // for (const holder of holderList) {
-      //   const billResponse = await apiService.getMany({
-      //     model: BILL_MODEL, flatId: holder.flatId
-      //   });
-      //   holder.bills = billResponse.data || [];
-      // }
 
       this.holderList = holderList;
       this.isLoading = false;

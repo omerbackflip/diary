@@ -106,22 +106,16 @@ onTopicChange(bill) {
 
   async mounted() {
     // Fetch list of topics for the combobox
-    const topicResponse = await apiService.getMany({ model: PRICE_MODEL });
+    const topicResponse = await apiService.getEntities(PRICE_MODEL);
     this.topicList = topicResponse.data || [];
 
     // Fetch bills and enrich with pricing
-    const billResponse = await apiService.getMany({
-      model: BILL_MODEL,
-      flatId: this.holder.flatId,
-    });
+    const billResponse = await apiService.getEntities(BILL_MODEL, {flatId: this.holder.flatId});
     const rawBills = billResponse.data || [];
 
 this.bills = await Promise.all(
   rawBills.map(async (bill) => {
-    const priceResponse = await apiService.getMany({
-      model: PRICE_MODEL,
-      topic_id: bill.topic_id,
-    });
+    const priceResponse = await apiService.getEntities(PRICE_MODEL, { topic_id: bill.topic_id });
     const price = priceResponse.data?.[0] || {};
 
     return {

@@ -223,7 +223,7 @@ export default {
 
   methods: {
     retrieveTables() {
-      apiService.getMany({model: TABLE_MODEL})
+      apiService.getEntities(TABLE_MODEL)
         .then((response) => {
           this.tables = response.data;
           this.tableID = response.data.filter(item => item.table_id === 99);
