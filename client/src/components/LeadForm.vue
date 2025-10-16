@@ -150,7 +150,7 @@ export default {
           if (this.isNewLead)  {
             response = await apiService.create(this.lead, {model: LEAD_MODEL});
           } else {
-            response = await apiService.update(this.lead._id, this.lead, { model: LEAD_MODEL });
+            response = await apiService.updateEntity({_id:this.lead._id}, this.lead, { model: LEAD_MODEL });
           } 
           if (response) {
             this.dialogLeadForm = false;

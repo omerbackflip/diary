@@ -160,7 +160,7 @@ export default {
 
     async retrieveHolders() {
       this.isLoading = true;
-      const response = await apiService.getEntities(HOLDER_MODEL);
+      const response = await apiService.clientGetEntities(HOLDER_MODEL);
       this.holderList = response.data
         .filter(item => item.name)
         .map(item => {
@@ -208,7 +208,7 @@ export default {
         const pickedDate = this.selectedItem.mesiraDate;
         this.holderList[this.selectedIndex].mesiraDate = `${pickedDate}T00:00:00.000Z` // if ISO needed
       }
-      let response = await apiService.update(this.holderList[this.selectedIndex]._id, this.holderList[this.selectedIndex], { model: HOLDER_MODEL });
+      let response = await apiService.updateEntity({_id:this.holderList[this.selectedIndex]._id}, this.holderList[this.selectedIndex], { model: HOLDER_MODEL });
       if (response) {
         this.mesiraDialog = false;
         this.selectedItem = null;

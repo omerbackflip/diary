@@ -181,7 +181,7 @@ export default {
           if (this.isNewHolder)  {
             response = await apiService.create(this.holder, {model: HOLDER_MODEL});
           } else {
-            response = await apiService.update(this.holder._id, this.holder, { model: HOLDER_MODEL });
+            response = await apiService.updateEntity({_id:this.holder._id}, this.holder, { model: HOLDER_MODEL });
           } 
           if (response) {
             this.dialogHolderForm = false;

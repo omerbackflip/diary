@@ -75,7 +75,7 @@ export default {
 
   methods: {
     retrievePrices() {
-      apiService.getEntities(PRICE_MODEL)
+      apiService.clientGetEntities(PRICE_MODEL)
         .then((response) => {
           this.priceList = response.data;
         })
@@ -106,7 +106,7 @@ export default {
     },
 
     updateOne(item) {
-      apiService.update(item._id, item, {model: PRICE_MODEL})
+      apiService.updateEntity({_id:item._id}, item, {model: PRICE_MODEL})
         .then(response => {
           console.log(response.data);
           this.message = 'The updateOne() updated successfully!';

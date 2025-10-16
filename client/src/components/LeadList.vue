@@ -225,9 +225,9 @@ export default {
       this.isLoading = true;
       let response;
       if (this.role === 'viewer') {
-        response = await apiService.getEntities(LEAD_MODEL, { arrivedFrom: 'יד1' });
+        response = await apiService.clientGetEntities(LEAD_MODEL, { arrivedFrom: 'יד1' });
       } else {
-        response = await apiService.getEntities(LEAD_MODEL);
+        response = await apiService.clientGetEntities(LEAD_MODEL);
       }
       if (response && response.data) {
         this.allLeadList = response.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));

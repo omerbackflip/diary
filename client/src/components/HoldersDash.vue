@@ -217,7 +217,7 @@ export default {
 
     async retrieveHolders() {
       this.isLoading = true;
-      const response = await apiService.getEntities(HOLDER_MODEL);
+      const response = await apiService.clientGetEntities(HOLDER_MODEL);
 
       let holderList = response.data;
 

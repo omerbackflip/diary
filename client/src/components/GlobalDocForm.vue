@@ -95,7 +95,7 @@ export default {
   methods: {
     retrieveDocs() {
       let table_id = 8;
-      apiService.getEntities(TABLE_MODEL, table_id)
+      apiService.clientGetEntities(TABLE_MODEL, table_id)
         .then((response) => {
           this.documentList = response.data.sort((a, b) => a.table_code - b.table_code);
         })
@@ -126,7 +126,7 @@ export default {
     },
 
     updateOne(item) {
-      apiService.update(item._id, item, {model: TABLE_MODEL})
+      apiService.updateEntity({_id:item._id}, item, {model: TABLE_MODEL})
         .then(response => {
           console.log(response.data);
           this.message = 'The updateOne() updated successfully!';

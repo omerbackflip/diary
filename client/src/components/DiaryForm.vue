@@ -165,7 +165,7 @@ export default {
           if (this.isNewDiary)  {
             response = await apiService.create(this.diary, {model: DIARY_MODEL});
           } else {
-            response = await apiService.update(this.diary._id, this.diary, { model: DIARY_MODEL });
+            response = await apiService.updateEntity({_id:this.diary._id}, this.diary, { model: DIARY_MODEL });
           } 
           if (response) {
             this.dialogDiaryForm = false;

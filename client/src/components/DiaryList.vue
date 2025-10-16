@@ -165,7 +165,7 @@ export default {
 
 		async retrieveDairies() {
 			this.isLoading = true;
-      let response = await apiService.getEntities(DIARY_MODEL);
+      let response = await apiService.clientGetEntities(DIARY_MODEL);
 			if (response && response.data) {
 				this.diaryList = response.data.sort(function(a, b) {
             var c = new Date(a.date);
