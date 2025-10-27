@@ -95,7 +95,7 @@ export default {
   methods: {
     retrieveDocs() {
       let table_id = 8;
-      apiService.clientGetEntities(TABLE_MODEL, table_id)
+      apiService.clientGetEntities(TABLE_MODEL, {table_id})
         .then((response) => {
           this.documentList = response.data.sort((a, b) => a.table_code - b.table_code);
         })
