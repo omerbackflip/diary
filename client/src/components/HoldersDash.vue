@@ -158,8 +158,9 @@
           </v-card>
         </v-col>
       </v-row>
+      <holder-form ref="holderForm"/>
     </v-layout>
-    <v-dialog v-model="dialog" max-width="1000px">
+    <!-- <v-dialog v-model="dialog" max-width="1000px">
       <v-card>
         <v-card-title>
           <span class="headline">תצוגה לפני הדפסה</span>
@@ -167,14 +168,14 @@
           <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
         <v-card-text>
-          <PdfPreview :holder="holder" :key="holder.flatId" /> <!-- :key is passing so the child component will execute the mounted() -->
+          <PdfPreview :holder="holder" :key="holder.flatId" />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="exportPdf">יצא כ־PDF</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
   </div>
 </template>
 
@@ -185,15 +186,16 @@ import apiService from "../services/apiService";
 import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER } from "../constants/constants";
 import { isMobile } from '../constants/constants';
 import { generatePdfFromElement } from "../components/shared/pdf";
-import PdfPreview from "./PdfPreview.vue";
+import holderForm from "./HolderForm.vue"
+// import PdfPreview from "./PdfPreview.vue";
 export default {
 	name: "holders-dash",
-  components: {PdfPreview},
+  components: {holderForm},
 	data() {
 		return {
       isMobile,
 			holderList: [],
-			dialog: false,
+			// dialog: false,
 			search: "",
 			headers: [],
 			holder: {},
@@ -232,7 +234,8 @@ export default {
     async getHolderForEdit(item) {
       if (!item?._id) return;
       this.holder = item;
-      this.dialog = true; // open preview dialog
+      // this.dialog = true; // open preview dialog for PDF
+      await this.$refs.holderForm.open(this.holder, false);
     },
 
     async exportPdf() {

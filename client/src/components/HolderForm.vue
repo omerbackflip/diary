@@ -151,8 +151,14 @@ export default {
         }
       },
 
+      closeHolderForm() {
+        this.dialogHolderForm = false;   // סוגר את הדיאלוג המקומי
+        this.$emit('close');             // אופציונלי: לאב, אם הוא שולט ב-v-model
+      },
+      
       async openFile(fileId) {
         await viewGDFile(fileId, this.$refs.modalDialog);
+        this.closeHolderForm();
       },
     },
 
