@@ -1,77 +1,77 @@
 <template>
-      <v-dialog v-model="dialogHolderForm" width="600">
-        <v-card style="direction: rtl;" :class="bck_grnd(holder._id)">
-          <v-card-text style="padding: 0px;">
-            <v-container>
-              <v-form ref="form">
-                <v-row>
-                  <v-col cols="3">
-                    <v-text-field v-model="holder.flatId" dense @focus="$event.target.select()" :disabled="!isNewHolder"></v-text-field>
-                  </v-col>
-                  <v-col cols="4">
-                    <v-text-field v-model="holder.name" dense @focus="$event.target.select()"></v-text-field>
-                  </v-col>
-                  <v-col cols="5">
-                    <v-select v-model="holder.status" :items="statusList" reverse dense></v-select>
-                  </v-col>
-                  <v-col class="pb-4" cols="8">
-                    <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
-                  </v-col>
-                  <v-col class="pb-4 pr-0" cols="4">
-                    <v-text-field v-model="holder.phone" dense @focus="$event.target.select()"></v-text-field>
-                  </v-col>
-                  <v-row class="mx-0">
-                    <v-col cols="4">
-                      <v-checkbox v-model="holder.payedFile" label="ת.דייר" hide-details></v-checkbox>
-                    </v-col>  
-                    <v-col cols="4">
-                      <v-checkbox v-model="holder.gotOffer" label="ה.מחיר" hide-details></v-checkbox>
-                    </v-col>
-                    <v-col cols="4">
-                      <v-checkbox v-model="holder.payedOffer" label="שולם"></v-checkbox>
-                    </v-col>
-                  </v-row>   
-                  <v-row class="mx-0">
-                    <v-col cols="6">
-                      <v-select v-model="holder.mitbach" :items="mitbachList" dense hide-details label="מטבח" clearable></v-select>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select v-model="holder.senitar" :items="senitarList" dense hide-details label="סניטרים" clearable></v-select>
-                    </v-col>
-                    <v-col cols="6">
-                    </v-col>
-                    <v-col cols="6">
-                      <div class="d-flex justify-space-between w-100">
-                        <div v-if="holder.totalCompany" class="text-right">
-                          <span> ביצועים: {{ holder.totalCompany.toLocaleString() || '' }}</span>
-                        </div>
-                        <div v-if="holder.totalCustomer" class="text-left">
-                          <span> לקוח: {{ holder.totalCustomer.toLocaleString() || '' }}</span>
-                        </div>
-                      </div>
-                    </v-col>
-                  </v-row>
-                  <v-col cols="12" class="pa-3">
-                    <v-textarea v-model="holder.remark" :label="holder.remark ? '' : 'עדכון אחרון...'" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-container>
-          </v-card-text>
-          <v-col style="align-content: center;">
-            <GooglePicker @onViewPicked="viewPicked" :GDParantFolder="holder.GDParantFolder"/>
-          </v-col>
-
-          <v-card-actions>
-            <v-btn small @click="saveHolder()" :loading="isLoading">
-              {{ holder._id ? "שמור" : "שמור חדש" }}
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn small @click="dialogHolderForm = false">בטל</v-btn>
-          </v-card-actions>
-        </v-card>
-        <modal-dialog ref="modalDialog"/>
-      </v-dialog>
+  <v-dialog v-model="dialogHolderForm" width="600">
+    <v-card style="direction: rtl;" :class="bck_grnd(holder._id)">
+      <v-card-text style="padding: 0px;">
+        <v-container>
+          <v-form ref="form">
+            <v-row>
+              <v-col cols="3">
+                <v-text-field v-model="holder.flatId" dense @focus="$event.target.select()" :disabled="!isNewHolder"></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field v-model="holder.name" dense @focus="$event.target.select()"></v-text-field>
+              </v-col>
+              <v-col cols="5">
+                <v-select v-model="holder.status" :items="statusList" reverse dense></v-select>
+              </v-col>
+              <v-col class="pb-4" cols="8">
+                <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
+              </v-col>
+              <v-col class="pb-4 pr-0" cols="4">
+                <v-text-field v-model="holder.phone" dense @focus="$event.target.select()"></v-text-field>
+              </v-col>
+              <v-row class="mx-0">
+                <v-col cols="4">
+                  <v-checkbox v-model="holder.payedFile" label="ת.דייר" hide-details></v-checkbox>
+                </v-col>  
+                <v-col cols="4">
+                  <v-checkbox v-model="holder.gotOffer" label="ה.מחיר" hide-details></v-checkbox>
+                </v-col>
+                <v-col cols="4">
+                  <v-checkbox v-model="holder.payedOffer" label="שולם"></v-checkbox>
+                </v-col>
+              </v-row>   
+              <v-row class="mx-0">
+                <v-col cols="6">
+                  <v-select v-model="holder.mitbach" :items="mitbachList" dense hide-details label="מטבח" clearable></v-select>
+                </v-col>
+                <v-col cols="6">
+                  <v-select v-model="holder.senitar" :items="senitarList" dense hide-details label="סניטרים" clearable></v-select>
+                </v-col>
+                <v-col cols="6">
+                </v-col>
+                <v-col cols="6">
+                  <div class="d-flex justify-space-between w-100">
+                    <div v-if="holder.totalCompany" class="text-right">
+                      <span> ביצועים: {{ holder.totalCompany.toLocaleString() || '' }}</span>
+                    </div>
+                    <div v-if="holder.totalCustomer" class="text-left">
+                      <span> לקוח: {{ holder.totalCustomer.toLocaleString() || '' }}</span>
+                    </div>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-col cols="12" class="pa-3">
+                <v-textarea v-model="holder.remark" :label="holder.remark ? '' : 'עדכון אחרון...'" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-container>
+      </v-card-text>
+      <v-col class="d-flex justify-center align-center">
+        <GooglePicker @onViewPicked="viewPicked" :GDParantFolder="holder.GDParantFolder"/>
+      </v-col>
+      <v-col class="d-flex justify-center">
+        <v-text-field v-model="holder.GDParantFolder" dense @focus="$event.target.select()" class="text-center" style="max-width: 300px;"></v-text-field>
+      </v-col>
+      <v-card-actions class="justify-center">
+        <v-btn small @click="saveHolder()" :loading="isLoading">{{ holder._id ? "שמור" : "שמור חדש" }}</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn small @click="dialogHolderForm = false">בטל</v-btn>
+      </v-card-actions>
+    </v-card>
+    <modal-dialog ref="modalDialog"/>
+  </v-dialog>
 </template>
 
 <script>
@@ -194,5 +194,8 @@ export default {
 }
 .bg-beige {
   background-color: beige !important;
+}
+.centered-input input {
+  text-align: center !important;
 }
 </style>
