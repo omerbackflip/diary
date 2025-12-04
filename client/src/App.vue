@@ -48,7 +48,7 @@ export default {
 
     if (foundUser) {
       this.isAuthenticated = true;
-      const role = foundUser.table_code === 1 ? 'admin' : 'viewer';
+      const role = Number(foundUser.table_code) === 1 ? 'admin' : 'viewer';
       localStorage.setItem('DiaryAuthenticated', role)
     } else {
       window.alert("Wrong user/password");

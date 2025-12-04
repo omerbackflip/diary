@@ -12,7 +12,7 @@
 		- git reset --hard  // consider npm install... otherwise, in case there are no needs items to commit in production 
 	- git pull origin master 		// (ignore this if you have latest code)
 
-	- git submodule update --init --recursive --remote // ignore this if you don't have changes to submodules
+	- git submodule update --init --recursive // ignore this if you don't have changes to submodules
 
 	- cd client
 	- rm -rf ./dist 			// this is to remove dist folder (only in case it exsist)
