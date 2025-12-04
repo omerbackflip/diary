@@ -11,21 +11,21 @@
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="blue"></v-avatar>
-                  <span style="font-size: 12px;">תיק דיירים</span>
+                  <span style="font-size: 12px;">ריצוף</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="red"></v-avatar>
-                  <span style="font-size: 12px;">תוכניות</span>
+                  <span style="font-size: 12px;">מרפסת</span>
                 </div>
               </div>
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="green"></v-avatar>
-                  <span style="font-size: 12px;">הצעת מחיר</span>
+                  <span style="font-size: 12px;">רטובים</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="yellow"></v-avatar>
-                  <span style="font-size: 12px;">שולם</span>
+                  <span style="font-size: 12px;">חיפוי</span>
                 </div>
               </div>
             </v-toolbar>
@@ -47,7 +47,8 @@
                       <span class="pa-0" style="display: flex; align-items: center; justify-content: space-evenly;">
                         {{ i + 1 }}
                         <!-- Avatars in 2x2 grid -->
-                        <div v-if="holderList[i].name" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
+                        <!-- <div v-if="holderList[i].name" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;"> -->
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
                           <v-avatar size="10" tile 
                             :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].payedFile ? 'blue' : 'transparent'}">
                           </v-avatar>
@@ -89,21 +90,21 @@
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="blue"></v-avatar>
-                  <span style="font-size: 12px; color: blue;">תיק דיירים</span>
+                  <span style="font-size: 12px; color: blue;">ריצוף</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="red"></v-avatar>
-                  <span style="font-size: 12px; color: blue;">תוכניות</span>
+                  <span style="font-size: 12px; color: blue;">מרפסת</span>
                 </div>
               </div>
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="green"></v-avatar>
-                  <span style="font-size: 12px; color: blue;">הצעת מחיר</span>
+                  <span style="font-size: 12px; color: blue;">רטובים</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="yellow"></v-avatar>
-                  <span style="font-size: 12px; color: blue;">שולם</span>
+                  <span style="font-size: 12px; color: blue;">חיפוי</span>
                 </div>
               </div>
             </v-toolbar>
@@ -125,7 +126,8 @@
                       <span class="pa-0" style="display: flex; align-items: center; justify-content: space-evenly;">
                         {{ i + 33 }}
                         <!-- Avatars in 2x2 grid -->
-                        <div v-if="holderList[i+32].name" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
+                        <!-- <div v-if="holderList[i+32].name" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;"> -->
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
                           <v-avatar size="10" tile 
                             :style="{border: '1px solid blue', backgroundColor: holderList[i+32] && holderList[i+32].payedFile ? 'blue' : 'transparent'}">
                           </v-avatar>

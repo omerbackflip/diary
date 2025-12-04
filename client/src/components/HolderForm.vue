@@ -21,14 +21,17 @@
                 <v-text-field v-model="holder.phone" dense @focus="$event.target.select()"></v-text-field>
               </v-col>
               <v-row class="mx-0">
-                <v-col cols="4">
-                  <v-checkbox v-model="holder.payedFile" label="ת.דייר" hide-details></v-checkbox>
+                <v-col cols="3">
+                  <v-checkbox v-model="holder.payedFile" label="ריצוף" hide-details></v-checkbox>
                 </v-col>  
-                <v-col cols="4">
-                  <v-checkbox v-model="holder.gotOffer" label="ה.מחיר" hide-details></v-checkbox>
+                <v-col cols="3">
+                  <v-checkbox v-model="holder.sendPlans" label="מרפסת" hide-details></v-checkbox>
                 </v-col>
-                <v-col cols="4">
-                  <v-checkbox v-model="holder.payedOffer" label="שולם"></v-checkbox>
+                <v-col cols="3">
+                  <v-checkbox v-model="holder.gotOffer" label="רטובים"></v-checkbox>
+                </v-col>
+                <v-col cols="3">
+                  <v-checkbox v-model="holder.payedOffer" label="חיפוי"></v-checkbox>
                 </v-col>
               </v-row>   
               <v-row class="mx-0">
