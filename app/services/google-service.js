@@ -309,7 +309,8 @@ exports.fetchNewRows = async (UPLOAD_MODEL) => {
     if (newRows.length > 0) {
       for (const row of newRows) {
         const [createdAt, name, phone, email, interested, adName, arrivedFrom] = row;
-        await UPLOAD_MODEL.create({ name, phone, email, interested, adName, arrivedFrom });
+        const formattedPhone = formatPhoneNumber(phone);
+        await UPLOAD_MODEL.create({ name, phone: formattedPhone, email, interested, adName, arrivedFrom });
       }
 
       // Save the last loaded row index
@@ -327,6 +328,29 @@ exports.fetchNewRows = async (UPLOAD_MODEL) => {
   }
 };
 
+
+// Helper function to format phone numbers to Israeli format (0xxxxxxxxx)
+// Converts +972xxxxxxxxx to 0xxxxxxxxx, or keeps 0xxxxxxxxx format as is
+function formatPhoneNumber(phone) {
+  if (!phone) return phone;
+  
+  // Convert to string and trim whitespace
+  let formattedPhone = String(phone).trim();
+  
+  // Remove any hyphens, spaces, or other common separators
+  formattedPhone = formattedPhone.replace(/[\s\-().]/g, '');
+  
+  // If starts with +972, replace with 0
+  if (formattedPhone.startsWith('+972')) {
+    formattedPhone = '0' + formattedPhone.slice(4);
+  }
+  // If starts with 972 (without +), replace with 0
+  else if (formattedPhone.startsWith('972') && !formattedPhone.startsWith('0')) {
+    formattedPhone = '0' + formattedPhone.slice(3);
+  }
+  
+  return formattedPhone;
+}
 
 // Helper function to check if a date matches the exact format: "YYYY-MM-DD HH:MM:SS"
 function isValidDateFormat(dateStr) {
