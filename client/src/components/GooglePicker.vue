@@ -1,12 +1,19 @@
 <template>
   <span>
-    <v-btn @click="openPickerForView" :disabled="!pickerApiLoaded" class="primary" style="margin-left:6px">
+    <v-btn
+      @click="openPickerForView"
+      :disabled="!pickerApiLoaded || isLoading"
+      class="primary"
+      style="margin-left:6px"
+    >
       <v-icon>mdi-folder-google-drive</v-icon>
     </v-btn>
   </span>
 </template>
 
 <script>
+import specificServiceEndPoints from "../services/specificServiceEndPoints";
+
 export default {
   name: "GooglePicker",
   props: {
@@ -19,12 +26,12 @@ export default {
   data() {
     return {
       pickerApiLoaded: false,
+      isLoading: false,
     };
   },
   methods: {
-    // Load the Google API script once
     loadGoogleApi() {
-      if (typeof window.gapiLoaded == 'undefined') {
+      if (typeof window.gapiLoaded === "undefined") {
         window.gapiLoaded = new Promise((resolve, reject) => {
           const script = document.createElement("script");
           script.src = "https://apis.google.com/js/api.js";
@@ -36,7 +43,6 @@ export default {
       return window.gapiLoaded;
     },
 
-    // Initialize Google Picker
     async initGooglePicker() {
       await this.loadGoogleApi();
       window.gapi.load("picker", { callback: this.onPickerApiLoad });
@@ -46,26 +52,66 @@ export default {
       this.pickerApiLoaded = true;
     },
 
-    openPickerForView() {
-      let apiKey = localStorage.getItem('developerKey');
-      let accessToken = localStorage.getItem('googleAccessToken');
-      let locale = localStorage.getItem('locale');
-      let folderId = this.GDParantFolder; // specific holder folder ID
-      if (this.pickerApiLoaded && accessToken) {
+    async openPickerForView() {
+      try {
+        if (!this.pickerApiLoaded) {
+          return;
+        }
+
+        this.isLoading = true;
+
+        const [pickerTokenResponse, googleStatusResponse] = await Promise.all([
+          specificServiceEndPoints.getPickerToken(),
+          specificServiceEndPoints.getGoogleConnectionStatus()
+        ]);
+
+        const pickerToken = pickerTokenResponse.data || {};
+        const googleStatus = googleStatusResponse.data || {};
+
+        if (!pickerToken.connected) {
+          alert("Please connect your Google account first.");
+          if (pickerToken.authUrl) {
+            window.location.href = pickerToken.authUrl;
+          } else if (googleStatus.authUrl) {
+            window.location.href = googleStatus.authUrl;
+          }
+          return;
+        }
+
+        const apiKey = googleStatus.developerKey;
+        const accessToken = pickerToken.access_token;
+        const locale = googleStatus.locale || "en";
+        const folderId = this.GDParantFolder;
+
+        if (!apiKey) {
+          alert("Google Picker developer key is missing.");
+          return;
+        }
+
+        if (!accessToken) {
+          alert("Google access token is missing.");
+          return;
+        }
+
         const view = new window.google.picker.DocsView()
           .setParent(folderId)
           .setIncludeFolders(true);
+
         const picker = new window.google.picker.PickerBuilder()
           .addView(view)
           .setOAuthToken(accessToken)
           .setDeveloperKey(apiKey)
           .setCallback(this.onViewPicked)
           .setLocale(locale)
-          .setMaxItems(1)
+          .setMaxItems(this.maxItems)
           .build();
+
         picker.setVisible(true);
-      }else{
-        alert("Please connect your google account.");
+      } catch (error) {
+        console.log("Error opening Google Picker:", error);
+        alert("Error opening Google Picker.");
+      } finally {
+        this.isLoading = false;
       }
     },
 
@@ -78,9 +124,6 @@ export default {
 
   mounted() {
     this.initGooglePicker();
-  },
-  watch: {
-
   }
 };
 </script>

@@ -10,3 +10,6 @@
 	path = client/src/components/shared/login
 	url = https://github.com/omerbackflip/login
 	branch = master
+[submodule "google"]
+	path = google
+	url = https://github.com/omerbackflip/google.git

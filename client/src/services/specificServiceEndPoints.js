@@ -1,8 +1,9 @@
 import axios from "axios";
 import http from "../http-common";
-const baseUrl = process.env.VUE_APP_API_URL; //take the "http://localhost:3004/api"
+const baseUrl = process.env.VUE_APP_API_URL;
+
 class SpecificServiceEndPoints {
- 
+
   async saveExcelBulk(bulk) {
     var formData = new FormData();
     formData.append("file", bulk);
@@ -14,17 +15,21 @@ class SpecificServiceEndPoints {
   }
 
   async getDbInfo() {
-		return await axios.get(`${baseUrl}/specific/get-database-info`);
-	}
+    return await axios.get(`${baseUrl}/specific/get-database-info`);
+  }
 
   async getGoogleConnectionStatus(){
     return await axios.get(`${baseUrl}/specific/get-google-connection-status`);
   }
 
+  async getPickerToken() {
+    return await axios.get(`${baseUrl.replace('/specific', '')}/google/picker-token`);
+  }
+
   savePic(data) {
     return http.post("specific/save-pic", data);
   }
-  
+
   deletePic(data) {
     return http.post("specific/delete-pic", data);
   }
@@ -32,7 +37,7 @@ class SpecificServiceEndPoints {
   syncGoogleSheets(data) {
     return http.get("specific/sync-google-sheets", data);
   }
-  
+
   bulkWriteApi(data,params) {
     return http.post("specific/bulk-write", data, {params});
   }

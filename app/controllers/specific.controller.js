@@ -10,8 +10,11 @@ const specificService = require("../services/specific-service");
 const { url } = require("../config/db.config");
 const path = require('path');
 const { ServerApp } = require("../config/constants");
-const { google } = require('googleapis');
-const googleService = require('../services/google-service');
+// const { google } = require('googleapis');
+// const googleService = require('../services/google-service');
+const googleSubmoduleService = require('../services/google-submodule-service');
+const googleLeadsSyncService = require('../services/google-leads-sync-service');
+
 
 // const { HOLDER_MODEL } = require("../../client/src/constants/constants");
 // const HOLDER_MODEL = db.holders;
@@ -69,83 +72,75 @@ exports.savePic = async(req, res) => {
 }
 
 exports.deletePic = async(req, res) => {
-	try {
-		const fileName = req.body;
-		let uploadFolder = path.join(__dirname + '/../../client/' + process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH);
-		// fs.unlink(uploadFolder + fileName,() => {}) // fs.unlink must have callback - so dummy callback was added
-		unLinkFile(uploadFolder + fileName)
-	} catch (error) {
-		console.log(error);
-		res.status(500).send({message: error.message || "Some error while deletePic function in specifc.controller.js file"});
-	}
-}
+  try {
+    const fileName = req.body;
+    let uploadFolder = path.join(__dirname + '/../../client/' + process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH);
+    unLinkFile(uploadFolder + fileName);
+    res.send({ success: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: error.message || "Some error while deletePic function in specific.controller.js file"
+    });
+  }
+};
 
 exports.googleConnectionStatus = async (req, res) => {
-	try{
-		let auth = await googleService.getAuth();
-		if(auth instanceof google.auth.OAuth2){
-			const userInfo = await googleService.getUser(auth);
-			const username = (userInfo != false ? userInfo.name : null);
-			let token = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'token.json'));
-			const { access_token,refresh_token } = token;
-			await googleService.refreshAccessToken(auth,refresh_token);
-			// Small delay to ensure file is written (only needed if issue persists)
-			await new Promise(resolve => setTimeout(resolve, 50));
-			token = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'token.json'));
-			const credentials = JSON.parse(fs.readFileSync(ServerApp.configFolderPath + 'google-credentials.json'));
-  			const { client_secret, client_id} = credentials.web;
-  			const developer_key = ServerApp.google.apiKeyForPicker;
-  			const locale = ServerApp.google.locale;
-			res.send({
-				connected: true,
-				username: username,
-				client_secret:client_secret,
-				client_id:client_id,
-				developerKey:developer_key,
-				locale: locale,
-				access_token:access_token,
-				folderId:ServerApp.google.pickerRootFolder
-			});
-		}else{
-			res.send({
-				connected: false,
-				authUrl: auth
-			});
-		}
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({
-			message: "Error while checking google connection."
-		});
-	}
+  try {
+    const tokens = googleSubmoduleService.getStoredTokens();
+
+    if (!tokens) {
+      return res.send({
+        connected: false,
+        authUrl: '/api/google/auth'
+      });
+    }
+
+    return res.send({
+      connected: true,
+      username: null,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+    //   developerKey: ServerApp.google.apiKeyForPicker,
+    //   locale: ServerApp.google.locale,
+	  developerKey: process.env.GOOGLE_PICKER_API_KEY,
+	  locale: process.env.GOOGLE_PICKER_LOCALE || 'en',
+      access_token: tokens.access_token || null,
+      folderId: ServerApp.google.pickerRootFolder
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Error while checking google connection."
+    });
+  }
 };
 
-exports.googleAuthHandler = async (req, res) => {
-	try{
+// exports.googleAuthHandler = async (req, res) => {
+// 	try{
 
-		const oAuth2Client = googleService.getAuthClient();
-		const code = req.query.code;
+// 		const oAuth2Client = googleService.getAuthClient();
+// 		const code = req.query.code;
 
-		googleService.getToken(oAuth2Client, code);
+// 		googleService.getToken(oAuth2Client, code);
 
-		res.redirect(`${process.env.CLIENT_URL}?success=true`);
+// 		res.redirect(`${process.env.CLIENT_URL}?success=true`);
 
-	} catch (error) {
-		console.log(error)
-		res.status(500).send({
-			message: "Error while checking google connection."
-		});
-	}
-};
+// 	} catch (error) {
+// 		console.log(error)
+// 		res.status(500).send({
+// 			message: "Error while checking google connection."
+// 		});
+// 	}
+// };
 
 exports.syncGoogleSheets = async (req, res) => {
-	try {
-		let newLeads = await googleService.fetchNewRows(UPLOAD_MODEL);
-		res.json({ success: true, message: `${newLeads} leads where imported`});
-	} catch (error) {
-		console.error("Error syncing Google Sheets:", error);
-		res.status(500).json({ success: false, message: "Error syncing Google Sheets" });
-	}
+  try {
+    let newLeads = await googleLeadsSyncService.fetchNewRows(UPLOAD_MODEL);
+    res.json({ success: true, message: `${newLeads} leads where imported` });
+  } catch (error) {
+    console.error("Error syncing Google Sheets:", error);
+    res.status(500).json({ success: false, message: "Error syncing Google Sheets" });
+  }
 };
 
 exports.bulkWriteControl = async (req, res) => {
