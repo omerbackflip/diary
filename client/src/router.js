@@ -46,10 +46,10 @@ export default new Router({
       name: "price-list",
       component: () => import("./components/PriceList")
     },
-    // {
-    //   path: "/billform",
-    //   name: "bill-form",
-    //   component: () => import("./components/BillForm")
-    // },
+    {
+      path: "/diary-calendar",
+      name: "diary-calendar",
+      component: () => import("@/components/DiaryCalendar.vue")
+    },
   ]
 });
