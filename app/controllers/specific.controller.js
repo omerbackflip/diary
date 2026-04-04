@@ -16,9 +16,6 @@ const googleSubmoduleService = require('../services/google-submodule-service');
 const googleLeadsSyncService = require('../services/google-leads-sync-service');
 
 
-// const { HOLDER_MODEL } = require("../../client/src/constants/constants");
-// const HOLDER_MODEL = db.holders;
-
 // **************** EXAMPLE FILE FOR SPECIFIC CONTROLLERS ************* //
 
 exports.saveExcelBulk = async (req, res) => {
@@ -99,11 +96,9 @@ exports.googleConnectionStatus = async (req, res) => {
     return res.send({
       connected: true,
       username: null,
-      client_id: process.env.GOOGLE_CLIENT_ID,
-    //   developerKey: ServerApp.google.apiKeyForPicker,
-    //   locale: ServerApp.google.locale,
-	  developerKey: process.env.GOOGLE_PICKER_API_KEY,
-	  locale: process.env.GOOGLE_PICKER_LOCALE || 'en',
+      client_id: process.env.VUE_APP_GOOGLE_CLIENT_ID,
+	  developerKey: process.env.VUE_APP_GOOGLE_API_KEY,
+	  locale: process.env.VUE_APP_GOOGLE_PICKER_LOCALE || 'en',
       access_token: tokens.access_token || null,
       folderId: ServerApp.google.pickerRootFolder
     });
@@ -114,24 +109,6 @@ exports.googleConnectionStatus = async (req, res) => {
     });
   }
 };
-
-// exports.googleAuthHandler = async (req, res) => {
-// 	try{
-
-// 		const oAuth2Client = googleService.getAuthClient();
-// 		const code = req.query.code;
-
-// 		googleService.getToken(oAuth2Client, code);
-
-// 		res.redirect(`${process.env.CLIENT_URL}?success=true`);
-
-// 	} catch (error) {
-// 		console.log(error)
-// 		res.status(500).send({
-// 			message: "Error while checking google connection."
-// 		});
-// 	}
-// };
 
 exports.syncGoogleSheets = async (req, res) => {
   try {

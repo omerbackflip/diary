@@ -62,7 +62,7 @@
         </v-container>
       </v-card-text>
       <v-col class="d-flex justify-center align-center">
-        <GooglePicker @onViewPicked="viewPicked" :GDParantFolder="holder.GDParantFolder"/>
+        <GooglePicker @picked="onFilePicked" :folderId="holder.GDParantFolder"/>
       </v-col>
       <v-col class="d-flex justify-center">
         <v-text-field v-model="holder.GDParantFolder" dense @focus="$event.target.select()" class="text-center" style="max-width: 300px;"></v-text-field>
@@ -145,13 +145,9 @@ export default {
         return classes;
       },
            
-      viewPicked(pickedFileInfo) {
-        if (pickedFileInfo.action === window.google.picker.Action.PICKED) {
-          const selected = pickedFileInfo.docs && pickedFileInfo.docs[0];
-          if (selected && selected.id) {
-            this.openFile(selected.id);
-          }
-        }
+      onFilePicked(file) {
+        if (!file) return;
+        this.openFile(file.fileId);
       },
 
       closeHolderForm() {
