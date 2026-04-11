@@ -25,7 +25,7 @@
               </v-col>
               <v-col v-show="!isMobile()" style="text-align-last: center;">
                 <export-excel
-                :data="diaryList"
+                :data="$formatDataForExport(diaryList)"
                 type="xlsx"
                 name="all-diary"
                 title="All Diary"

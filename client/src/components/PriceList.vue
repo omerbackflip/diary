@@ -27,7 +27,7 @@
                 </v-col>
               </v-row>
               <export-excel
-                :data="priceList"
+                :data="$formatDataForExport(priceList)"
                 type="xlsx"
                 name="all-priceList"
                 title="All Prices"

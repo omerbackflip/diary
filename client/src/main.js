@@ -5,6 +5,7 @@ import vuetify from './plugins/vuetify'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import excel from 'vue-excel-export'
 import { setGoogleConfig } from '../../google/frontend';
+import { formatDataForExport } from './utils/exportFormatter';
 
 setGoogleConfig({
   pickerTokenUrl: `${process.env.VUE_APP_API_URL.replace('/specific', '')}/google/picker-token`,
@@ -17,7 +18,7 @@ setGoogleConfig({
 Vue.use(excel)
 Vue.config.productionTip = false
 
-Vue.config.productionTip = false
+Vue.prototype.$formatDataForExport = formatDataForExport; // Make the Exports date format to DD/MM/YYYY globally available in the app
 
 new Vue({
   router,

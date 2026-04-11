@@ -29,7 +29,7 @@
                   <v-text-field v-model="search" label="Search" clearable hide-details ></v-text-field>
                 </v-col>
                 <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
-                  <export-excel :data="allLeadList" type="xlsx">
+                  <export-excel :data="$formatDataForExport(allLeadList)" type="xlsx">
                     <v-btn x-small class="btn btn-danger">
                       <v-icon small>mdi-download</v-icon>
                     </v-btn>

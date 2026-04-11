@@ -28,7 +28,7 @@
                 </v-col>
               </v-row>
               <export-excel
-                :data="tables"
+                :data="$formatDataForExport(tables)"
                 type="xlsx"
                 name="all-tables"
                 title="All Tables"
