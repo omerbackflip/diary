@@ -74,8 +74,8 @@ import ImportXLS from '../ImportXLS.vue';
 import Vue from "vue";
 import moment from "moment";
 import { isMobile } from '../../constants/constants';
+import { initializeGoogleOnAppLoad } from "../../../../google/frontend";
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
-import { checkGoogleStatus } from "@/utils/commonService";
 
 Vue.filter("formatDate", function (value) {
 	if (value) {
@@ -170,11 +170,11 @@ export default {
         },
 
         async checkGoogleConnection() {
-            console.log('checkGoogleConnection Running');
-             await checkGoogleStatus((menuItem) => {
-                this.googleConnectMenuItem = menuItem;
-            });
-        },
+            await initializeGoogleOnAppLoad(SpecificServiceEndPoints.getGoogleConnectionStatus, (menuItem) => {
+                    this.googleConnectMenuItem = menuItem;
+                }
+            );
+        }
     },
     computed: {
     },
