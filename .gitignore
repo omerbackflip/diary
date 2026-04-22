@@ -6,3 +6,6 @@ client/public/media_files/*
 !client/public/media_files/.keep
 app/config/google-credentials.json
 app/config/token.json
+app/config/google-credentials.json
+app/config/google-credentials.json.old
+app/config/token.json
