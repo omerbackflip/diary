@@ -41,6 +41,10 @@ class SpecificServiceEndPoints {
   bulkWriteApi(data,params) {
     return http.post("specific/bulk-write", data, {params});
   }
+
+  async runBackup() {
+    return await axios.post(`${baseUrl}/specific/backup/run`);
+  }
 }
 
 export default new SpecificServiceEndPoints();

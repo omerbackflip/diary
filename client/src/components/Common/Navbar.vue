@@ -10,6 +10,10 @@
                         {{local ? 'LocalHost' : 'Production'}}
                     </div>
                 </div>
+                <v-btn v-if="!isMobile()" color="primary" dark :loading="backupLoading" @click="runBackup" class="ml-3" small>
+                    <v-icon left>mdi-google-drive</v-icon>
+                    {{ lastUpdate }}
+                </v-btn>
                 <v-col col="10">
                     <div class="text-center" style="text-align-last: justify;">
                         {{ new Date() | formatDate  }}
@@ -73,7 +77,8 @@
 import ImportXLS from '../ImportXLS.vue';
 import Vue from "vue";
 import moment from "moment";
-import { isMobile } from '../../constants/constants';
+import { isMobile, loadTable, TABLE_MODEL } from '../../constants/constants';
+import apiService from "../../services/apiService";
 import { initializeGoogleOnAppLoad } from "../../../../google/frontend";
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
 
@@ -110,6 +115,8 @@ export default {
             isMobile,
             activeComponent: '',
             role: '', // 'admin' or 'viewer'
+            lastUpdate: [],
+            backupLoading: false,
         }
     },
     methods:{
@@ -169,6 +176,33 @@ export default {
             }
         },
 
+        async runBackup() {
+            try {
+                this.backupLoading = true;
+                this.lastUpdate = "creating excel...";
+
+                const response = await SpecificServiceEndPoints.runBackup();
+
+                if (response && response.data && response.data.file && response.data.file.filename) {
+                    const filename = response.data.file.filename;
+                    const match = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
+                    const dateStr = match ? `${match[3]}/${match[2]}/${match[1]}` : '';
+
+                    this.lastUpdate = "last backup : " + dateStr;
+
+                    await apiService.updateEntity(
+                        { table_id: 110, table_code: 1 },
+                        { description: this.lastUpdate },
+                        { model: TABLE_MODEL }
+                    );
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                this.backupLoading = false;
+            }
+        },
+
         async checkGoogleConnection() {
             await initializeGoogleOnAppLoad(SpecificServiceEndPoints.getGoogleConnectionStatus, (menuItem) => {
                     this.googleConnectMenuItem = menuItem;
@@ -180,6 +214,8 @@ export default {
     },
     async mounted() {
         this.getDatabaseInformation();
+        const lastUpdateArr = (await loadTable(110)).map((code) => code.description);
+        this.lastUpdate = lastUpdateArr.length === 1 ? lastUpdateArr[0] : lastUpdateArr;
         this.checkGoogleConnection();
         this.role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
     },

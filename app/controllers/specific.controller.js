@@ -14,7 +14,10 @@ const { ServerApp } = require("../config/constants");
 // const googleService = require('../services/google-service');
 const googleSubmoduleService = require('../services/google-submodule-service');
 const googleLeadsSyncService = require('../services/google-leads-sync-service');
-
+const backupService = require('../../backup/backend');
+const backupConfig = require('../backup/backup.config');
+const { getModel } = require('../backup/modelResolver');
+const backupUtils = require('../util/backupUtils');
 
 // **************** EXAMPLE FILE FOR SPECIFIC CONTROLLERS ************* //
 
@@ -160,6 +163,26 @@ exports.bulkWriteControl = async (req, res) => {
 		console.log(error);
 		res.status(500).send({message: error.message || "Some error occurred while create entity."});
 	}
+};
+
+exports.runBackup = async (req, res) => {
+  try {
+    const result = await backupService.runBackup({
+      config: backupConfig,
+      getModel,
+      uploader: googleSubmoduleService.uploadFileToDrive,
+      backupUtils,
+      tmpDir: path.resolve(__dirname, '../../tmp')
+    });
+
+    return res.json(result);
+  } catch (error) {
+    console.error('runBackup error:', error);
+    return res.status(500).send({
+      message: 'Error creating backup',
+      error: error.message || error
+    });
+  }
 };
 
 function unLinkFile(path) {

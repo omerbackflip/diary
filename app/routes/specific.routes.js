@@ -17,7 +17,9 @@ module.exports = app => {
 
   //Google auth  
   router.get("/get-google-connection-status", specific.googleConnectionStatus);
-  // router.get("/google-auth-handler", specific.googleAuthHandler); // in looks not used - it is not called from specificServiceEndPoints.js like other functions
   router.get("/sync-google-sheets", specific.syncGoogleSheets);
+
+  router.post("/backup/run", specific.runBackup);
+
   app.use('/api/specific', router);
 };
