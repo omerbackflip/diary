@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+cd /home/diary
+
+echo "Pulling latest Diary code..."
+git pull origin master
+
+echo "Syncing submodules..."
+git submodule sync --recursive
+git submodule update --init --recursive
+
+echo "Building frontend..."
+cd client
+rm -rf dist
+npm run build:production
+
+echo "Restarting frontend PM2: Diary..."
+pm2 delete Diary || true
+pm2 serve ./dist --name Diary --port 8084
+
+echo "Restarting backend PM2: DiaryServer..."
+cd ..
+pm2 delete DiaryServer || true
+pm2 start server.js --name DiaryServer
+
+echo "Diary Deployment completed."
