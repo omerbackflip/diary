@@ -17,7 +17,6 @@ const googleLeadsSyncService = require('../services/google-leads-sync-service');
 const backupService = require('../../backup/backend');
 const backupConfig = require('../backup/backup.config');
 const { getModel } = require('../backup/modelResolver');
-const backupUtils = require('../util/backupUtils');
 
 // **************** EXAMPLE FILE FOR SPECIFIC CONTROLLERS ************* //
 
@@ -171,7 +170,6 @@ exports.runBackup = async (req, res) => {
       config: backupConfig,
       getModel,
       uploader: googleSubmoduleService.uploadFileToDrive,
-      backupUtils,
       tmpDir: path.resolve(__dirname, '../../tmp')
     });
 
