@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
 const db = require("../models");
-const googleSubmoduleService = require('./google-submodule-service');
+const googleSubmoduleService = require('../../google/backend/services/google-submodule-service');
 
 const SPREADSHEET_ID = "1qS8rb0RDkOwVCuH7McXPYrlvrfctLFSaQ2hpFrmtbI0";
 const RANGE = "'לידים'!A:G";
