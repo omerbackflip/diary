@@ -20,6 +20,7 @@ module.exports = app => {
   router.get("/sync-google-sheets", specific.syncGoogleSheets);
 
   router.post("/backup/run", specific.runBackup);
+  router.post("/backup/restore", upload.single('file'), specific.runRestore);
 
   app.use('/api/specific', router);
 };
