@@ -54,6 +54,9 @@ require("./app/routes/specific.routes")(app);
 const mongooseRouter = require("./app/shared/mongoose/routes/generic.routes");
 app.use("/api/generic", mongooseRouter);
 
+// Start the Google Sheets Sync Job
+const { startGoogleSheetsSyncJob } = require("./app/jobs/googleSheetsSync.job");
+startGoogleSheetsSyncJob();
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3004;

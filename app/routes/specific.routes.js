@@ -18,6 +18,8 @@ module.exports = app => {
   //Google auth  
   router.get("/get-google-connection-status", specific.googleConnectionStatus);
   router.get("/sync-google-sheets", specific.syncGoogleSheets);
+  router.get("/google-sheets-sync-status", specific.getGoogleSheetsSyncStatus);
+  router.get("/test-google-sheets-sync-job", specific.testGoogleSheetsSyncJob); // for testing the sync job manually
 
   router.post("/backup/run", specific.runBackup);
   router.post("/backup/restore", upload.single('file'), specific.runRestore);

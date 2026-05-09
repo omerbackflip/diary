@@ -14,9 +14,35 @@ const { ServerApp } = require("../config/constants");
 // const googleService = require('../services/google-service');
 const googleSubmoduleService = require('../../google/backend/services/google-submodule-service');
 const googleLeadsSyncService = require('../services/google-leads-sync-service');
+const { getGoogleSheetsSyncStatus } = require("../jobs/googleSheetsSync.job");
 const backupService = require('../../backup/backend');
 const backupConfig = require('../backup/backup.config');
 const { getModel } = require('../backup/modelResolver');
+
+
+                    // for testing purposes only - to be removed in production
+                    // http://localhost:3004/api/specific/test-google-sheets-sync-job
+                    const {
+                      runGoogleSheetsSync,
+                    } = require("../jobs/googleSheetsSync.job");
+                    exports.testGoogleSheetsSyncJob = async (req, res) => {
+                      try {
+                        await runGoogleSheetsSync();
+
+                        res.json({
+                          success: true,
+                          message: "Google Sheets sync job executed manually",
+                        });
+                      } catch (error) {
+                        console.error("Error running Google Sheets sync job:", error);
+
+                        res.status(500).json({
+                          success: false,
+                          message: "Error running Google Sheets sync job",
+                        });
+                      }
+                    };
+
 
 // **************** EXAMPLE FILE FOR SPECIFIC CONTROLLERS ************* //
 
@@ -223,6 +249,22 @@ exports.runRestore = async (req, res) => {
     return res.status(500).send({
       message: 'Error restoring backup',
       error: error.message || error
+    });
+  }
+};
+
+exports.getGoogleSheetsSyncStatus = async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      status: getGoogleSheetsSyncStatus(),
+    });
+  } catch (error) {
+    console.error("Error getting Google Sheets sync status:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Error getting Google Sheets sync status",
     });
   }
 };

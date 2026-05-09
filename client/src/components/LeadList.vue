@@ -1,5 +1,9 @@
 <template>
   <div class="list row">
+    <v-alert v-if="newLeadsMessage" type="success" dense class="centered-alert">
+      {{ newLeadsMessage }}
+      <v-btn small text color="primary" @click="refreshAfterSyncMessage"> Refresh </v-btn>
+    </v-alert>
     <v-layout style="padding: 0px">
       <v-flex>
         <v-data-table
@@ -183,7 +187,10 @@ export default {
       dateRange: [],
       rangeMenu: false,
       dateRangeText: '',
-      role: 'admin' // or 'viewer'
+      role: 'admin', // or 'viewer'
+      syncStatusTimer: null,
+      lastSeenSyncVersion: null,
+      newLeadsMessage: "",
     }
   },
 
@@ -328,6 +335,37 @@ export default {
       this.getStatistics();
     },
 
+    async checkGoogleSheetsSyncStatus() {
+      try {
+        const res = await specificServiceEndPoints.getGoogleSheetsSyncStatus();
+
+        if (!res.data.success) return;
+
+        const status = res.data.status;
+
+        if (this.lastSeenSyncVersion === null) {
+          this.lastSeenSyncVersion = status.version;
+          return;
+        }
+
+        if (
+          status.version !== this.lastSeenSyncVersion &&
+          status.lastImportedCount > 0
+        ) {
+          this.newLeadsMessage = `${status.lastImportedCount} new leads were imported. Click to refresh.`;
+        }
+
+        this.lastSeenSyncVersion = status.version;
+      } catch (error) {
+        console.error("Error checking Google Sheets sync status:", error);
+      }
+    },
+
+    async refreshAfterSyncMessage() {
+      this.newLeadsMessage = "";
+      await this.retrieveLeads();
+    },
+
   },
 
   async mounted() {
@@ -341,6 +379,18 @@ export default {
       this.lead = NEW_LEAD;
       await this.$refs.leadForm.open(this.lead, true);
     });
+    
+    this.checkGoogleSheetsSyncStatus();
+    this.syncStatusTimer = setInterval(() => {
+      this.checkGoogleSheetsSyncStatus();
+    }, 30000);
+
+  },
+
+  beforeDestroy() {
+    if (this.syncStatusTimer) {
+      clearInterval(this.syncStatusTimer);
+    }
   },
 
   watch: {
@@ -504,5 +554,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 .centered{
   justify-content: space-evenly !important;
+}
+.centered-alert {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 500px;
 }
 </style>

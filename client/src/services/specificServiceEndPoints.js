@@ -38,6 +38,10 @@ class SpecificServiceEndPoints {
     return http.get("specific/sync-google-sheets", data);
   }
 
+  getGoogleSheetsSyncStatus() {
+    return http.get("specific/google-sheets-sync-status");
+  }
+
   bulkWriteApi(data,params) {
     return http.post("specific/bulk-write", data, {params});
   }
