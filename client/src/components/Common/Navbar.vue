@@ -14,7 +14,7 @@
                     <v-icon left>mdi-google-drive</v-icon>
                     {{ lastUpdate }}
                 </v-btn>
-                <v-btn small class="ml-2" :loading="loading" @click="triggerRestore">
+                <v-btn v-if="!isMobile()" small class="ml-2" :loading="loading" @click="triggerRestore">
                     <v-icon left>mdi-restore</v-icon> Restore
                 </v-btn>
                 <v-col col="10">

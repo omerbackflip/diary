@@ -120,6 +120,15 @@
               </v-col>
 
               <v-col cols="6" md="3" class="text-center">
+                <v-btn-toggle v-model="selectedDays" dense @change="applyDaysRange">
+                  <v-btn :value="3" x-small>3-days</v-btn>
+                  <v-btn :value="7" x-small>7-days</v-btn>
+                  <v-btn :value="14" x-small>14-days</v-btn>
+                  <v-btn :value="30" x-small>30-days</v-btn>
+                </v-btn-toggle>
+              </v-col>
+
+              <v-col cols="6" md="3" class="text-center">
                 <v-btn-toggle v-model="summaryBy" dense>
                   <v-btn value="arrivedFrom" x-small>הגיע מ</v-btn>
                   <v-btn value="status" x-small>סטטוס</v-btn>
@@ -128,7 +137,7 @@
               </v-col>
             </v-row>
 
-            <BarChart :data="summaryLeads"/>
+            <BarChart :data="summaryLeads" @bar-click="onChartBarClick"/>
 
           </v-card-text>
           <v-card-actions>
@@ -175,6 +184,7 @@ export default {
       statusFilter: '',
       arrivedFilter: '',
       interestFilter: '',
+      adNameFilter: '',
       statusList: [],
       arrivedList: [],
       interestList: [],
@@ -187,25 +197,49 @@ export default {
       dateRange: [],
       rangeMenu: false,
       dateRangeText: '',
+      selectedDays: null,
       role: 'admin', // or 'viewer'
       syncStatusTimer: null,
       lastSeenSyncVersion: null,
       newLeadsMessage: "",
+      filterKey: 0,
     }
   },
 
   computed: {
     filteredLeads() {
-      return this.allLeadList.filter(lead => {
-        const matchesStatus = !this.statusFilter || lead.status === this.statusFilter;
-        const matchesArrived = !this.arrivedFilter || lead.arrivedFrom === this.arrivedFilter;
-        const matchesInterest = !this.interestFilter || lead.interested === this.interestFilter;
+      const today = new Date();
+      let from = null;
+      let to = null;
+
+      if (this.dateRange.length === 2) {
+        from = new Date(this.dateRange[0] + 'T00:00:00');
+        to = new Date(this.dateRange[1] + 'T23:59:59');
+      } else if (this.selectedDays) {
+        from = new Date(today.getTime() - Number(this.selectedDays) * 24 * 60 * 60 * 1000);
+        to = today;
+      } else {
+        from = this.fromDate ? new Date(this.fromDate + 'T00:00:00') : null;
+        to = this.toDate ? new Date(this.toDate + 'T23:59:59') : null;
+      }
+
+      let filtered = this.allLeadList.filter(lead => {
+        const createdAt = new Date(lead.createdAt);
+        return (!from || createdAt >= from) && (!to || createdAt <= to);
+      });
+
+      filtered = filtered.filter(lead => {
+        const matchesStatus = !this.statusFilter || (lead.status && lead.status.trim() === this.statusFilter);
+        const matchesArrived = !this.arrivedFilter || (lead.arrivedFrom && lead.arrivedFrom.trim() === this.arrivedFilter);
+        const matchesInterest = !this.interestFilter || (lead.interested && lead.interested.trim() === this.interestFilter);
+        const matchesAdName = !this.adNameFilter || (lead.adName && lead.adName.trim() === this.adNameFilter);
         const matchesSearch = !this.search || [
           lead.name,
           lead.phone,
           lead.status,
           lead.arrivedFrom,
           lead.interested,
+          lead.adName,
           lead.trackDate,
           lead.updatedAt,
           lead.createdAt,
@@ -214,8 +248,10 @@ export default {
           .filter(Boolean)
           .some(field => String(field).toLowerCase().includes(this.search.toLowerCase()));
 
-        return matchesStatus && matchesArrived && matchesInterest && matchesSearch;
+        return matchesStatus && matchesArrived && matchesInterest && matchesAdName && matchesSearch;
       });
+
+      return filtered;
     }
   },
 
@@ -269,14 +305,54 @@ export default {
     async callStatistics () {
       this.fromDate = null
       this.toDate = null
+      this.selectedDays = null
       await this.getStatistics()
       this.barChartDialog = true
     },
 
+    onChartBarClick(label) {
+      if (!label) return;
+      label = label.trim();
+      this.barChartDialog = false;
+      this.search = '';
+      this.adNameFilter = '';
+      this.statusFilter = '';
+      this.arrivedFilter = '';
+
+      if (this.summaryBy === 'status') {
+        this.statusFilter = label;
+      } else if (this.summaryBy === 'arrivedFrom') {
+        this.arrivedFilter = label;
+      } else if (this.summaryBy === 'adName') {
+        this.adNameFilter = label;
+      }
+    },
+
+    async applyDaysRange(value) {
+      this.selectedDays = value;
+      this.dateRange = [];
+      this.fromDate = null;
+      this.toDate = null;
+      this.dateRangeText = `Last ${value} days`;
+      await this.getStatistics();
+    },
+
     async getStatistics() {
       const summaryMap = {};
-      const from = this.fromDate ? new Date(this.fromDate + 'T00:00:00') : null;
-      const to = this.toDate ? new Date(this.toDate + 'T23:59:59') : null;
+      const today = new Date();
+      let from = null;
+      let to = null;
+
+      if (this.dateRange.length === 2) {
+        from = new Date(this.dateRange[0] + 'T00:00:00');
+        to = new Date(this.dateRange[1] + 'T23:59:59');
+      } else if (this.selectedDays) {
+        from = new Date(today.getTime() - Number(this.selectedDays) * 24 * 60 * 60 * 1000);
+        to = today;
+      } else {
+        from = this.fromDate ? new Date(this.fromDate + 'T00:00:00') : null;
+        to = this.toDate ? new Date(this.toDate + 'T23:59:59') : null;
+      }
 
       this.allLeadList.forEach((lead) => {
         const createdAt = new Date(lead.createdAt);
@@ -319,6 +395,7 @@ export default {
 
     applyDateRange() {
       if (this.dateRange.length === 2) {
+        this.selectedDays = null;
         this.fromDate = this.dateRange[0];
         this.toDate = this.dateRange[1];
         this.dateRangeText = `${this.fromDate} to ${this.toDate}`;
@@ -331,6 +408,7 @@ export default {
       this.dateRange = [];
       this.fromDate = null;
       this.toDate = null;
+      this.selectedDays = null;
       this.dateRangeText = '';
       this.getStatistics();
     },
@@ -370,9 +448,9 @@ export default {
 
   async mounted() {
     this.role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
-    this.statusList = (await loadTable(9)).map((code) => code.description);
-    this.arrivedList = (await loadTable(5)).map((code) => code.description);
-    this.interestList = (await loadTable(2)).map((code) => code.description);
+    this.statusList = (await loadTable(9)).map((code) => (code.description || '').trim());
+    this.arrivedList = (await loadTable(5)).map((code) => (code.description || '').trim());
+    this.interestList = (await loadTable(2)).map((code) => (code.description || '').trim());
     this.retrieveLeads();
     this.getStatistics(); // trigger on load with full list
     this.$root.$on("addNewLead", async () => {

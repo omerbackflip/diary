@@ -3,7 +3,7 @@ const db = require("../models");
 const googleSubmoduleService = require('../../google/backend/services/google-submodule-service');
 
 const SPREADSHEET_ID = "1qS8rb0RDkOwVCuH7McXPYrlvrfctLFSaQ2hpFrmtbI0";
-const RANGE = "'לידים'!A:G";
+const RANGE = "'לידים'!A:I";
 
 async function fetchNewRows(UPLOAD_MODEL) {
   const oAuth2Client = googleSubmoduleService.getOAuthClientFromStoredTokens();
@@ -35,11 +35,13 @@ async function fetchNewRows(UPLOAD_MODEL) {
 
     if (newRows.length > 0) {
       for (const row of newRows) {
-        const [createdAt, name, phone, email, interested, adName, arrivedFrom] = row;
+        const [createdAt, name, phone, email, interested, adName, arrivedFrom, duration, answered] = row;
         const formattedPhone = formatPhoneNumber(phone);
-
         await UPLOAD_MODEL.create({
-          name,
+          name: answered === undefined  ? name 
+                                        : answered?.includes('yes') 
+                                          ? `כוכבית - ${duration} שניות` 
+                                          : 'כוכבית - לא נענתה',
           phone: formattedPhone,
           email,
           interested,

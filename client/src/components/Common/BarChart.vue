@@ -76,6 +76,9 @@ export default {
         options: {
           responsive: labels.length <= 10, // אם מעט קטגוריות – תן לו להיות רספונסיבי
           maintainAspectRatio: false,
+          onHover: (event, elements) => {
+            event.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
+          },
           scales: {
             y: {
               beginAtZero: true,
@@ -107,6 +110,17 @@ export default {
         },
         plugins: [ChartDataLabels]
       });
+
+      // Set onClick after chart creation
+      this.chartInstance.options.onClick = (event, elements) => {
+        if (elements && elements.length > 0) {
+          const index = elements[0]._index;
+          if (index >= 0 && index < this.data.length) {
+            const label = this.data[index].source;
+            this.$emit('bar-click', label);
+          }
+        }
+      };
     },
 
   },
