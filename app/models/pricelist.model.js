@@ -10,9 +10,10 @@ module.exports = mongoose => {
       parkingId: Number,
       flatArea: Number,
       balconyArea: Number,
-      eqvivalentArea: Number,
+      equivalentArea: Number,
       flatPrice: Number,
       status: String,
+      flatChart: String,
     },
     { timestamps: true }
   );

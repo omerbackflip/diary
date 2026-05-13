@@ -17,7 +17,7 @@
       loading-text="Loading... Please wait"
     >
       <template v-slot:item="{ item, index }">
-          <tr v-if="item.flatId === 34" class="building-separator-row">
+          <tr v-if="item.flatId === 32" class="building-separator-row">
             <td :colspan="headers.length" class="building-separator-cell">
               <div class="building-separator-line"></div>
             </td>
@@ -27,7 +27,7 @@
               <div class="floor-divider-line"></div>
             </td>
           </tr>
-          <tr :class="itemRowBackground(item)">
+          <tr :class="['clickable-row', itemRowBackground(item)]" @click="openFile(item)">
             <td
               v-if="isFirstFloorCell(index)"
               :rowspan="floorRowSpan(index)"
@@ -43,7 +43,7 @@
             <td>{{ item.parkingId }}</td>
             <td>{{ item.flatArea }}</td>
             <td>{{ item.balconyArea }}</td>
-            <td>{{ item.eqvivalentArea }}</td>
+            <td>{{ item.equivalentArea }}</td>
             <td>{{ item.flatPrice.toLocaleString() }}</td>
           </tr>
       </template>
@@ -54,19 +54,23 @@
         </v-alert>
       </template>
     </v-data-table>
+    <modal-dialog ref="modalDialog"/>
   </v-card>
 </template>
 
 <script>
-import { PRICELIST_MODEL } from '../constants/constants';
+import { PRICELIST_MODEL, viewGDFile } from '../constants/constants';
 import apiService from '../services/apiService';
 import excel from 'vue-excel-export';
 import Vue from 'vue';
+import modalDialog from './Common/ViewFileModal.vue';
+
 
 Vue.use(excel);
 
 export default {
   name: 'PriceListTable',
+  components: {modalDialog},
   data() {
     return {
       priceList: [],
@@ -81,13 +85,14 @@ export default {
         { text: 'חניה', value: 'parkingId', sortable: false, class: 'light-blue', groupable: false },
         { text: 'שטח דירה', value: 'flatArea', sortable: false, class: 'light-blue', groupable: false },
         { text: 'שטח מרפסת', value: 'balconyArea', sortable: false, class: 'light-blue', groupable: false },
-        { text: 'שטח אקוו', value: 'eqvivalentArea', sortable: false, class: 'light-blue', groupable: false },
+        { text: 'שטח אקוו', value: 'equivalentArea', sortable: false, class: 'light-blue', groupable: false },
         { text: 'מחיר דירה', value: 'flatPrice', sortable: false, class: 'light-blue', groupable: false },
         // { text: 'סטטוס', value: 'status', sortable: false, class: 'light-blue', groupable: false },
       ],
       isLoading: false,
     };
   },
+
   computed: {
     displayedPriceList() {
       const term = this.search ? this.search.toString().trim().toLowerCase() : '';
@@ -99,6 +104,7 @@ export default {
       );
     },
   },
+
   methods: {
     retrievePriceList() {
       this.isLoading = true;
@@ -139,7 +145,13 @@ export default {
     itemRowBackground(item) {
       return item.status === 'נמכר' ? 'bg-green' : '';
     },
+
+    async openFile(item) {
+      await viewGDFile(item.flatChart, this.$refs.modalDialog);
+    },
+
   },
+
   mounted() {
     this.retrievePriceList();
   },
@@ -230,5 +242,13 @@ export default {
   font-weight: bold;    
   font-size: 20px !important;
   text-align-last: center;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  filter: brightness(95%);
 }
 </style>

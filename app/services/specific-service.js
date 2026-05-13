@@ -46,9 +46,10 @@ exports.getExcelToSave = (data) => {
                 parkingId: item.parkingId,
                 flatArea: item.flatArea,
                 balconyArea: item.balconyArea,
-                eqvivalentArea: item.eqvivalentArea,
+                equivalentArea: item.equivalentArea,
                 flatPrice: item.flatPrice,
                 status: item.status,
+                flatChart: item.flatChart,
                 
             };
             documents.push(document);
