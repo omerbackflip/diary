@@ -4,6 +4,7 @@ export const LEAD_MODEL = 'leads';
 export const HOLDER_MODEL = 'holders';
 export const PRICE_MODEL = 'prices';
 export const BILL_MODEL = 'bills';
+export const PRICELIST_MODEL = 'pricelist';
 import apiService from "../services/apiService";
 
 export const DIARY_WEB_HEADERS = [

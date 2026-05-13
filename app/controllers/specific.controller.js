@@ -1,6 +1,7 @@
 const db = require("../models");
 // const UPLOAD_MODEL = db.prices;
-const UPLOAD_MODEL = db.leads;
+// const UPLOAD_MODEL = db.leads;
+const UPLOAD_MODEL = db.pricelist;
 // const UPLOAD_MODEL = db.bills;
 const csv = require('csvtojson');
 var fs = require('fs');

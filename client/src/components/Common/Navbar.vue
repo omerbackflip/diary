@@ -111,6 +111,7 @@ export default {
                 {icon: 'folder', text: 'מסמכים לפרויקט', route: '/GlobalDocForm'},
                 {icon: 'folder', text: 'טבלת הטבלאות', route: '/tableList'},
                 {icon: 'folder', text: 'מחירון שינויים', route: '/priceList'},
+                {icon: 'folder', text: 'טבלת מחירי דירות', route: '/pricelist-table'},
                 {icon: 'folder', text: 'קליטת אקסל', route: null, import: 'EXCEL', onClick: 'runModal'},
             ],
             displayDay: '',

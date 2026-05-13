@@ -47,6 +47,11 @@ export default new Router({
       component: () => import("./components/PriceList")
     },
     {
+      path: "/pricelist-table",
+      name: "pricelist-table",
+      component: () => import("./components/PriceListTable")
+    },
+    {
       path: "/diary-calendar",
       name: "diary-calendar",
       component: () => import("@/components/DiaryCalendar.vue")

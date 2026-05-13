@@ -13,16 +13,16 @@ exports.getExcelToSave = (data) => {
                 // price: item.price,
 
                 // leads table
-                name: item.name,
-                phone: item.phone,
-                description: item.description,
-                status: item.status,
-                interested: item.interested,
-                last_update: !isNaN(Date.parse(item.last_update)) ? moment(item.last_update).add(1,'days') : new Date(), //probably need to add 1 day because of initially exporting the excel with vue-excel-export
-                email: item.email,
-                arrivedFrom: item.arrivedFrom,
-                createdAt: item.createdAt,
-                updatedAt: item.updatedAt,
+                // name: item.name,
+                // phone: item.phone,
+                // description: item.description,
+                // status: item.status,
+                // interested: item.interested,
+                // last_update: !isNaN(Date.parse(item.last_update)) ? moment(item.last_update).add(1,'days') : new Date(), //probably need to add 1 day because of initially exporting the excel with vue-excel-export
+                // email: item.email,
+                // arrivedFrom: item.arrivedFrom,
+                // createdAt: item.createdAt,
+                // updatedAt: item.updatedAt,
 
                 // // bills table excel in the תוכניות עבודה diecroty
                 // flatId: item.flatId,
@@ -35,6 +35,21 @@ exports.getExcelToSave = (data) => {
                 // charge_type: item.charge_type,
                 // toPay: item.toPay,
                 // remark: item.remark,
+
+                // priceList table excel in the vue/Diary diecroty
+                flatId: item.flatId,
+                floor: item.floor,
+                directions: item.directions,
+                rooms: item.rooms,
+                warehouseId: item.warehouseId,
+                warehouseArea: item.warehouseArea,
+                parkingId: item.parkingId,
+                flatArea: item.flatArea,
+                balconyArea: item.balconyArea,
+                eqvivalentArea: item.eqvivalentArea,
+                flatPrice: item.flatPrice,
+                status: item.status,
+                
             };
             documents.push(document);
         });
