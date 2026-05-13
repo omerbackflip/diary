@@ -30,7 +30,7 @@ async function runGoogleSheetsSync() {
   };
 
   try {
-    console.log("[Google Sheets Sync] Started");
+    console.log(`[Google Sheets Sync] Started at ${new Date().toLocaleString("he-IL", {timeZone: "Asia/Jerusalem"})}`);
 
     const newLeads = await googleLeadsSyncService.fetchNewRows(UPLOAD_MODEL);
     const importedCount = Number(newLeads) || 0;
@@ -43,7 +43,7 @@ async function runGoogleSheetsSync() {
       version: syncStatus.version + 1,
     };
 
-    console.log(`[Google Sheets Sync] Finished. ${importedCount} leads imported.`);
+    console.log(`[Google Sheets Sync] Finished at ${new Date().toLocaleString("he-IL", {timeZone: "Asia/Jerusalem"})}. ${importedCount} leads imported.`);
   } catch (error) {
     syncStatus = {
       isRunning: false,
@@ -53,7 +53,7 @@ async function runGoogleSheetsSync() {
       version: syncStatus.version + 1,
     };
 
-    console.error("[Google Sheets Sync] Failed:", error);
+    console.error(`[Google Sheets Sync] Failed at ${new Date().toLocaleString("he-IL", {timeZone: "Asia/Jerusalem"})}:`, error);
   } finally {
     isSyncRunning = false;
   }

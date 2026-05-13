@@ -38,10 +38,11 @@ async function fetchNewRows(UPLOAD_MODEL) {
         const [createdAt, name, phone, email, interested, adName, arrivedFrom, duration, answered] = row;
         const formattedPhone = formatPhoneNumber(phone);
         await UPLOAD_MODEL.create({
-          name: answered === undefined  ? name 
-                                        : answered?.includes('yes') 
-                                          ? `כוכבית - ${duration} שניות` 
-                                          : 'כוכבית - לא נענתה',
+          name: name && name.trim() 
+            ? name 
+            : answered?.includes('yes') 
+              ? `כוכבית - ${duration} שניות` 
+              : 'כוכבית - לא נענתה',
           phone: formattedPhone,
           email,
           interested,
