@@ -49,12 +49,18 @@ export default new Router({
     {
       path: "/pricelist-table",
       name: "pricelist-table",
-      component: () => import("./components/PriceListTable")
+      component: () => import("./components/PriceList/PriceListTable")
     },
     {
       path: "/diary-calendar",
       name: "diary-calendar",
       component: () => import("@/components/DiaryCalendar.vue")
     },
+    {
+      path: '/map-coordinate-picker',
+      name: 'MapCoordinatePicker',
+      component: () =>
+        import('@/components/PriceList/MapCoordinatePicker.vue'),
+    }
   ]
 });
