@@ -143,7 +143,8 @@ exports.googleConnectionStatus = async (req, res) => {
 
 exports.syncGoogleSheets = async (req, res) => {
   try {
-    let newLeads = await googleLeadsSyncService.fetchNewRows(UPLOAD_MODEL);
+    // let newLeads = await googleLeadsSyncService.fetchNewRows(UPLOAD_MODEL);
+    let newLeads = await googleLeadsSyncService.fetchNewRows(db.leads);
     res.json({ success: true, message: `${newLeads} leads where imported` });
   } catch (error) {
     console.error("Error syncing Google Sheets:", error);

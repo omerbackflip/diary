@@ -3,7 +3,7 @@ const cron = require("node-cron");
 const db = require("../models");
 const googleLeadsSyncService = require("../services/google-leads-sync-service");
 
-const UPLOAD_MODEL = db.leads;
+// const UPLOAD_MODEL = db.leads;
 
 let isSyncRunning = false;
 
@@ -32,7 +32,7 @@ async function runGoogleSheetsSync() {
   try {
     console.log(`[Google Sheets Sync] Started at ${new Date().toLocaleString("he-IL", {timeZone: "Asia/Jerusalem"})}`);
 
-    const newLeads = await googleLeadsSyncService.fetchNewRows(UPLOAD_MODEL);
+    const newLeads = await googleLeadsSyncService.fetchNewRows(db.leads);
     const importedCount = Number(newLeads) || 0;
 
     syncStatus = {
