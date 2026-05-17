@@ -6,7 +6,8 @@ const MODEL_MAP = {
   Holder: db.holders,
   Lead: db.leads,
   Price: db.prices,
-  Table: db.tables
+  Table: db.tables,
+  PriceList: db.pricelist,
 };
 
 function getModel(modelName) {

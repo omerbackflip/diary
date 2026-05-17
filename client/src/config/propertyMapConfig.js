@@ -540,11 +540,11 @@ export const propertyMapItems = {
         "7": {
             "label": "מחסן 7",
             area: 0, // dummy for now
-            mapKey: 'basement', // basement | ground | floor | floor8
-            "x": 32.41,
-            "y": 34.72,
-            "width": 2.72,
-            "height": 4.05
+            mapKey: 'basement', // basement | ground | floor | floor8            
+            "x": 32.2,
+            "y": 34.11,
+            "width": 3.15,
+            "height": 5.16
         },
         "8": {
             "label": "מחסן 8",
@@ -658,28 +658,28 @@ export const propertyMapItems = {
             "label": "מחסן 20",
             area: 0, // dummy for now
             mapKey: 'basement', // basement | ground | floor | floor8
-            "x": 53.68,
-            "y": 62.24,
-            "width": 3.15,
-            "height": 3.14
+            "x": 53.11,
+            "y": 61.74,
+            "width": 4.22,
+            "height": 4.45
         },
         "21": {
             "label": "מחסן 21",
             area: 0, // dummy for now
             mapKey: 'basement', // basement | ground | floor | floor8
-            "x": 41.72,
-            "y": 28.14,
-            "width": 2.22,
-            "height": 3.95
+            "x": 41.44,
+            "y": 27.93,
+            "width": 2.79,
+            "height": 4.55
         },
         "22": {
             "label": "מחסן 22",
             area: 0, // dummy for now
             mapKey: 'basement', // basement | ground | floor | floor8
-            "x": 66.57,
-            "y": 55.87,
-            "width": 3.58,
-            "height": 2.94
+            "x": 65.56,
+            "y": 55.46,
+            "width": 5.37,
+            "height": 4.35
         },
         "23": {
             "label": "מחסן 23",
@@ -738,38 +738,38 @@ export const propertyMapItems = {
         "29": {
             "label": "מחסן 29",
             area: 0, // dummy for now
-            mapKey: 'ground', // basement | ground | floor | floor8
-            "x": 33.2,
-            "y": 33.91,
-            "width": 2,
-            "height": 3.74
+            mapKey: 'ground', // basement | ground | floor | floor8            
+            "x": 32.92,
+            "y": 33.5,
+            "width": 2.36,
+            "height": 4.66
         },
         "30": {
             "label": "מחסן 30",
             area: 0, // dummy for now
             mapKey: 'ground', // basement | ground | floor | floor8
-            "x": 35.21,
-            "y": 34.01,
-            "width": 2.15,
-            "height": 3.85
+            "x": 35.14,
+            "y": 33.4,
+            "width": 2.36,
+            "height": 4.86
         },
         "31": {
             "label": "מחסן 31",
             area: 0, // dummy for now
             mapKey: 'ground', // basement | ground | floor | floor8
-            "x": 29.41,
-            "y": 42.61,
-            "width": 4.01,
-            "height": 3.24
+            "x": 29.12,
+            "y": 42,
+            "width": 4.51,
+            "height": 3.95
         },
         "32": {
             "label": "מחסן 32",
             area: 0, // dummy for now
             mapKey: 'ground', // basement | ground | floor | floor8
-            "x": 29.91,
-            "y": 45.85,
-            "width": 3.36,
-            "height": 2.94
+            "x": 29.12,
+            "y": 45.75,
+            "width": 4.37,
+            "height": 3.74
         },
         "34": {
             "label": "מחסן 34",
@@ -783,20 +783,20 @@ export const propertyMapItems = {
         "35": {
             "label": "מחסן 35",
             area: 0, // dummy for now
-            mapKey: 'ground', // basement | ground | floor | floor8
-            "x": 54.18,
-            "y": 63.36,
-            "width": 3.94,
-            "height": 2.53
+            mapKey: 'ground', // basement | ground | floor | floor8            
+            "x": 53.68,
+            "y": 63.05,
+            "width": 4.65,
+            "height": 3.34
         },
         "36": {
             "label": "מחסן 36",
             area: 0, // dummy for now
             mapKey: 'ground', // basement | ground | floor | floor8
-            "x": 54.25,
-            "y": 69.73,
-            "width": 1.93,
-            "height": 5.57
+            "x": 53.82,
+            "y": 69.33,
+            "width": 2.51,
+            "height": 6.38
         },
         "37": {
             "label": "מחסן 37",
@@ -810,11 +810,11 @@ export const propertyMapItems = {
         "38": {
             "label": "מחסן 38",
             area: 0, // dummy for now
-            mapKey: 'ground', // basement | ground | floor | floor8
-            "x": 58.33,
-            "y": 62.35,
-            "width": 3.65,
-            "height": 3.54
+            mapKey: 'ground', // basement | ground | floor | floor8            
+            "x": 57.97,
+            "y": 61.74,
+            "width": 4.58,
+            "height": 4.76
         },
         "39": {
             "label": "מחסן 39",

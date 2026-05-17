@@ -32,6 +32,11 @@ module.exports = {
       key: 'tables',
       modelName: 'Table',
       archiveName: 'tables.csv'
+    },
+    {
+      key: 'pricelist',
+      modelName: 'PriceList',
+      archiveName: 'pricelist.csv'
     }
   ]
 };

@@ -1,8 +1,33 @@
 <template>
   <v-card class="price-list-card" elevation="4" >
-    <v-card-title class="headline font-weight-bold justify-end">
-      גדות סקיי - מחירי דירות
+    <v-card-title class="headline font-weight-bold">
+      <div class="overview-actions">
+        <v-btn
+          small
+          color="primary"
+          outlined
+          @click="openOverviewMap('parkings')"
+        >
+          חניות
+        </v-btn>
+
+        <v-btn
+          small
+          color="primary"
+          outlined
+          @click="openOverviewMap('warehouses')"
+        >
+          מחסנים
+        </v-btn>
+      </div>
+
+      <v-spacer />
+
+      <div>
+        גדות סקיי - מחירי דירות
+      </div>
     </v-card-title>
+
     <v-data-table
       :headers="headers"
       :items="displayedPriceList"
@@ -61,6 +86,12 @@
       :warehouseArea="warehouseArea"
       @download-pdf="handlePropertyMapPdf"
     />
+    <PropertyMapOverviewDialog
+      v-model="propertyMapOverviewDialog"
+      :mode="propertyMapOverviewMode"
+      :price-list="priceList"
+    />
+
   </v-card>
 </template>
 
@@ -71,12 +102,14 @@ import excel from 'vue-excel-export';
 import Vue from 'vue';
 import modalDialog from '../Common/ViewFileModal.vue';
 import PropertyMapDialog from '@/components/PriceList/PropertyMapDialog.vue';
+import PropertyMapOverviewDialog from '@/components/PriceList/PropertyMapOverviewDialog.vue';
+
 
 Vue.use(excel);
 
 export default {
   name: 'PriceListTable',
-  components: {modalDialog, PropertyMapDialog},
+  components: {modalDialog, PropertyMapDialog, PropertyMapOverviewDialog},
   data() {
     return {
       priceList: [],
@@ -98,6 +131,8 @@ export default {
       selectedPropertyMapItem: null,
       selectedPropertyMapMode: null,
       warehouseArea: null,
+      propertyMapOverviewDialog: false,
+      propertyMapOverviewMode: null,
     };
   },
 
@@ -163,6 +198,11 @@ export default {
       this.selectedPropertyMapMode = mode;
       this.warehouseArea = item.warehouseArea;
       this.propertyMapDialog = true;
+    },
+
+    openOverviewMap(mode) {
+      this.propertyMapOverviewMode = mode;
+      this.propertyMapOverviewDialog = true;
     },
 
     handlePropertyMapPdf(item) {
@@ -280,4 +320,11 @@ export default {
 ::v-deep .map-click-cell:hover {
   background-color: lightblue;
 }
+
+.overview-actions {
+  display: flex;
+  gap: 8px;
+  direction: rtl;
+}
+
 </style>
