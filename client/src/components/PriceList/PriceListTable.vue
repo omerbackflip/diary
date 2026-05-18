@@ -61,6 +61,7 @@
               {{ item.floor }}
             </td>
             <td><div class="d-flex justify-center">{{ item.flatId }}</div></td>
+            <td>{{ item.buyerName }}</td>
             <td>{{ item.directions }}</td>
             <td>{{ item.rooms }}</td>
             <td class="map-click-cell" @click.stop="openPropertyMap(item, 'warehouse')"> {{ item.warehouseId }} - ({{ item.warehouseArea }})</td>
@@ -96,7 +97,7 @@
 </template>
 
 <script>
-import { PRICELIST_MODEL, viewGDFile } from '../../constants/constants';
+import { PRICELIST_MODEL, HOLDER_MODEL, viewGDFile } from '../../constants/constants';
 import apiService from '../../services/apiService';
 import excel from 'vue-excel-export';
 import Vue from 'vue';
@@ -117,6 +118,7 @@ export default {
       headers: [
         { text: 'קומה', value: 'floor', class: 'light-blue', groupable: false },
         { text: 'מס דירה', value: 'flatId', class: 'light-blue', groupable: false },
+        { text: 'שם קונה', value: 'buyerName', class: 'light-blue', groupable: false },
         { text: 'כיוון אוויר', value: 'directions', class: 'light-blue', groupable: false },
         { text: 'חדרים', value: 'rooms', class: 'light-blue', groupable: false },
         { text: 'מחסן (גודל)', value: 'warehouseId', sortable: false, class: 'light-blue', groupable: false },
@@ -151,10 +153,23 @@ export default {
   methods: {
     retrievePriceList() {
       this.isLoading = true;
-      apiService
-        .clientGetEntities(PRICELIST_MODEL)
-        .then((response) => {
-          this.priceList = response.data || [];
+
+      Promise.all([
+        apiService.clientGetEntities(PRICELIST_MODEL),
+        apiService.clientGetEntities(HOLDER_MODEL),
+      ])
+        .then(([priceListResponse, holderResponse]) => {
+          const holdersByFlatId = (holderResponse.data || []).reduce((acc, holder) => {
+            acc[holder.flatId] = holder;
+            return acc;
+          }, {});
+
+          this.priceList = (priceListResponse.data || []).map((priceListItem) => ({
+            ...priceListItem,
+            buyerName: holdersByFlatId[priceListItem.flatId]?.name || "",
+          }));
+
+          // console.log('Price list retrieved:', this.priceList);  // if you put outside of promise, it will be empty because of async nature of JS
           this.isLoading = false;
         })
         .catch((e) => {
@@ -162,6 +177,7 @@ export default {
           this.isLoading = false;
         });
     },
+
     showFloorDivider(index) {
       if (index === 0) return false;
       const currentFloor = this.displayedPriceList[index]?.floor;
