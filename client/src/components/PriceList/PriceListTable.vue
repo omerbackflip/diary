@@ -2,32 +2,18 @@
   <v-card class="price-list-card" elevation="4" >
     <v-card-title class="headline font-weight-bold">
       <div class="overview-actions">
-        <v-btn
-          small
-          color="primary"
-          outlined
-          @click="openOverviewMap('parkings')"
-        >
-          חניות
-        </v-btn>
-
-        <v-btn
-          small
-          color="primary"
-          outlined
-          @click="openOverviewMap('warehouses')"
-        >
-          מחסנים
-        </v-btn>
+        <v-btn small color="primary" outlined @click="openOverviewMap('parkings')"> חניות </v-btn>
+        <v-btn small color="primary" outlined @click="openOverviewMap('warehouses')"> מחסנים </v-btn>
       </div>
-
       <v-spacer />
-
-      <div>
-        גדות סקיי - מחירי דירות
-      </div>
+      <div> גדות סקיי - מחירי דירות </div>
+      <v-spacer />
+      <v-btn-toggle v-model="availabilityFilter" mandatory dense class="availability-toggle">
+        <v-btn small value="available"> למכירה </v-btn>
+        <v-btn small value="sold"> נמכר </v-btn>
+        <v-btn small value="all"> הכל </v-btn>
+      </v-btn-toggle>
     </v-card-title>
-
     <v-data-table
       :headers="headers"
       :items="displayedPriceList"
@@ -60,16 +46,16 @@
             >
               {{ item.floor }}
             </td>
-            <td><div class="d-flex justify-center">{{ item.flatId }}</div></td>
-            <td>{{ item.buyerName }}</td>
-            <td>{{ item.directions }}</td>
-            <td>{{ item.rooms }}</td>
-            <td class="map-click-cell" @click.stop="openPropertyMap(item, 'warehouse')"> {{ item.warehouseId }} - ({{ item.warehouseArea }})</td>
-            <td class="map-click-cell" @click.stop="openPropertyMap(item, 'parking')">   {{ item.parkingId }}</td>
-            <td>{{ item.flatArea }}</td>
-            <td>{{ item.balconyArea }}</td>
-            <td>{{ item.equivalentArea }}</td>
-            <td>{{ item.flatPrice.toLocaleString() }}</td>
+            <td :class="soldTextClass(item)"><div class="d-flex justify-center">{{ item.flatId }}</div></td>
+            <td :class="soldTextClass(item)">{{ item.buyerName }}</td>
+            <td :class="soldTextClass(item)">{{ item.directions }}</td>
+            <td :class="soldTextClass(item)">{{ item.rooms }}</td>
+            <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'warehouse')"> {{ item.warehouseId }} - ({{ item.warehouseArea }})</td>
+            <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'parking')"> {{ item.parkingId }}</td>
+            <td :class="soldTextClass(item)">{{ item.flatArea }}</td>
+            <td :class="soldTextClass(item)">{{ item.balconyArea }}</td>
+            <td :class="soldTextClass(item)">{{ item.equivalentArea }}</td>
+            <td :class="soldTextClass(item)">{{ item.flatPrice.toLocaleString() }}</td>
           </tr>
       </template>
 
@@ -92,7 +78,6 @@
       :mode="propertyMapOverviewMode"
       :price-list="priceList"
     />
-
   </v-card>
 </template>
 
@@ -135,16 +120,26 @@ export default {
       warehouseArea: null,
       propertyMapOverviewDialog: false,
       propertyMapOverviewMode: null,
+      availabilityFilter: 'all',
     };
   },
 
   computed: {
     displayedPriceList() {
       const term = this.search ? this.search.toString().trim().toLowerCase() : '';
-      if (!term) return this.priceList;
-      return this.priceList.filter((item) =>
+      let list = this.priceList;
+      if (this.availabilityFilter === 'available') {
+        list = list.filter(item => item.status !== 'נמכר');
+      }
+      if (this.availabilityFilter === 'sold') {
+        list = list.filter(item => item.status === 'נמכר');
+      }
+      if (!term) return list;
+      return list.filter((item) =>
         Object.values(item).some((value) =>
-          value !== null && value !== undefined && value.toString().toLowerCase().includes(term)
+          value !== null &&
+          value !== undefined &&
+          value.toString().toLowerCase().includes(term)
         )
       );
     },
@@ -184,10 +179,12 @@ export default {
       const previousFloor = this.displayedPriceList[index - 1]?.floor;
       return currentFloor !== previousFloor;
     },
+
     isFirstFloorCell(index) {
       if (index === 0) return true;
       return this.displayedPriceList[index]?.floor !== this.displayedPriceList[index - 1]?.floor;
     },
+
     floorRowSpan(index) {
       const currentFloor = this.displayedPriceList[index]?.floor;
       if (currentFloor === undefined) return 1;
@@ -201,8 +198,9 @@ export default {
       }
       return span;
     },
+
     itemRowBackground(item) {
-      return item.status === 'נמכר' ? 'bg-green' : '';
+      return item.status === '' ? 'bg-green' : '';
     },
 
     async openFile(item) {
@@ -223,6 +221,14 @@ export default {
 
     handlePropertyMapPdf(item) {
       console.log('PDF export will be connected to existing PDF submodule', item);
+    },
+
+    isSold(item) {
+      return item.status === 'נמכר';
+    },
+
+    soldTextClass(item) {
+      return this.isSold(item) ? 'sold-text' : '';
     },
   },
 
@@ -307,7 +313,7 @@ export default {
   margin: 0;
 }
 
-.bg-green {
+::v-deep .bg-green td {
   background-color: #d9f6d9 !important;
 }
 
@@ -343,4 +349,13 @@ export default {
   direction: rtl;
 }
 
+.sold-text {
+  color: #9e9e9e !important;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+  opacity: 0.60;
+}
+
+.availability-toggle {
+  margin-right: 8px;
+}
 </style>

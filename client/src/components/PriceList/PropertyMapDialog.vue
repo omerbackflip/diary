@@ -46,7 +46,8 @@
               />
 
               <div
-                class="highlight-area parking"
+                class="highlight-area"
+                :class="highlightClass"
                 :style="areaStyle(selectedSection.area)"
               >
                 <!-- <span>{{ selectedSection.area.label }}</span> -->
@@ -176,6 +177,19 @@ export default {
 
         return `${this.item.warehouseId} (${this.warehouseArea} מ"ר)`;
     },
+
+    highlightClass() {
+      const status = (this.item?.status || '').toLowerCase();
+
+      if (
+        status.includes('sold') ||
+        status.includes('נמכר')
+      ) {
+        return 'highlight-sold';
+      }
+
+      return 'highlight-available';
+    },
   },
 
   methods: {
@@ -286,14 +300,14 @@ export default {
   border-radius: 4px;
 }
 
-.highlight-area.parking {
-  border: 4px solid #1976d2;
-  background: rgba(25, 118, 210, 0.28);
+.highlight-area.highlight-sold {
+  border: 4px solid #d32f2f;
+  background: rgba(211, 47, 47, 0.28);
 }
 
-.highlight-area.warehouse {
-  border: 4px solid #1976d2;
-  background: rgba(25, 118, 210, 0.28);
+.highlight-area.highlight-available {
+  border: 4px solid #2e7d32;
+  background: rgba(46, 125, 50, 0.28);
 }
 
 @media print {

@@ -283,13 +283,13 @@ export default {
 }
 
 .legend-color.sold {
-  border-color: #2e7d32;
-  background: rgba(46, 125, 50, 0.35);
+  border-color: red;
+  background: rgba(255, 0, 0, 0.28);
 }
 
 .legend-color.available {
-  border-color: #1976d2;
-  background: rgba(25, 118, 210, 0.28);
+  border-color: #2e7d32;
+  background: rgba(46, 125, 50, 0.28);
 }
 
 .overview-section {
@@ -331,13 +331,13 @@ export default {
   overflow: hidden;
 }
 
-.overview-area.sold {
+.overview-area.available {
   border-color: #2e7d32;
-  background: rgba(46, 125, 50, 0.35);
+  background: rgba(46, 125, 50, 0.28);
 }
 
-.overview-area.available {
-  border-color: #1976d2;
-  background: rgba(25, 118, 210, 0.28);
+.overview-area.sold {
+  border-color: red;
+  background: rgba(255, 0, 0, 0.28);
 }
 </style>
