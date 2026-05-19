@@ -38,7 +38,8 @@
               <div class="floor-divider-line"></div>
             </td>
           </tr>
-          <tr :class="['clickable-row', itemRowBackground(item)]" @click="openFile(item)">
+          <!-- <tr :class="['clickable-row', itemRowBackground(item)]" @click="openFile(item)"> -->
+          <tr :class="['clickable-row']" @click="openFile(item)">
             <td
               v-if="isFirstFloorCell(index)"
               :rowspan="floorRowSpan(index)"
@@ -199,9 +200,9 @@ export default {
       return span;
     },
 
-    itemRowBackground(item) {
-      return item.status === '' ? 'bg-green' : '';
-    },
+    // itemRowBackground(item) {
+    //   return item.status === '' ? 'bg-green' : '';
+    // },
 
     async openFile(item) {
       await viewGDFile(item.flatChart, this.$refs.modalDialog);
@@ -228,7 +229,7 @@ export default {
     },
 
     soldTextClass(item) {
-      return this.isSold(item) ? 'sold-text' : '';
+      return this.isSold(item) ? 'sold-text' : 'available-text';
     },
   },
 
@@ -284,7 +285,8 @@ export default {
 .floor-divider-line {
   width: 100%;
   height: 2px;
-  background-color: #1976d2;
+  /* background-color: #1976d2; */
+  background-color: black;
   margin: 0;
 }
 
@@ -318,7 +320,7 @@ export default {
 }
 
 .floor-span-cell {
-  background-color: #e3f2fd !important;
+  /* background-color: #e3f2fd !important; */
   font-weight: bold;    
   font-size: 20px !important;
   text-align-last: center;
@@ -333,7 +335,7 @@ export default {
 }
 
 ::v-deep .map-click-cell {
-  color: #1976d2;
+  /* color: #1976d2; */
   font-weight: bold;
   cursor: pointer;
   text-decoration: underline;
@@ -353,6 +355,11 @@ export default {
   color: #9e9e9e !important;
   text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
   opacity: 0.60;
+}
+
+.available-text {
+  color: #1976d2;
+  font-weight: bold;    
 }
 
 .availability-toggle {
