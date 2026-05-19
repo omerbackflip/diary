@@ -1,17 +1,22 @@
 <template>
   <v-card class="price-list-card" elevation="4" >
-    <v-card-title class="headline font-weight-bold">
+    <v-card-title class="price-list-title-wrapper">
       <div class="overview-actions">
-        <v-btn small color="primary" outlined @click="openOverviewMap('parkings')"> חניות </v-btn>
-        <v-btn small color="primary" outlined @click="openOverviewMap('warehouses')"> מחסנים </v-btn>
+        <v-btn small color="primary" outlined @click="openOverviewMap('parkings')">חניות</v-btn>
+        <v-btn small color="primary" outlined @click="openOverviewMap('warehouses')">מחסנים</v-btn>
       </div>
-      <v-spacer />
-      <div> גדות סקיי - מחירי דירות </div>
-      <v-spacer />
-      <v-btn-toggle v-model="availabilityFilter" mandatory dense class="availability-toggle">
-        <v-btn small value="available"> למכירה </v-btn>
-        <v-btn small value="sold"> נמכר </v-btn>
-        <v-btn small value="all"> הכל </v-btn>
+
+      <div class="title-center">גדות סקיי - מחירי דירות</div>
+
+      <v-btn-toggle
+        v-model="availabilityFilter"
+        mandatory
+        dense
+        class="availability-toggle"
+      >
+        <v-btn small value="available">למכירה</v-btn>
+        <v-btn small value="sold">נמכר</v-btn>
+        <v-btn small value="all">הכל</v-btn>
       </v-btn-toggle>
     </v-card-title>
     <v-data-table
@@ -364,5 +369,50 @@ export default {
 
 .availability-toggle {
   margin-right: 8px;
+}
+.price-list-title-wrapper {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.overview-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.title-center {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .price-list-title-wrapper {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "left right"
+      "title title";
+    row-gap: 12px;
+    column-gap: 8px;
+  }
+
+  .overview-actions {
+    grid-area: left;
+    justify-content: flex-start;
+  }
+
+  .availability-toggle {
+    grid-area: right;
+    justify-self: end;
+  }
+
+  .title-center {
+    grid-area: title;
+    font-size: 20px;
+    width: 100%;
+  }
 }
 </style>
