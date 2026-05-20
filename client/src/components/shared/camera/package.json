@@ -1,0 +1,10 @@
+{
+  "name": "vue2-camera-module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "peerDependencies": {
+    "vue": "^2.6.14",
+    "vuetify": "^2.6.0"
+  }
+}

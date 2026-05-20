@@ -1,13 +1,20 @@
 <template>
   <span>
-    <v-btn
-      @click="openPicker"
-      :disabled="isLoading"
-      class="primary"
-      style="margin-left:6px"
-    >
-      <v-icon>mdi-folder-google-drive</v-icon>
-    </v-btn>
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          @click="openPicker"
+          :disabled="isLoading || disabled"
+          :loading="isLoading"
+          class="primary google-picker-button"
+          v-bind="attrs"
+          v-on="on"
+        >
+          <v-icon>{{ icon }}</v-icon>
+        </v-btn>
+      </template>
+      <span>{{ tooltip }}</span>
+    </v-tooltip>
   </span>
 </template>
 
@@ -28,6 +35,18 @@ export default {
     includeFolders: {
       type: Boolean,
       default: true,
+    },
+    icon: {
+      type: String,
+      default: "mdi-folder-google-drive",
+    },
+    tooltip: {
+      type: String,
+      default: "Open Google Drive folder",
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -59,3 +78,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.google-picker-button {
+  margin-left: 6px;
+  min-width: 42px !important;
+  padding: 0 12px !important;
+}
+</style>

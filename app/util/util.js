@@ -38,17 +38,18 @@ exports.transformCSVData = (sheet_name_list, workbook) => {
 };
 
 exports.storeMedia = (fileContent) => {
-	ImageBase64 = fileContent;
-	ImageBase64 = ImageBase64.replace(/^data:image\/octet-stream;base64,/, "");
+  const base64 = fileContent.replace(/^data:image\/[^;]+;base64,/, "");
 
-	ImageBase64  +=  ImageBase64.replace('+', ' ');
-	ImageBinaryData  =   new Buffer.from(ImageBase64, 'base64').toString('binary');
+  const filename = 'pic-' + moment(new Date()).format('YYYY-MM-DD-HH.mm.ss') + '.jpeg';
+  const uploadFolder = path.join(
+    __dirname,
+    '../../client',
+    process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH || 'public/media_files/'
+  );
 
-	let filename = 'pic-' + moment(new Date()).format('YYYY-MM-DD-HH.mm.ss') + '.jpeg'
-	let uploadFolder = path.join(__dirname + '/../../client/' + process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH);
-	
-	fs.writeFile(uploadFolder + filename, ImageBinaryData, "binary", function (err) {
-		console.log("Error: While saving files111", err); // writes out file without error, but it's not a valid image
-	});
-	return filename;
-}
+  const filePath = path.join(uploadFolder, filename);
+
+  fs.writeFileSync(filePath, Buffer.from(base64, 'base64'));
+
+  return filename;
+};

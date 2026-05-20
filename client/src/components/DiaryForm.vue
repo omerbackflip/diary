@@ -35,10 +35,6 @@
           <v-card-text>
             <v-container>
               
-              <!-- <v-row v-if="isUploadMedia"> -->
-                <camera ref="camera" @new-media-added="addMediaItems" style="border-block: none;"></camera>
-              <!-- </v-row> -->
-
               <v-form ref="form">
                 <v-row>
                   <v-col cols="3">
@@ -93,6 +89,7 @@
             <v-icon color="red" @click="dialogDiaryForm = false">mdi-close-box</v-icon>
           </v-card-actions>
         </v-card>
+        <camera ref="camera" @captured="addMediaItems"></camera>
       </v-dialog>
 </template>
 
@@ -101,7 +98,8 @@ import { DIARY_MODEL } from "../constants/constants";
 import apiService from "../services/apiService";
 import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
 import Vue from "vue";
-import Camera from "./Camera.vue";
+// import Camera from "./Camera.vue";
+import Camera from "@/components/shared/camera";
 import moment from "moment";
 Vue.filter("formatDate", function (value) {
 	if (value) {

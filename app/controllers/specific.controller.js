@@ -6,13 +6,15 @@ const UPLOAD_MODEL = db.pricelist;
 const csv = require('csvtojson');
 var fs = require('fs');
 const XLSX = require('xlsx');
+const moment = require('moment');
 const { transformCSVData, storeMedia } = require("../util/util");
 const specificService = require("../services/specific-service");
 const { url } = require("../config/db.config");
 const path = require('path');
 const { ServerApp } = require("../config/constants");
-// const { google } = require('googleapis');
+const { google } = require('googleapis');
 // const googleService = require('../services/google-service');
+const { uploadFile, ensureFolder } = require('../../google/backend');
 const googleSubmoduleService = require('../../google/backend/services/google-submodule-service');
 const googleLeadsSyncService = require('../services/google-leads-sync-service');
 const { getGoogleSheetsSyncStatus } = require("../jobs/googleSheetsSync.job");
@@ -99,14 +101,160 @@ exports.savePic = async(req, res) => {
 
 exports.deletePic = async(req, res) => {
   try {
-    const fileName = req.body;
-    let uploadFolder = path.join(__dirname + '/../../client/' + process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH);
-    unLinkFile(uploadFolder + fileName);
+    const fileNames = Array.isArray(req.body) ? req.body : [req.body];
+
+    const uploadFolder = path.join(
+      __dirname,
+      '../../client',
+      process.env.VUE_APP_MEDIA_FILES_REL_DIR_PATH || 'public/media_files/'
+    );
+
+    fileNames.forEach((fileName) => {
+      if (!fileName) return;
+
+      const filePath = path.join(uploadFolder, fileName);
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    });
+
     res.send({ success: true });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       message: error.message || "Some error while deletePic function in specific.controller.js file"
+    });
+  }
+};
+
+exports.uploadHolderPic = async(req, res) => {
+  try {
+    const { fileContent, parentFolderId, name, capturedAt } = req.body || {};
+
+    if (!fileContent) {
+      return res.status(400).send({ message: "Missing fileContent" });
+    }
+
+    if (!parentFolderId) {
+      return res.status(400).send({ message: "Missing parentFolderId" });
+    }
+
+    const oAuth2Client = googleSubmoduleService.getOAuthClientFromStoredTokens();
+    const picsFolder = await ensureFolder({
+      oAuth2Client,
+      folderName: "pics",
+      parentId: parentFolderId,
+    });
+
+    const base64 = fileContent.replace(/^data:image\/[^;]+;base64,/, "");
+    const buffer = Buffer.from(base64, "base64");
+    const requestedName = name && String(name).trim();
+    const filename = requestedName
+      ? requestedName.replace(/\.(jpg|jpeg)$/i, "") + ".jpeg"
+      : `pic-${moment(new Date()).format("YYYY-MM-DD-HH.mm.ss")}.jpeg`;
+
+    const file = await uploadFile({
+      oAuth2Client,
+      name: filename,
+      mimeType: "image/jpeg",
+      body: buffer,
+      folderId: picsFolder.id,
+    });
+
+    return res.send({
+      success: true,
+      pic: {
+        name: file.name,
+        fileId: file.id,
+        folderId: picsFolder.id,
+        url: file.webViewLink,
+        capturedAt: capturedAt || new Date(),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: error.message || "Some error while uploading holder pic to Google Drive",
+    });
+  }
+};
+
+exports.listHolderPics = async(req, res) => {
+  try {
+    const { parentFolderId } = req.query || {};
+
+    if (!parentFolderId) {
+      return res.status(400).send({ message: "Missing parentFolderId" });
+    }
+
+    const oAuth2Client = googleSubmoduleService.getOAuthClientFromStoredTokens();
+    const picsFolder = await ensureFolder({
+      oAuth2Client,
+      folderName: "pics",
+      parentId: parentFolderId,
+    });
+
+    const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+    const response = await drive.files.list({
+      q: `'${picsFolder.id}' in parents and trashed = false`,
+      orderBy: 'createdTime desc',
+      fields: 'files(id,name,mimeType,webViewLink,webContentLink,createdTime,modifiedTime)',
+      pageSize: 1000,
+    });
+
+    const pics = (response.data.files || []).map((file) => ({
+      name: file.name,
+      fileId: file.id,
+      folderId: picsFolder.id,
+      url: file.webViewLink,
+      mimeType: file.mimeType,
+      createdTime: file.createdTime,
+      modifiedTime: file.modifiedTime,
+    }));
+
+    return res.send({
+      success: true,
+      folderId: picsFolder.id,
+      pics,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: error.message || "Some error while listing holder pics from Google Drive",
+    });
+  }
+};
+
+exports.deleteHolderPic = async(req, res) => {
+  try {
+    const items = Array.isArray(req.body) ? req.body : [req.body];
+    const fileIds = items
+      .map((item) => typeof item === "string" ? item : item && item.fileId)
+      .filter(Boolean);
+
+    if (!fileIds.length) {
+      return res.send({ success: true, deletedCount: 0 });
+    }
+
+    const oAuth2Client = googleSubmoduleService.getOAuthClientFromStoredTokens();
+    const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+
+    for (const fileId of fileIds) {
+      try {
+        await drive.files.delete({ fileId });
+      } catch (error) {
+        if (error && error.code !== 404) {
+          throw error;
+        }
+      }
+    }
+
+    return res.send({ success: true, deletedCount: fileIds.length });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: error.message || "Some error while deleting holder pic from Google Drive",
     });
   }
 };

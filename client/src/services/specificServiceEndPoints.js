@@ -34,6 +34,18 @@ class SpecificServiceEndPoints {
     return http.post("specific/delete-pic", data);
   }
 
+  uploadHolderPic(data) {
+    return http.post("specific/upload-holder-pic", data);
+  }
+
+  listHolderPics(params) {
+    return http.get("specific/list-holder-pics", {params});
+  }
+
+  deleteHolderPic(data) {
+    return http.post("specific/delete-holder-pic", data);
+  }
+
   syncGoogleSheets(data) {
     return http.get("specific/sync-google-sheets", data);
   }
