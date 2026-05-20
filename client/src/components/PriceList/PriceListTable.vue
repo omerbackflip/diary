@@ -22,6 +22,7 @@
     <v-data-table
       :headers="headers"
       :items="displayedPriceList"
+      disable-sort
       disable-pagination
       hide-default-footer
       fixed-header
@@ -140,14 +141,26 @@ export default {
       if (this.availabilityFilter === 'sold') {
         list = list.filter(item => item.status === 'נמכר');
       }
-      if (!term) return list;
-      return list.filter((item) =>
-        Object.values(item).some((value) =>
-          value !== null &&
-          value !== undefined &&
-          value.toString().toLowerCase().includes(term)
-        )
-      );
+      if (term) {
+        list = list.filter((item) =>
+          Object.values(item).some((value) =>
+            value !== null &&
+            value !== undefined &&
+            value.toString().toLowerCase().includes(term)
+          )
+        );
+      }
+
+      return list.slice().sort((a, b) => {
+        const aFlatId = Number(a.flatId);
+        const bFlatId = Number(b.flatId);
+
+        if (Number.isNaN(aFlatId) && Number.isNaN(bFlatId)) return 0;
+        if (Number.isNaN(aFlatId)) return 1;
+        if (Number.isNaN(bFlatId)) return -1;
+
+        return aFlatId - bFlatId;
+      });
     },
   },
 

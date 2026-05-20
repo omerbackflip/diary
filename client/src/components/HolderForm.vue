@@ -22,7 +22,7 @@
                 <v-text-field v-model="holder.name" dense @focus="$event.target.select()"></v-text-field>
               </v-col>
               <v-col cols="5">
-                <v-select v-model="holder.status" :items="statusList" reverse dense></v-select>
+                <v-select v-model="holder.status" :items="statusList" label="סטטוס" reverse dense></v-select>
               </v-col>
               <v-col class="pb-4" cols="8">
                 <v-text-field v-model="holder.email" dense @focus="$event.target.select()"></v-text-field>
@@ -344,7 +344,10 @@ export default {
     },
 
     async mounted(){
-      this.statusList = (await loadTable(6)).map((code) => code.description).sort()
+      this.statusList = ((await loadTable(6)) || [])
+        .map((code) => (code.description || '').trim())
+        .filter(Boolean)
+        .sort()
     },
 
     computed : {

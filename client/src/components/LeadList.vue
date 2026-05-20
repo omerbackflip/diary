@@ -33,7 +33,8 @@
                   <v-text-field v-model="search" label="Search" clearable hide-details ></v-text-field>
                 </v-col>
                 <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
-                  <export-excel :data="$formatDataForExport(allLeadList)" type="xlsx">
+                  <!-- <export-excel :data="$formatDataForExport(allLeadList)" type="xlsx"> -->
+                  <export-excel :data="exportLeads" type="xlsx">
                     <v-btn x-small class="btn btn-danger">
                       <v-icon small>mdi-download</v-icon>
                     </v-btn>
@@ -252,6 +253,10 @@ export default {
       });
 
       return filtered;
+    },
+
+    exportLeads() {
+      return this.$formatDataForExport(this.allLeadList);
     }
   },
 
@@ -448,11 +453,17 @@ export default {
 
   async mounted() {
     this.role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
-    this.statusList = (await loadTable(9)).map((code) => (code.description || '').trim());
-    this.arrivedList = (await loadTable(5)).map((code) => (code.description || '').trim());
-    this.interestList = (await loadTable(2)).map((code) => (code.description || '').trim());
+
+    const [statusTable = [], arrivedTable = [], interestTable = []] = await Promise.all([
+      loadTable(9),
+      loadTable(5),
+      loadTable(2),
+    ]);
+    this.statusList = statusTable.map((code) => (code.description || '').trim());
+    this.arrivedList = arrivedTable.map((code) => (code.description || '').trim());
+    this.interestList = interestTable.map((code) => (code.description || '').trim());
+
     this.retrieveLeads();
-    this.getStatistics(); // trigger on load with full list
     this.$root.$on("addNewLead", async () => {
       this.lead = NEW_LEAD;
       await this.$refs.leadForm.open(this.lead, true);
