@@ -8,6 +8,17 @@
             <v-toolbar color="transparent" flat>
               <v-toolbar-title class="red--text">בניין צפוני</v-toolbar-title>
               <v-spacer></v-spacer>
+              <v-col cols="auto" class="pa-1">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn v-bind="attrs" v-on="on" @click="callCamera">
+                      <v-icon>mdi-camera</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Open camera</span>
+                </v-tooltip>
+              </v-col>
+              <v-spacer></v-spacer>
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="blue"></v-avatar>
@@ -31,7 +42,7 @@
             </v-toolbar>
             <v-container fluid>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" 
+                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6"
                        class="px-0 py-1" :class="holderList[i+28] && holderList[i+28].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+28])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i+28)"><span>{{i+29}}</span></v-row>
@@ -40,7 +51,7 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" 
+                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3"
                        class="px-0 py-1 j-center" :class="holderList[i] && holderList[i].payedFile ? '' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i])">
                     <v-row class="my-1 mx-0 cntr" :class="getStatus(i)">
@@ -49,16 +60,16 @@
                         <!-- Avatars in 2x2 grid -->
                         <!-- <div v-if="holderList[i].name" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;"> -->
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
-                          <v-avatar size="10" tile 
+                          <v-avatar size="10" tile
                             :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].payedFile ? 'blue' : 'transparent'}">
                           </v-avatar>
-                          <v-avatar size="10" tile 
+                          <v-avatar size="10" tile
                             :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].gotOffer ? 'green' : 'transparent'}">
                           </v-avatar>
-                          <v-avatar size="10" tile 
+                          <v-avatar size="10" tile
                             :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].sendPlans ? 'red' : 'transparent'}">
                           </v-avatar>
-                          <v-avatar size="10" tile 
+                          <v-avatar size="10" tile
                             :style="{border: '1px solid blue', backgroundColor: holderList[i] && holderList[i].payedOffer ? 'yellow' : 'transparent'}">
                           </v-avatar>
                         </div>
@@ -87,6 +98,10 @@
             <v-toolbar color="transparent" flat >
               <v-toolbar-title class="red--text">בניין דרומי</v-toolbar-title>
               <v-spacer></v-spacer>
+              <v-col cols="auto" class="pa-1">
+                <GooglePicker @picked="onFilePicked" :folderId="globalPicFolderId" icon="mdi-image-multiple" tooltip="Open Global pictures folder"/>
+              </v-col>
+              <v-spacer></v-spacer>
               <div style="display: grid; grid-template-columns: repeat(1, 1fr); gap: 2px; margin-left: 8px;">
                 <div style="display: flex; align-items: center; gap: 4px;">
                   <v-avatar size="10" tile color="blue"></v-avatar>
@@ -110,7 +125,7 @@
             </v-toolbar>
             <v-container fluid>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" 
+                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6"
                        class="px-0 py-1" :class="holderList[i+60] && holderList[i+60].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+60])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i+60)"><span>{{i+61}}</span></v-row>
@@ -119,7 +134,7 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3" 
+                <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3"
                         class="px-0 py-1 j-center" :class="holderList[i+32] && holderList[i+32].payedFile ? '' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i+32])">
                     <v-row class="my-1 mx-0 cntr" :class="getStatus(i+32)">
@@ -128,16 +143,16 @@
                         <!-- Avatars in 2x2 grid -->
                         <!-- <div v-if="holderList[i+32].name" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;"> -->
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; margin-left: 8px;">
-                          <v-avatar size="10" tile 
+                          <v-avatar size="10" tile
                             :style="{border: '1px solid blue', backgroundColor: holderList[i+32] && holderList[i+32].payedFile ? 'blue' : 'transparent'}">
                           </v-avatar>
-                          <v-avatar size="10" tile 
+                          <v-avatar size="10" tile
                             :style="{border: '1px solid blue', backgroundColor: holderList[i+32] && holderList[i+32].sendPlans ? 'red' : 'transparent'}">
                           </v-avatar>
-                          <v-avatar size="10" tile 
+                          <v-avatar size="10" tile
                             :style="{border: '1px solid blue', backgroundColor: holderList[i+32] && holderList[i+32].gotOffer ? 'green' : 'transparent'}">
                           </v-avatar>
-                          <v-avatar size="10" tile 
+                          <v-avatar size="10" tile
                             :style="{border: '1px solid blue', backgroundColor: holderList[i+32] && holderList[i+32].payedOffer ? 'yellow' : 'transparent'}">
                           </v-avatar>
                         </div>
@@ -148,7 +163,7 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6" 
+                <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6"
                        class="px-0 py-1" :class="holderList[i+30] && holderList[i+30].payedFile ? 'bck-green' : ''">
                   <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+30])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i+30)"><span>{{i+31}}</span></v-row>
@@ -160,7 +175,12 @@
           </v-card>
         </v-col>
       </v-row>
+
       <holder-form ref="holderForm"/>
+      <camera ref="camera" @captured="addMediaItems" />
+      <modal-dialog ref="modalDialog"/>
+
+
     </v-layout>
     <!-- <v-dialog v-model="dialog" max-width="1000px">
       <v-card>
@@ -185,14 +205,19 @@
 
 <script>
 import apiService from "../services/apiService";
-import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER } from "../constants/constants";
+import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, WORKING_FOLDER_ID, GLOBAL_PICS_FOLDER_ID, viewGDFile} from "../constants/constants";
 import { isMobile } from '../constants/constants';
 import { generatePdfFromElement } from "../components/shared/pdf";
 import holderForm from "./HolderForm.vue"
+import Camera from "@/components/shared/camera";
+import GooglePicker from "./GooglePicker.vue";
+import modalDialog from './Common/ViewFileModal.vue';
+import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
+
 // import PdfPreview from "./PdfPreview.vue";
 export default {
 	name: "holders-dash",
-  components: {holderForm},
+  components: {holderForm, Camera, GooglePicker, modalDialog},
 	data() {
 		return {
       isMobile,
@@ -207,6 +232,9 @@ export default {
       dateModal : false,
       selected: [],
       showBill: false,
+      holderPicFolderId: "",
+      globalPicFolderId: GLOBAL_PICS_FOLDER_ID,
+
 		};
 	},
 
@@ -232,7 +260,7 @@ export default {
       this.holderList = holderList;
       this.isLoading = false;
     },
- 
+
     async getHolderForEdit(item) {
       if (!item?._id) return;
       this.holder = item;
@@ -257,7 +285,61 @@ export default {
         default :
           return ''
       }
-    }
+    },
+
+    callCamera() {
+      this.$refs.camera.toggleCamera();
+    },
+
+    async addMediaItems(media) {
+      try {
+        if (!WORKING_FOLDER_ID) {
+          window.alert("Missing Working Google Drive folder.");
+          return;
+        }
+
+        const pictureName = this.askForPictureName();
+        if (!pictureName) return;
+
+        await SpecificServiceEndPoints.uploadHolderPic({
+          ...media,
+          name: pictureName,
+          parentFolderId: WORKING_FOLDER_ID,
+        });
+      } catch (error) {
+        console.log("Error uploading global pic:", error);
+        const message = error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+        window.alert("Error uploading picture: " + message);
+      } finally {
+        ;
+      }
+    },
+
+    askForPictureName() {
+      const defaultName = `holder-${this.holder.flatId || "pic"}-${new Date().toISOString().slice(0, 10)}`;
+      const name = window.prompt("Picture name", defaultName);
+
+      if (name === null) return null;
+
+      const trimmedName = name.trim();
+      if (!trimmedName) {
+        window.alert("Picture name is required.");
+        return null;
+      }
+
+      return trimmedName;
+    },
+
+    onFilePicked(file) {
+      if (!file) return;
+      this.openFile(file.fileId);
+    },
+
+    async openFile(fileId) {
+       await viewGDFile(fileId, this.$refs.modalDialog);
+    },
 	},
 
 	async mounted() {
@@ -268,7 +350,7 @@ export default {
 		});
 
 	},
-	
+
   watch: {
 
 	},

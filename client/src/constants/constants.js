@@ -5,6 +5,8 @@ export const HOLDER_MODEL = 'holders';
 export const PRICE_MODEL = 'prices';
 export const BILL_MODEL = 'bills';
 export const PRICELIST_MODEL = 'pricelist';
+export const WORKING_FOLDER_ID = '1mj97GijYbyEhNvElxPN2gAvSOOeC0TFw';
+export const GLOBAL_PICS_FOLDER_ID = '1QtcVIisnAgIJN82jBYCSD2AYTFznug9D';
 import apiService from "../services/apiService";
 
 export const DIARY_WEB_HEADERS = [
