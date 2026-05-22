@@ -209,7 +209,7 @@ import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, WORKING_FOLDER_ID, GLO
 import { isMobile } from '../constants/constants';
 import { generatePdfFromElement } from "../components/shared/pdf";
 import holderForm from "./HolderForm.vue"
-import Camera from "@/components/shared/camera";
+import Camera from "../../../camera/frontend";
 import GooglePicker from "./GooglePicker.vue";
 import modalDialog from './Common/ViewFileModal.vue';
 import SpecificServiceEndPoints from "../services/specificServiceEndPoints";

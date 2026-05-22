@@ -125,8 +125,7 @@ import { HOLDER_MODEL, loadTable, viewGDFile } from "../constants/constants";
 import apiService from "../services/apiService";
 import GooglePicker from "./GooglePicker.vue";
 import modalDialog from './Common/ViewFileModal.vue';
-// import Camera from "./Camera.vue";
-import Camera from "@/components/shared/camera";
+import Camera from "../../../camera/frontend";
 import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
 
 export default {
