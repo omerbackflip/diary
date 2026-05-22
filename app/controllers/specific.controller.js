@@ -21,6 +21,8 @@ const { getGoogleSheetsSyncStatus } = require("../jobs/googleSheetsSync.job");
 const backupService = require('../../backup/backend');
 const backupConfig = require('../backup/backup.config');
 const { getModel } = require('../backup/modelResolver');
+const { normalizeCapturedMedia } = require('../../camera/backend');
+const { Readable } = require('stream');
 
 
                     // for testing purposes only - to be removed in production
@@ -90,7 +92,7 @@ exports.savePic = async(req, res) => {
 	try {
 		const media = { ...req.body };
 		if(media && media.fileContent){
-			let picName = storeMedia(media.fileContent); // save the pics
+			let picName = await storeMedia(media); // save the media
 			res.send(picName);
 		}
 	} catch (error) {
@@ -129,6 +131,8 @@ exports.deletePic = async(req, res) => {
 };
 
 exports.uploadHolderPic = async(req, res) => {
+  let uploadStep = "start";
+
   try {
     const { fileContent, parentFolderId, name, capturedAt } = req.body || {};
 
@@ -140,25 +144,28 @@ exports.uploadHolderPic = async(req, res) => {
       return res.status(400).send({ message: "Missing parentFolderId" });
     }
 
+    uploadStep = "google-auth";
     const oAuth2Client = googleSubmoduleService.getOAuthClientFromStoredTokens();
+    uploadStep = "ensure-pics-folder";
     const picsFolder = await ensureFolder({
       oAuth2Client,
       folderName: "pics",
       parentId: parentFolderId,
     });
 
-    const base64 = fileContent.replace(/^data:image\/[^;]+;base64,/, "");
-    const buffer = Buffer.from(base64, "base64");
+    uploadStep = "normalize-media";
+    const media = await normalizeCapturedMedia(req.body);
     const requestedName = name && String(name).trim();
     const filename = requestedName
-      ? requestedName.replace(/\.(jpg|jpeg)$/i, "") + ".jpeg"
-      : `pic-${moment(new Date()).format("YYYY-MM-DD-HH.mm.ss")}.jpeg`;
+      ? requestedName.replace(/\.(jpg|jpeg|png|webm|mp4|mov)$/i, "") + media.extension
+      : `${media.mediaType === "video" ? "video" : "pic"}-${moment(new Date()).format("YYYY-MM-DD-HH.mm.ss")}${media.extension}`;
 
+    uploadStep = "google-upload";
     const file = await uploadFile({
       oAuth2Client,
       name: filename,
-      mimeType: "image/jpeg",
-      body: buffer,
+      mimeType: media.mimeType,
+      body: Readable.from([media.buffer]),
       folderId: picsFolder.id,
     });
 
@@ -169,13 +176,16 @@ exports.uploadHolderPic = async(req, res) => {
         fileId: file.id,
         folderId: picsFolder.id,
         url: file.webViewLink,
+        mimeType: media.mimeType,
+        mediaType: media.mediaType,
         capturedAt: capturedAt || new Date(),
       },
     });
   } catch (error) {
-    console.log(error);
+    console.error(`uploadHolderPic failed during ${uploadStep}:`, error);
     res.status(500).send({
       message: error.message || "Some error while uploading holder pic to Google Drive",
+      step: uploadStep,
     });
   }
 };

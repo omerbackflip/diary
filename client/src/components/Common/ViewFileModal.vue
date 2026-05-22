@@ -1,7 +1,14 @@
 <template>
     <div v-if="isOpen" class="modal-overlay" @click.self="close">
       <div class="modal-content">
-        <iframe :src="fileLink" frameborder="0" allowfullscreen></iframe>
+        <video
+          v-if="viewerType === 'video'"
+          :src="fileLink"
+          controls
+          autoplay
+          class="file-video"
+        ></video>
+        <iframe v-else :src="fileLink" frameborder="0" allowfullscreen></iframe>
         <button class="close-button" @click="close">Close</button>
       </div>
     </div>
@@ -13,18 +20,21 @@
     data() {
       return {
         isOpen: false,
-        fileLink: ''
+        fileLink: '',
+        viewerType: 'iframe'
       };
     },
     methods: {
-      open(GDFileId) {
+      open(GDFileId, options = {}) {
         // window.open(GDFileId, '_blank');  // this is open the invoice in a new tab
         this.fileLink = GDFileId;
+        this.viewerType = options.viewerType || 'iframe';
         this.isOpen = true;
       },
       close() {
         this.isOpen = false;
         this.fileLink = '';
+        this.viewerType = 'iframe';
       }
     }
   };
@@ -59,7 +69,13 @@
     width: 100%;
     height: 100%;
   }
-  
+
+  .file-video {
+    width: 100%;
+    height: 100%;
+    background: #111;
+  }
+
   .close-button {
     position: absolute;
     top: 10px;
@@ -73,4 +89,3 @@
     z-index: 1002;
   }
   </style>
-  

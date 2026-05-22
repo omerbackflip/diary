@@ -3,7 +3,8 @@
       <v-dialog v-model="dialogDiaryForm" width="500">
         <v-row v-if="isDisplayMedia" style="background-color: beige; margin-left: 0px;">
           <v-col cols="4" v-for="(pic,i) in diary.pics" :key="i">
-            <img class="media-files" v-bind:src="getMediaPath(pic)" />
+            <video v-if="isVideoMedia(pic)" class="media-files" :src="getMediaPath(pic)" controls></video>
+            <img v-else class="media-files" v-bind:src="getMediaPath(pic)" />
             <span class="remove-btn" @click="removeImg(pic)"><strong>Remove</strong></span>
           </v-col>
         </v-row>
@@ -207,12 +208,30 @@ export default {
         this.isDisplayMedia = !this.isDisplayMedia;
       },
       async addMediaItems(media){
-        let picName = await SpecificServiceEndPoints.savePic(media);
-        this.diary.pics.push(picName.data)
-        this.isDisplayMedia = true;
+        try {
+          let picName = await SpecificServiceEndPoints.savePic(media);
+          this.diary.pics.push(picName.data)
+          this.isDisplayMedia = true;
+        } catch (error) {
+          const message = this.isUploadTooLargeError(error)
+            ? "The media file is too large. Choose a smaller size or record a shorter video."
+            : error.response && error.response.data && error.response.data.message
+            ? error.response.data.message
+            : error.message;
+          window.alert("Error uploading media: " + message);
+        }
+      },
+      isUploadTooLargeError(error) {
+        return Boolean(
+          (error.response && error.response.status === 413) ||
+          (error.message && error.message.indexOf("413") !== -1)
+        );
       },
       getMediaPath(filename){
         return 'media_files/' + filename;
+      },
+      isVideoMedia(filename) {
+        return /\.(mp4|mov|webm)$/i.test(filename || "");
       },
       getTotalMediaCount(){
         return this.diary.pics !== undefined ? this.diary.pics.length : 0

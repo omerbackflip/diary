@@ -236,26 +236,36 @@ export default {
             return;
           }
 
-          const pictureName = this.askForPictureName();
-          if (!pictureName) return;
+          const mediaName = this.askForMediaName(media);
+          if (!mediaName) return;
 
           const response = await SpecificServiceEndPoints.uploadHolderPic({
             ...media,
-            name: pictureName,
+            name: mediaName,
             parentFolderId: this.holder.GDParantFolder,
           });
 
           this.holderPics.unshift(response.data.pic);
           this.holderPicFolderId = response.data.pic.folderId || this.holderPicFolderId;
         } catch (error) {
-          console.log("Error uploading holder pic:", error);
-          const message = error.response && error.response.data && error.response.data.message
-            ? error.response.data.message
+          console.error("Error uploading holder media:", error);
+          const responseData = error.response && error.response.data;
+          const message = this.isUploadTooLargeError(error)
+            ? "The media file is too large. Choose a smaller size or record a shorter video."
+            : responseData && responseData.message
+            ? `${responseData.message}${responseData.step ? " (step: " + responseData.step + ")" : ""}`
             : error.message;
-          window.alert("Error uploading picture: " + message);
+          window.alert("Error uploading media: " + message);
         } finally {
           this.isUploadingPic = false;
         }
+      },
+
+      isUploadTooLargeError(error) {
+        return Boolean(
+          (error.response && error.response.status === 413) ||
+          (error.message && error.message.indexOf("413") !== -1)
+        );
       },
 
       async loadHolderPics() {
@@ -283,15 +293,16 @@ export default {
         }
       },
 
-      askForPictureName() {
-        const defaultName = `holder-${this.holder.flatId || "pic"}-${new Date().toISOString().slice(0, 10)}`;
-        const name = window.prompt("Picture name", defaultName);
+      askForMediaName(media) {
+        const defaultType = media && media.mediaType === "video" ? "video" : "pic";
+        const defaultName = `holder-${this.holder.flatId || defaultType}-${new Date().toISOString().slice(0, 10)}`;
+        const name = window.prompt("Media name", defaultName);
 
         if (name === null) return null;
 
         const trimmedName = name.trim();
         if (!trimmedName) {
-          window.alert("Picture name is required.");
+          window.alert("Media name is required.");
           return null;
         }
 

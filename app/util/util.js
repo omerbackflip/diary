@@ -1,6 +1,7 @@
 var fs = require('fs');
 const path = require('path');
 const moment = require('moment');
+const { normalizeCapturedMedia } = require('../../camera/backend');
 
 exports.transformCSVData = (sheet_name_list, workbook) => {
 	try {
@@ -37,10 +38,10 @@ exports.transformCSVData = (sheet_name_list, workbook) => {
 	}
 };
 
-exports.storeMedia = (fileContent) => {
-  const base64 = fileContent.replace(/^data:image\/[^;]+;base64,/, "");
-
-  const filename = 'pic-' + moment(new Date()).format('YYYY-MM-DD-HH.mm.ss') + '.jpeg';
+exports.storeMedia = async (capturedMedia) => {
+  const media = await normalizeCapturedMedia(capturedMedia);
+  const prefix = media.mediaType === 'video' ? 'video' : 'pic';
+  const filename = prefix + '-' + moment(new Date()).format('YYYY-MM-DD-HH.mm.ss') + media.extension;
   const uploadFolder = path.join(
     __dirname,
     '../../client',
@@ -49,7 +50,7 @@ exports.storeMedia = (fileContent) => {
 
   const filePath = path.join(uploadFolder, filename);
 
-  fs.writeFileSync(filePath, Buffer.from(base64, 'base64'));
+  fs.writeFileSync(filePath, media.buffer);
 
   return filename;
 };

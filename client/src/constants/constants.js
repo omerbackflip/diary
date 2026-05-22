@@ -8,6 +8,7 @@ export const PRICELIST_MODEL = 'pricelist';
 export const WORKING_FOLDER_ID = '1mj97GijYbyEhNvElxPN2gAvSOOeC0TFw';
 export const GLOBAL_PICS_FOLDER_ID = '1QtcVIisnAgIJN82jBYCSD2AYTFznug9D';
 import apiService from "../services/apiService";
+import http from "../http-common";
 
 export const DIARY_WEB_HEADERS = [
     { text: "תאריך",    value: "date",          class: "mobile-headers",    groupable: false,   align: "right", width: "15%"},	
@@ -156,28 +157,40 @@ export const sendWhatsapp = (phone) => {
 };
 
 export async function viewGDFile(fileId, modalDialogRef) {
-    return new Promise((resolve, reject) => {
-        try {
-            const fileView = `https://docs.google.com/file/d/${fileId}/preview?usp=drivesdk`;
-            modalDialogRef.open(fileView);
-            // window.open(fileView, '_blank'); // Opens the file in a new tab
+    try {
+        await openGDFileViewer(fileId, modalDialogRef);
+    } catch (error) {
+        console.error('Error viewing file:', error);
+        throw error;
+    }
 
-            // מאזין לסגירה – ברגע שנסגר, נפתור את ה-Promise
-            const unwatch = modalDialogRef.$watch(
-                'isOpen',
-                (newVal) => {
-                    if (!newVal) {
-                        unwatch(); // מפסיק להאזין
-                        resolve(); // מסמן שהמודל נסגר
-                    }
-                },
-                { immediate: false }
-            );
-        } catch (error) {
-            console.error('Error viewing file:', error);
-            reject(error);
-        }
+    return new Promise((resolve) => {
+        const unwatch = modalDialogRef.$watch(
+            'isOpen',
+            (newVal) => {
+                if (!newVal) {
+                    unwatch();
+                    resolve();
+                }
+            },
+            { immediate: false }
+        );
     });
+}
+
+async function openGDFileViewer(fileId, modalDialogRef) {
+    const response = await http.get(`google/file/${fileId}`);
+    const file = response.data && response.data.file;
+    const mimeType = file && file.mimeType;
+
+    if (mimeType && mimeType.indexOf('video/') === 0) {
+        const apiBaseUrl = process.env.VUE_APP_API_URL.replace(/\/$/, '').replace(/\/specific$/, '');
+        modalDialogRef.open(`${apiBaseUrl}/google/file/${fileId}/content`, { viewerType: 'video' });
+        return;
+    }
+
+    const fileView = `https://docs.google.com/file/d/${fileId}/preview?usp=drivesdk`;
+    modalDialogRef.open(fileView);
 }
 
 export async function shareOnWhatsApp (fileId, msg) {
