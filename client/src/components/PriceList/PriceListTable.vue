@@ -45,7 +45,13 @@
             </td>
           </tr>
           <!-- <tr :class="['clickable-row', itemRowBackground(item)]" @click="openFile(item)"> -->
-          <tr :class="['clickable-row']" @click="openFile(item)">
+          <tr
+            :class="['clickable-row']"
+            @click="openFile(item)"
+            @mouseenter="scheduleFlatChartPreview(item, $event)"
+            @mousemove="positionFlatChartPreview($event)"
+            @mouseleave="hideFlatChartPreview"
+          >
             <td
               v-if="isFirstFloorCell(index)"
               :rowspan="floorRowSpan(index)"
@@ -85,6 +91,35 @@
       :mode="propertyMapOverviewMode"
       :price-list="priceList"
     />
+    <div
+      v-if="flatChartPreview.item"
+      v-show="flatChartPreview.visible"
+      class="flat-chart-preview"
+      :style="flatChartPreviewStyle"
+    >
+      <div class="flat-chart-preview-header">
+        <strong>דירה {{ flatChartPreview.item.flatId }}</strong>
+        <span>קומה {{ flatChartPreview.item.floor }} | {{ flatChartPreview.item.rooms }} חדרים</span>
+      </div>
+
+      <div class="flat-chart-preview-frame">
+        <img
+          v-if="flatChartPreview.url"
+          :src="flatChartPreview.url"
+          class="flat-chart-preview-image"
+          alt="Flat chart preview"
+          title="Flat chart preview"
+          @error="handleFlatChartPreviewImageError"
+        />
+        <div v-else class="flat-chart-preview-empty">
+          {{ flatChartPreviewEmptyText }}
+        </div>
+      </div>
+
+      <div class="flat-chart-preview-footer">
+        לחץ על השורה לפתיחה מלאה
+      </div>
+    </div>
   </v-card>
 </template>
 
@@ -93,7 +128,7 @@ import { PRICELIST_MODEL, HOLDER_MODEL, viewGDFile } from '../../constants/const
 import apiService from '../../services/apiService';
 import excel from 'vue-excel-export';
 import Vue from 'vue';
-import { GoogleFileViewerModal as modalDialog } from '../../../../google/frontend';
+import { GoogleFileViewerModal as modalDialog, googleDriveThumbnailUrl } from '../../../../google/frontend';
 import PropertyMapDialog from '@/components/PriceList/PropertyMapDialog.vue';
 import PropertyMapOverviewDialog from '@/components/PriceList/PropertyMapOverviewDialog.vue';
 
@@ -128,6 +163,17 @@ export default {
       propertyMapOverviewDialog: false,
       propertyMapOverviewMode: null,
       availabilityFilter: 'all',
+      flatChartPreview: {
+        visible: false,
+        item: null,
+        url: '',
+        loadedFileId: '',
+        error: '',
+        x: 0,
+        y: 0,
+        timer: null,
+      },
+      flatChartThumbnailCache: {},
     };
   },
 
@@ -161,6 +207,17 @@ export default {
 
         return aFlatId - bFlatId;
       });
+    },
+
+    flatChartPreviewStyle() {
+      return {
+        left: `${this.flatChartPreview.x}px`,
+        top: `${this.flatChartPreview.y}px`,
+      };
+    },
+
+    flatChartPreviewEmptyText() {
+      return this.flatChartPreview.error || 'אין קובץ תכנית לדירה זו';
     },
   },
 
@@ -223,7 +280,90 @@ export default {
     // },
 
     async openFile(item) {
+      this.hideFlatChartPreview();
       await viewGDFile(item.flatChart, this.$refs.modalDialog);
+    },
+
+    scheduleFlatChartPreview(item, event) {
+      this.clearFlatChartPreviewTimer();
+      this.positionFlatChartPreview(event);
+
+      this.flatChartPreview.timer = window.setTimeout(() => {
+        this.showFlatChartPreview(item);
+      }, 650);
+    },
+
+    showFlatChartPreview(item) {
+      const fileId = item.flatChart || '';
+
+      this.flatChartPreview.item = item;
+      this.flatChartPreview.visible = true;
+      this.flatChartPreview.loadedFileId = fileId;
+      this.flatChartPreview.error = '';
+
+      if (!fileId) {
+        this.flatChartPreview.url = '';
+        return;
+      }
+
+      if (this.flatChartThumbnailCache[fileId]) {
+        this.flatChartPreview.url = this.flatChartThumbnailCache[fileId];
+        return;
+      }
+
+      const thumbnailUrl = googleDriveThumbnailUrl(fileId, {
+        apiBaseUrl: this.googleApiBaseUrl(),
+        size: 1000,
+      });
+
+      this.$set(this.flatChartThumbnailCache, fileId, thumbnailUrl);
+      this.flatChartPreview.url = thumbnailUrl;
+    },
+
+    handleFlatChartPreviewImageError() {
+      if (this.flatChartPreview.loadedFileId) {
+        this.$delete(this.flatChartThumbnailCache, this.flatChartPreview.loadedFileId);
+      }
+
+      this.flatChartPreview.url = '';
+      this.flatChartPreview.error = 'לא ניתן להציג תצוגה מקדימה';
+    },
+
+    googleApiBaseUrl() {
+      return process.env.VUE_APP_API_URL
+        .replace(/\/$/, '')
+        .replace(/\/specific$/, '');
+    },
+
+    positionFlatChartPreview(event) {
+      const previewWidth = 320;
+      const previewHeight = 245;
+      const gap = 18;
+      const padding = 12;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const preferredX = event.clientX - previewWidth - gap;
+      const fallbackX = event.clientX + gap;
+      const x = preferredX > padding ? preferredX : fallbackX;
+      const y = Math.min(
+        Math.max(event.clientY - 70, padding),
+        viewportHeight - previewHeight - padding
+      );
+
+      this.flatChartPreview.x = Math.min(x, viewportWidth - previewWidth - padding);
+      this.flatChartPreview.y = y;
+    },
+
+    clearFlatChartPreviewTimer() {
+      if (this.flatChartPreview.timer) {
+        window.clearTimeout(this.flatChartPreview.timer);
+        this.flatChartPreview.timer = null;
+      }
+    },
+
+    hideFlatChartPreview() {
+      this.clearFlatChartPreviewTimer();
+      this.flatChartPreview.visible = false;
     },
 
     openPropertyMap(item, mode) {
@@ -253,6 +393,10 @@ export default {
 
   mounted() {
     this.retrievePriceList();
+  },
+
+  beforeDestroy() {
+    this.clearFlatChartPreviewTimer();
   },
 };
 </script>
@@ -350,6 +494,80 @@ export default {
 
 .clickable-row:hover {
   filter: brightness(95%);
+}
+
+.flat-chart-preview {
+  position: fixed;
+  z-index: 900;
+  width: 320px;
+  height: 245px;
+  direction: rtl;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(25, 118, 210, 0.28);
+  border-radius: 8px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.flat-chart-preview-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  color: #0d47a1;
+  background: #eef6ff;
+  border-bottom: 1px solid rgba(25, 118, 210, 0.16);
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.flat-chart-preview-header span {
+  color: #546e7a;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.flat-chart-preview-frame {
+  position: relative;
+  height: 178px;
+  background: #eceff1;
+  overflow: hidden;
+}
+
+.flat-chart-preview-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+
+.flat-chart-preview-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.flat-chart-preview-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #607d8b;
+  font-size: 13px;
+}
+
+.flat-chart-preview-footer {
+  padding: 7px 10px;
+  color: #455a64;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 12px;
+  text-align: center;
 }
 
 ::v-deep .map-click-cell {
