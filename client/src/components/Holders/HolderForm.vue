@@ -124,7 +124,7 @@
 import { HOLDER_MODEL, loadTable, viewGDFile } from "../../constants/constants";
 import apiService from "../../services/apiService";
 import GooglePicker from "../GooglePicker.vue";
-import modalDialog from '../Common/ViewFileModal.vue';
+import { GoogleFileViewerModal as modalDialog } from '../../../../google/frontend';
 import Camera from "../../../../../camera/frontend";
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
 

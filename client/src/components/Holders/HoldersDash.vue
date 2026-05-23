@@ -211,7 +211,7 @@ import { generatePdfFromElement } from "../shared/pdf";
 import holderForm from "./HolderForm.vue"
 import Camera from "../../../../camera/frontend";
 import GooglePicker from "./../GooglePicker.vue";
-import modalDialog from './../Common/ViewFileModal.vue';
+import { GoogleFileViewerModal as modalDialog } from '../../../../google/frontend';
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
 
 // import PdfPreview from "./PdfPreview.vue";

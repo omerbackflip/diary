@@ -93,7 +93,7 @@ import { PRICELIST_MODEL, HOLDER_MODEL, viewGDFile } from '../../constants/const
 import apiService from '../../services/apiService';
 import excel from 'vue-excel-export';
 import Vue from 'vue';
-import modalDialog from '../Common/ViewFileModal.vue';
+import { GoogleFileViewerModal as modalDialog } from '../../../../google/frontend';
 import PropertyMapDialog from '@/components/PriceList/PropertyMapDialog.vue';
 import PropertyMapOverviewDialog from '@/components/PriceList/PropertyMapOverviewDialog.vue';
 

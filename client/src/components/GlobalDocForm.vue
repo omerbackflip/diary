@@ -67,7 +67,7 @@
 <script>
 import { TABLE_MODEL, viewGDFile, shareOnWhatsApp } from '../constants/constants';
 import apiService from '../services/apiService';
-import modalDialog from './Common/ViewFileModal.vue';
+import { GoogleFileViewerModal as modalDialog } from '../../../google/frontend';
 
 
 export default {
