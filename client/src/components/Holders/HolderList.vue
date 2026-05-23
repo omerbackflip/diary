@@ -112,10 +112,10 @@
 
 
 <script>
-import apiService from "../services/apiService";
-import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, sendWhatsapp } from "../constants/constants";
+import apiService from "../../services/apiService";
+import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, sendWhatsapp } from "../../constants/constants";
 import holderForm from "./HolderForm.vue"
-import { isMobile } from '../constants/constants';
+import { isMobile } from '../../constants/constants';
 import Vue from "vue";
 import moment from "moment";
 Vue.filter("formatDate", function (value) {

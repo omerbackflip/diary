@@ -154,11 +154,10 @@
 <script>
 import Vue from "vue";
 import moment from "moment";
-import apiService from "../services/apiService";
-import specificServiceEndPoints from "../services/specificServiceEndPoints";
-import { LEAD_MODEL, LEADS_HEADERS, LEADS_SUMMARY_HEADERS, NEW_LEAD, loadTable } from "../constants/constants";
+import apiService from "../../services/apiService";
+import specificServiceEndPoints from "../../services/specificServiceEndPoints";
+import { LEAD_MODEL, LEADS_HEADERS, LEADS_SUMMARY_HEADERS, NEW_LEAD, loadTable, isMobile } from "../../constants/constants";
 import leadForm from "./LeadForm.vue"
-import { isMobile } from '../constants/constants';
 import BarChart from '@/components/Common/BarChart.vue';
 import excel from "vue-excel-export";
 Vue.use(excel);

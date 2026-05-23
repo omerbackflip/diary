@@ -60,10 +60,10 @@
   </template>
   
 <script>
-import apiService from "../services/apiService";
-import { LEAD_MODEL } from "../constants/constants";
+import apiService from "../../services/apiService";
+import { LEAD_MODEL } from "../../constants/constants";
 import moment from "moment";
-import leadForm from "./LeadForm.vue"
+import leadForm from "../Leads/LeadForm.vue"
 
 export default {
 	name: "lead-calendar",

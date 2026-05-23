@@ -95,11 +95,11 @@
 </template>
 
 <script>
-import { DIARY_MODEL } from "../constants/constants";
-import apiService from "../services/apiService";
-import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
+import { DIARY_MODEL } from "../../constants/constants";
+import apiService from "../../services/apiService";
+import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
 import Vue from "vue";
-import Camera from "../../../camera/frontend";
+import Camera from "../../../../camera/frontend";
 import moment from "moment";
 Vue.filter("formatDate", function (value) {
 	if (value) {

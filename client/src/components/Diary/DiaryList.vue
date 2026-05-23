@@ -115,12 +115,12 @@
 <script>
 import Vue from "vue";
 import moment from "moment";
-import apiService from "../services/apiService";
+import apiService from "../../services/apiService";
 // import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
 
-import { DIARY_MODEL, DIARY_WEB_HEADERS, DIARY_MOBILE_HEADERS, NEW_DIARY, loadTable } from "../constants/constants";
+import { DIARY_MODEL, DIARY_WEB_HEADERS, DIARY_MOBILE_HEADERS, NEW_DIARY, loadTable } from "../../constants/constants";
 import diaryForm from "./DiaryForm.vue"
-import { isMobile } from '../constants/constants';
+import { isMobile } from '../../constants/constants';
 import excel from "vue-excel-export";
 Vue.use(excel);
 

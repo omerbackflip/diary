@@ -88,8 +88,8 @@
 </template>
 
 <script>
-import { LEAD_MODEL, sendWhatsapp, loadTable } from "../constants/constants";
-import apiService from "../services/apiService";
+import { LEAD_MODEL, sendWhatsapp, loadTable } from "../../constants/constants";
+import apiService from "../../services/apiService";
 import Vue from "vue";
 import moment from "moment";
 Vue.filter("formatDate", function (value) {

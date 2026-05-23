@@ -9,27 +9,27 @@ export default new Router({
     {
       path: "/",
       name: "lead-list",
-      component: () => import("./components/LeadList")
+      component: () => import("./components/Leads/LeadList")
     },
     {
       path: "/diaryList",
       name: "diaryList",
-      component: () => import("./components/DiaryList")
+      component: () => import("./components/Diary/DiaryList")
     },
     {
       path: "/leadCalendar",
       name: "lead-calendar",
-      component: () => import("./components/LeadCalendar")
+      component: () => import("./components/Leads/LeadCalendar")
     },
     {
       path: "/holdersDash",
       name: "holders-dash",
-      component: () => import("./components/HoldersDash")
+      component: () => import("./components/Holders/HoldersDash")
     },
     {
       path: "/holderList",
       name: "holder-list",
-      component: () => import("./components/HolderList")
+      component: () => import("./components/Holders/HolderList")
     },
     {
       path: "/globaldocform",
@@ -44,7 +44,7 @@ export default new Router({
     {
       path: "/pricelist",
       name: "price-list",
-      component: () => import("./components/PriceList")
+      component: () => import("./components/ChangesPriceList.vue")
     },
     {
       path: "/pricelist-table",
@@ -54,7 +54,7 @@ export default new Router({
     {
       path: "/diary-calendar",
       name: "diary-calendar",
-      component: () => import("@/components/DiaryCalendar.vue")
+      component: () => import("@/components/Diary/DiaryCalendar.vue")
     },
     {
       path: '/map-coordinate-picker',

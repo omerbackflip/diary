@@ -204,15 +204,15 @@
 
 
 <script>
-import apiService from "../services/apiService";
-import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, WORKING_FOLDER_ID, GLOBAL_PICS_FOLDER_ID, viewGDFile} from "../constants/constants";
-import { isMobile } from '../constants/constants';
-import { generatePdfFromElement } from "../components/shared/pdf";
+import apiService from "../../services/apiService";
+import { HOLDER_MODEL, HOLDER_MOBILE_HEADERS, NEW_HOLDER, WORKING_FOLDER_ID, GLOBAL_PICS_FOLDER_ID, viewGDFile} from "../../constants/constants";
+import { isMobile } from '../../constants/constants';
+import { generatePdfFromElement } from "../shared/pdf";
 import holderForm from "./HolderForm.vue"
-import Camera from "../../../camera/frontend";
-import GooglePicker from "./GooglePicker.vue";
-import modalDialog from './Common/ViewFileModal.vue';
-import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
+import Camera from "../../../../camera/frontend";
+import GooglePicker from "./../GooglePicker.vue";
+import modalDialog from './../Common/ViewFileModal.vue';
+import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
 
 // import PdfPreview from "./PdfPreview.vue";
 export default {

@@ -161,14 +161,14 @@
 
 <script>
 import moment from "moment";
-import apiService from "../services/apiService";
-import diaryForm from "./DiaryForm.vue";
+import apiService from "../../services/apiService";
+import diaryForm from "../Diary/DiaryForm.vue";
 import {
   DIARY_MODEL,
   NEW_DIARY,
   loadTable,
   isMobile
-} from "../constants/constants";
+} from "../../constants/constants";
 
 export default {
   name: "DiaryCalendar",
