@@ -10,11 +10,13 @@
           :headers="getHeaders()"
           :items="filteredLeads"
           :search="''"
-          disable-pagination
-          hide-default-footer
+          :items-per-page="100"
+          :footer-props="{
+            'items-per-page-options': [100, 500, -1],
+          }"
           fixed-header
           mobile-breakpoint="0"
-          height="80vh"
+          :height="tableHeight"
           class="elevation-3 mt-0 hebrew"
           :loading="isLoading"
           loading-text="Loading... Please wait"
@@ -207,6 +209,11 @@ export default {
   },
 
   computed: {
+    tableHeight() {
+      const compactLayout = this.isMobile() || this.$vuetify.breakpoint.xsOnly;
+      return compactLayout ? 'max(260px, calc(100vh - 350px))' : 'max(320px, calc(100vh - 240px))';
+    },
+
     filteredLeads() {
       const today = new Date();
       let from = null;
