@@ -13,6 +13,7 @@
           :items-per-page="100"
           :footer-props="{
             'items-per-page-options': [100, 500, -1],
+            'items-per-page-text': '',
           }"
           fixed-header
           mobile-breakpoint="0"
@@ -211,7 +212,7 @@ export default {
   computed: {
     tableHeight() {
       const compactLayout = this.isMobile() || this.$vuetify.breakpoint.xsOnly;
-      return compactLayout ? 'max(260px, calc(100vh - 350px))' : 'max(320px, calc(100vh - 240px))';
+      return compactLayout ? 'max(260px, calc(100vh - 200px))' : 'max(320px, calc(100vh - 240px))';
     },
 
     filteredLeads() {
@@ -658,5 +659,31 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   z-index: 1000;
   width: 90%;
   max-width: 500px;
+}
+
+@media (max-width: 600px) {
+  .hebrew ::v-deep .v-data-footer {
+    flex-wrap: nowrap;
+    font-size: 11px;
+    min-height: 48px;
+    padding: 0 2px;
+  }
+
+  .hebrew ::v-deep .v-data-footer__select {
+    margin: 0 4px;
+  }
+
+  .hebrew ::v-deep .v-data-footer__select .v-select {
+    margin: 0 0 0 4px;
+  }
+
+  .hebrew ::v-deep .v-data-footer__pagination {
+    margin: 0 4px;
+  }
+
+  .hebrew ::v-deep .v-data-footer__icons-before,
+  .hebrew ::v-deep .v-data-footer__icons-after {
+    margin: 0;
+  }
 }
 </style>
