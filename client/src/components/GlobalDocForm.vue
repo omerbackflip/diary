@@ -5,19 +5,8 @@
         <v-card class="global-doc-card" elevation="4">
           <v-card-title class="global-doc-title">
             <div class="global-doc-title__text">מסמכי פרויקט</div>
-
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="חיפוש"
-              single-line
-              hide-details
-              dense
-              outlined
-              class="global-doc-search"
-            ></v-text-field>
-
             <v-btn
+              class="global-doc-send"
               color="primary"
               :disabled="selectedDocuments.length === 0"
               @click="sendSelectedByEmail"
@@ -31,7 +20,6 @@
             v-model="selectedDocuments"
             :headers="headers"
             :items="documentList"
-            :search="search"
             item-key="_id"
             show-select
             disable-pagination
@@ -138,7 +126,6 @@ export default {
     return {
       documentList: [],
       selectedDocuments: [],
-      search: '',
       headers:[
         { text: "", value: "thumbnail", sortable: false, class: 'light-blue', groupable: false, width: "96px" },
         { text: "שם המסמך", value: "description", class: 'light-blue', groupable: false },
@@ -275,7 +262,7 @@ export default {
 
 .global-doc-title {
   display: grid;
-  grid-template-columns: 1fr minmax(220px, 360px) auto;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 16px;
 }
@@ -287,8 +274,9 @@ export default {
   color: #0d47a1;
 }
 
-.global-doc-search {
-  max-width: 360px;
+.global-doc-send {
+  justify-self: end;
+  white-space: nowrap;
 }
 
 .global-doc-table {
@@ -301,6 +289,12 @@ export default {
 .global-doc-table ::v-deep th {
   font-size: 16px !important;
   font-weight: bold;
+  background-color: #03a9f4 !important;
+  color: #fff !important;
+}
+
+.global-doc-table ::v-deep th .v-simple-checkbox {
+  color: #fff !important;
 }
 
 .global-doc-table ::v-deep tbody tr:hover {
@@ -336,11 +330,14 @@ export default {
 
 @media (max-width: 700px) {
   .global-doc-title {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
-  .global-doc-search {
-    max-width: none;
+  .global-doc-title__text {
+    font-size: 20px;
   }
 }
 </style>
