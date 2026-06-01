@@ -10,9 +10,9 @@
           :headers="getHeaders()"
           :items="filteredLeads"
           :search="''"
-          :items-per-page="100"
+          :items-per-page="50"
           :footer-props="{
-            'items-per-page-options': [100, 500, -1],
+            'items-per-page-options': [50, 100, -1],
             'items-per-page-text': '',
           }"
           fixed-header
