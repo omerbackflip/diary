@@ -83,7 +83,7 @@
           <GooglePicker
             @picked="onFilePicked"
             :folderId="holderPicFolderId"
-            :disabled="!holderPicFolderId"
+            :disabled="!holderPicFolderId || !holderPics.length"
             icon="mdi-image-multiple"
             tooltip="Open holder pictures folder"
           />
