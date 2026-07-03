@@ -70,7 +70,7 @@
               <td><span>{{item.adName}}</span></td>
               <td><span>{{item.arrivedFrom}}</span></td>
               <td><span>{{item.interested}}</span></td>
-              <td><span>{{item.trackDate | formatDate}}</span></td>
+              <td><span :class="{ 'red--text font-weight-bold': isPastTrackDate(item.trackDate) }">{{item.trackDate | formatDate}}</span></td>
               <td><span>{{item.updatedAt | formatDate}}</span></td>
               <td><span>{{item.createdAt | formatDate}}</span></td>
               <td><v-checkbox :input-value="item.meeting" hide-details dense class="ma-0 pa-0" disabled></v-checkbox></td>
@@ -285,7 +285,16 @@ export default {
         response = await apiService.clientGetEntities(LEAD_MODEL);
       }
       if (response && response.data) {
-        this.allLeadList = response.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        // this sort place the leads with empty status at the top, and then sort by updatedAt descending
+        this.allLeadList = response.data.sort((a, b) => {
+          const aEmpty = !a.status || !String(a.status).trim();
+          const bEmpty = !b.status || !String(b.status).trim();
+          if (aEmpty && !bEmpty) return -1;
+          if (!aEmpty && bEmpty) return 1;
+          const ad = new Date(a.updatedAt).getTime() || 0;
+          const bd = new Date(b.updatedAt).getTime() || 0;
+          return bd - ad;
+        });
         this.isLoading = false;
       }
       // חישוב כמה פעמים כל טלפון מופיע
@@ -298,6 +307,19 @@ export default {
         isDuplicate: counts[l.phone] > 1
       }));
     
+    },
+
+    isPastTrackDate(date) {
+      if (!date) return false;
+      try {
+        const d = new Date(date);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        d.setHours(0,0,0,0);
+        return d < today;
+      } catch (e) {
+        return false;
+      }
     },
 
     async getLeadForEdit(item) {
