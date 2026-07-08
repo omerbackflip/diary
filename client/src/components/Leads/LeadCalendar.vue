@@ -103,7 +103,7 @@ export default {
                             _id: item._id,
                             name: item.name + ":" + item.trackRemark,
                             start: moment(item.trackDate).format('YYYY-MM-DD'),
-                            color: 'blue',
+                            color: item.description && item.description.startsWith('אלי:') ? 'green' : 'blue',
                             timed: true,
                         })
                     }
