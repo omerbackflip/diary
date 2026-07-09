@@ -75,7 +75,7 @@
               <!-- <tr :class="['clickable-row', itemRowBackground(item)]" @click="openFile(item)"> -->
               <tr
                 :class="['clickable-row']"
-                @click="openFile(item)"
+                @click="handleRowClick(item)"
                 @mouseenter="setHoveredPriceListItem(item)"
                 @mouseover="setHoveredPriceListItem(item)"
                 @mousemove="positionFlatChartPreview($event)"
@@ -89,7 +89,12 @@
                 >
                   {{ item.floor }}
                 </td>
-                <td :class="soldTextClass(item)"><div class="d-flex justify-center">{{ item.flatId }}</div></td>
+                <td
+                  :class="['flat-id-cell', soldTextClass(item)]"
+                  @click.stop="openFile(item)"
+                >
+                  <div class="d-flex justify-center">{{ item.flatId }}</div>
+                </td>
                 <td :class="soldTextClass(item)">{{ item.buyerName }}</td>
                 <td :class="soldTextClass(item)">{{ item.directions }}</td>
                 <td :class="soldTextClass(item)">{{ item.rooms }}</td>
@@ -363,6 +368,11 @@ export default {
     async openFile(item) {
       this.hideFlatChartPreview();
       await viewGDFile(item.flatChart, this.$refs.modalDialog);
+    },
+
+    handleRowClick(item) {
+      if (this.$vuetify.breakpoint.smAndDown) return;
+      this.openFile(item);
     },
 
     scheduleFlatChartPreview(item, event) {
@@ -652,6 +662,10 @@ export default {
   cursor: pointer;
 }
 
+.flat-id-cell {
+  cursor: pointer;
+}
+
 .clickable-row:hover {
   filter: brightness(95%);
 }
@@ -871,6 +885,32 @@ export default {
     grid-area: title;
     font-size: 20px;
     width: 100%;
+  }
+
+  .price-list-layout {
+    display: block;
+    direction: rtl;
+    padding: 0 10px 10px;
+  }
+
+  .floor-map-panel {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .floor-map-sticky {
+    position: static;
+  }
+
+  .floor-map-wrapper {
+    max-height: none;
+    overflow: hidden;
+  }
+
+  .price-list-table-panel {
+    width: 100%;
+    min-width: 0;
+    direction: rtl;
   }
 }
 </style>
