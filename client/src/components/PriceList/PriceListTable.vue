@@ -48,10 +48,10 @@
           <tr
             :class="['clickable-row']"
             @click="openFile(item)"
-            @mouseenter="scheduleFlatChartPreview(item, $event)"
             @mousemove="positionFlatChartPreview($event)"
             @mouseleave="hideFlatChartPreview"
           >
+            <!-- @mouseenter="scheduleFlatChartPreview(item, $event)"  // preview the chart on hover --> 
             <td
               v-if="isFirstFloorCell(index)"
               :rowspan="floorRowSpan(index)"

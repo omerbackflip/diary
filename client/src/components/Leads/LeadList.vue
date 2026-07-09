@@ -64,7 +64,7 @@
 
           <template v-slot:item="{ item, headers }">
             <tr style="border-bottom: hidden; vertical-align: text-top;" @click="getLeadForEdit(item)">
-              <td><span>{{item.name}}</span></td>
+              <td :class="{ 'eli-highlight': item.description && item.description.trim().startsWith('אלי:') }"><span>{{item.name}}</span></td>
               <td><span :class="{ 'red--text font-weight-bold': item.isDuplicate }">{{item.phone}}</span></td>
               <td :style="item.status ? {} : { backgroundColor: 'pink' }"><span>{{item.status}}</span></td>
               <td><span>{{item.adName}}</span></td>
@@ -681,6 +681,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   z-index: 1000;
   width: 90%;
   max-width: 500px;
+}
+
+.eli-highlight {
+  background-color: #dff0d8;
 }
 
 @media (max-width: 600px) {
