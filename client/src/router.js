@@ -61,6 +61,12 @@ export default new Router({
       name: 'MapCoordinatePicker',
       component: () =>
         import('@/components/PriceList/MapCoordinatePicker.vue'),
+    },
+    {
+      path: '/flat-polygon-coordinate-picker',
+      name: 'FlatPolygonCoordinatePicker',
+      component: () =>
+        import('@/components/PriceList/FlatPolygonCoordinatePicker.vue'),
     }
   ]
 });

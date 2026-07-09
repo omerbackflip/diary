@@ -113,6 +113,7 @@ export default {
                 {icon: 'folder', text: 'מחירון שינויים', route: '/priceList'},
                 {icon: 'folder', text: 'טבלת מחירי דירות', route: '/pricelist-table'},
                 {icon: 'folder', text: 'שיוך דירות', route: '/map-coordinate-picker'},
+                {icon: 'folder', text: 'Polygon Picker', route: '/flat-polygon-coordinate-picker'},
                 {icon: 'folder', text: 'קליטת אקסל', route: null, import: 'EXCEL', onClick: 'runModal'},
             ],
             displayDay: '',

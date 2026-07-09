@@ -19,65 +19,98 @@
         <v-btn small value="all">הכל</v-btn>
       </v-btn-toggle>
     </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="displayedPriceList"
-      disable-sort
-      disable-pagination
-      hide-default-footer
-      fixed-header
-      height="80vh"
-      dense
-      mobile-breakpoint="0"
-      class="elevation-2 price-list-table"
-      :loading="isLoading"
-      loading-text="Loading... Please wait"
-    >
-      <template v-slot:item="{ item, index }">
-          <tr v-if="item.flatId === 32" class="building-separator-row">
-            <td :colspan="headers.length" class="building-separator-cell">
-              <div class="building-separator-line"></div>
-            </td>
-          </tr>
-          <tr v-if="showFloorDivider(index)" class="floor-divider-row">
-            <td :colspan="headers.length" class="floor-divider-cell">
-              <div class="floor-divider-line"></div>
-            </td>
-          </tr>
-          <!-- <tr :class="['clickable-row', itemRowBackground(item)]" @click="openFile(item)"> -->
-          <tr
-            :class="['clickable-row']"
-            @click="openFile(item)"
-            @mousemove="positionFlatChartPreview($event)"
-            @mouseleave="hideFlatChartPreview"
-          >
-            <!-- @mouseenter="scheduleFlatChartPreview(item, $event)"  // preview the chart on hover --> 
-            <td
-              v-if="isFirstFloorCell(index)"
-              :rowspan="floorRowSpan(index)"
-              class="floor-span-cell"
-            >
-              {{ item.floor }}
-            </td>
-            <td :class="soldTextClass(item)"><div class="d-flex justify-center">{{ item.flatId }}</div></td>
-            <td :class="soldTextClass(item)">{{ item.buyerName }}</td>
-            <td :class="soldTextClass(item)">{{ item.directions }}</td>
-            <td :class="soldTextClass(item)">{{ item.rooms }}</td>
-            <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'warehouse')"> {{ item.warehouseId }} - ({{ item.warehouseArea }})</td>
-            <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'parking')"> {{ item.parkingId }}</td>
-            <td :class="soldTextClass(item)">{{ item.flatArea }}</td>
-            <td :class="soldTextClass(item)">{{ item.balconyArea }}</td>
-            <td :class="soldTextClass(item)">{{ item.equivalentArea }}</td>
-            <td :class="soldTextClass(item)">{{ item.flatPrice.toLocaleString() }}</td>
-          </tr>
-      </template>
 
-      <template v-slot:no-data>
-        <v-alert type="info" text>
-          לא נמצאו רשומות עבור טבלת מחירי הדירות.
-        </v-alert>
-      </template>
-    </v-data-table>
+    <div class="price-list-layout">
+      <aside class="floor-map-panel">
+        <div class="floor-map-sticky">
+          <div class="floor-map-wrapper">
+            <img
+              :src="mapAssets[visibleMapKey]"
+              class="floor-map-image"
+              alt="Floor map"
+            />
+
+            <svg
+              class="floor-map-overlay"
+              viewBox="0 0 4494 3179"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              <polygon
+                v-for="polygon in visiblePolygons"
+                :key="polygon.key"
+                :points="polygon.points"
+                :class="flatPolygonClass(polygon)"
+              />
+            </svg>
+          </div>
+        </div>
+      </aside>
+
+      <div class="price-list-table-panel">
+        <v-data-table
+          :headers="headers"
+          :items="displayedPriceList"
+          disable-sort
+          disable-pagination
+          hide-default-footer
+          fixed-header
+          height="80vh"
+          dense
+          mobile-breakpoint="0"
+          class="elevation-2 price-list-table"
+          :loading="isLoading"
+          loading-text="Loading... Please wait"
+        >
+          <template v-slot:item="{ item, index }">
+              <tr v-if="item.flatId === 32" class="building-separator-row">
+                <td :colspan="headers.length" class="building-separator-cell">
+                  <div class="building-separator-line"></div>
+                </td>
+              </tr>
+              <tr v-if="showFloorDivider(index)" class="floor-divider-row">
+                <td :colspan="headers.length" class="floor-divider-cell">
+                  <div class="floor-divider-line"></div>
+                </td>
+              </tr>
+              <!-- <tr :class="['clickable-row', itemRowBackground(item)]" @click="openFile(item)"> -->
+              <tr
+                :class="['clickable-row']"
+                @click="openFile(item)"
+                @mouseenter="setHoveredPriceListItem(item)"
+                @mouseover="setHoveredPriceListItem(item)"
+                @mousemove="positionFlatChartPreview($event)"
+                @mouseleave="clearHoveredPriceListItem(); hideFlatChartPreview()"
+              >
+                <!-- @mouseenter="scheduleFlatChartPreview(item, $event)"  // preview the chart on hover -->
+                <td
+                  v-if="isFirstFloorCell(index)"
+                  :rowspan="floorRowSpan(index)"
+                  class="floor-span-cell"
+                >
+                  {{ item.floor }}
+                </td>
+                <td :class="soldTextClass(item)"><div class="d-flex justify-center">{{ item.flatId }}</div></td>
+                <td :class="soldTextClass(item)">{{ item.buyerName }}</td>
+                <td :class="soldTextClass(item)">{{ item.directions }}</td>
+                <td :class="soldTextClass(item)">{{ item.rooms }}</td>
+                <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'warehouse')"> {{ item.warehouseId }} - ({{ item.warehouseArea }})</td>
+                <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'parking')"> {{ item.parkingId }}</td>
+                <td :class="soldTextClass(item)">{{ item.flatArea }}</td>
+                <td :class="soldTextClass(item)">{{ item.balconyArea }}</td>
+                <td :class="soldTextClass(item)">{{ item.equivalentArea }}</td>
+                <td :class="soldTextClass(item)">{{ item.flatPrice.toLocaleString() }}</td>
+              </tr>
+          </template>
+
+          <template v-slot:no-data>
+            <v-alert type="info" text>
+              לא נמצאו רשומות עבור טבלת מחירי הדירות.
+            </v-alert>
+          </template>
+        </v-data-table>
+      </div>
+    </div>
+
     <modal-dialog ref="modalDialog"/>
     <PropertyMapDialog
       v-model="propertyMapDialog"
@@ -131,7 +164,7 @@ import Vue from 'vue';
 import { GoogleFileViewerModal as modalDialog, googleDriveThumbnailUrl } from '../../../../google/frontend';
 import PropertyMapDialog from '@/components/PriceList/PropertyMapDialog.vue';
 import PropertyMapOverviewDialog from '@/components/PriceList/PropertyMapOverviewDialog.vue';
-
+import { mapAssets } from '@/config/propertyMapConfig';
 
 Vue.use(excel);
 
@@ -174,6 +207,26 @@ export default {
         timer: null,
       },
       flatChartThumbnailCache: {},
+      hoveredPriceListItem: null,
+      mapAssets,
+      activeMapKey: 'floor',
+      flatPolygons: {
+        "floor.buildingA.upperRight": "2905,341 2905,862 2136,869 2132,766 1817,756 1811,576 1627,576 1630,331",
+        "floor.buildingA.lowerRight": "2136,862 2901,853 2895,1380 1621,1377 1618,1142 1618,1142 1824,1155 1824,975 2132,972",
+        "floor.buildingA.lowerLeft": "1106,866 424,856 427,1416 598,1412 591,1638 1315,1644 1318,1400 1418,1390 1425,965 1100,972",
+        "floor.buildingA.upperLeft": "427,335 1624,325 1621,579 1511,576 1518,750 1103,753 1112,862 417,846",
+        "floor.buildingB.upperRight": "3291,1676 4005,1680 4005,1927 4159,1937 4159,2461 3506,2465 3506,2362 3304,2358 3310,2181 3136,2178 3127,1934 3291,1927",
+        "floor.buildingB.lowerRight": "3500,2465 4159,2468 4163,2996 2966,2996 2962,2738 3085,2751 3072,2568 3516,2574",
+        "floor.buildingB.lowerLeft": "1682,2461 2432,2458 2438,2580 2776,2593 2766,2757 2962,2754 2962,2999 1685,2996",
+        "floor.buildingB.upperLeft": "1679,1931 3133,1934 3139,2178 3020,2178 3017,2336 2425,2336 2432,2445 1679,2455",
+        "ground.buildingA.ground": "1737,589 1743,370 2901,370 2898,1107 2612,1380 2432,1387 2425,1184 2168,1194 2171,917 1891,901 1891,782 1737,775",
+        "ground.buildingB.groundRight": "2863,1969 2860,1512 2946,1422 3941,1425 3925,2169 3156,2181 3149,2101 2998,2101 2991,1985",
+        "ground.buildingB.groundLeft": "3143,2169 3925,2169 3899,2909 2631,2912 2634,2571 2615,2571 2618,2394 2843,2394 2843,2275 3156,2268",
+        "floor8.buildingA.penthouseRight": "1425,0 2737,0 2744,1265 1585,1265 1579,975 1640,975 1650,766 1762,760 1762,666 1766,625 1647,621 1656,296 1425,296",
+        "floor8.buildingA.penthouseLeft": "208,6 1421,3 1421,319 1315,325 1309,502 1196,505 1203,718 1325,715 1325,969 1569,969 1585,1272 1058,1268 1051,1561 208,1565",
+        "floor8.buildingB.penthouseRight": "3065,1899 3384,1899 3390,1606 4217,1606 4221,3155 2998,3152 2998,2843 3110,2843 3120,2662 3413,2649 3413,2527 3526,2527 3522,2405 3410,2408 3397,2186 3065,2186",
+        "floor8.buildingB.penthouseLeft": "1685,1896 3065,1896 3072,2402 2860,2405 2853,2569 2769,2569 2766,2868 3001,2872 3001,3158 1685,3152"
+      },
     };
   },
 
@@ -218,6 +271,34 @@ export default {
 
     flatChartPreviewEmptyText() {
       return this.flatChartPreview.error || 'אין קובץ תכנית לדירה זו';
+    },
+
+    activeFlatMapItem() {
+      if (!this.hoveredPriceListItem) return null;
+      return this.getFlatMapItem(this.hoveredPriceListItem.flatId);
+    },
+
+    visibleMapKey() {
+      return this.activeFlatMapItem?.mapKey || 'floor';
+    },
+
+    visiblePolygons() {
+      return Object.entries(this.flatPolygons)
+        .filter(([key, points]) => key.startsWith(`${this.visibleMapKey}.`) && points)
+        .map(([key, points]) => {
+          const [, buildingKey, positionKey] = key.split('.');
+
+          return {
+            key,
+            buildingKey,
+            positionKey,
+            points,
+            active:
+              this.activeFlatMapItem?.buildingKey === buildingKey &&
+              this.activeFlatMapItem?.positionKey === positionKey,
+          };
+        })
+        .sort((a, b) => Number(a.active) - Number(b.active));
     },
   },
 
@@ -388,6 +469,85 @@ export default {
 
     soldTextClass(item) {
       return this.isSold(item) ? 'sold-text' : 'available-text';
+    },
+
+    getFlatMapItem(flatIdValue) {
+      const flatId = Number(flatIdValue);
+
+      if (flatId === 1) {
+        return { mapKey: 'ground', buildingKey: 'buildingA', positionKey: 'ground' };
+      }
+
+      if (flatId >= 2 && flatId <= 29) {
+        return {
+          mapKey: 'floor',
+          buildingKey: 'buildingA',
+          positionKey: this.getRegularFlatPosition(flatId, 2),
+        };
+      }
+
+      if (flatId === 30) {
+        return { mapKey: 'floor8', buildingKey: 'buildingA', positionKey: 'penthouseRight' };
+      }
+
+      if (flatId === 31) {
+        return { mapKey: 'floor8', buildingKey: 'buildingA', positionKey: 'penthouseLeft' };
+      }
+
+      if (flatId === 32) {
+        return { mapKey: 'ground', buildingKey: 'buildingB', positionKey: 'groundRight' };
+      }
+
+      if (flatId === 33) {
+        return { mapKey: 'ground', buildingKey: 'buildingB', positionKey: 'groundLeft' };
+      }
+
+      if (flatId >= 34 && flatId <= 61) {
+        return {
+          mapKey: 'floor',
+          buildingKey: 'buildingB',
+          positionKey: this.getRegularFlatPosition(flatId, 34),
+        };
+      }
+
+      if (flatId === 62) {
+        return { mapKey: 'floor8', buildingKey: 'buildingB', positionKey: 'penthouseRight' };
+      }
+
+      if (flatId === 63) {
+        return { mapKey: 'floor8', buildingKey: 'buildingB', positionKey: 'penthouseLeft' };
+      }
+
+      return null;
+    },
+
+    getRegularFlatPosition(flatId, startFlatId) {
+      const offset = (flatId - startFlatId) % 4;
+
+      if (offset === 0) return 'upperRight';
+      if (offset === 1) return 'lowerRight';
+      if (offset === 2) return 'lowerLeft';
+      return 'upperLeft';
+    },
+
+    setHoveredPriceListItem(item) {
+      this.hoveredPriceListItem = item;
+    },
+
+    clearHoveredPriceListItem() {
+      this.hoveredPriceListItem = null;
+    },
+
+    flatPolygonClass(polygon) {
+      if (!polygon.active) return 'flat-polygon';
+
+      return [
+        'flat-polygon',
+        'flat-polygon-active',
+        this.isSold(this.hoveredPriceListItem)
+          ? 'flat-polygon-sold'
+          : 'flat-polygon-available',
+      ];
     },
   },
 
@@ -617,6 +777,73 @@ export default {
   text-align: center;
   font-size: 24px;
   font-weight: bold;
+}
+
+.price-list-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 38%) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  direction: ltr;
+  padding: 0 12px 12px;
+}
+
+.price-list-table-panel {
+  min-width: 0;
+  direction: rtl;
+}
+
+.floor-map-panel {
+  min-width: 0;
+}
+
+.floor-map-sticky {
+  position: sticky;
+  top: 84px;
+}
+
+.floor-map-wrapper {
+  position: relative;
+  width: 100%;
+  max-height: calc(100vh - 110px);
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.floor-map-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.floor-map-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.flat-polygon {
+  fill: rgba(25, 118, 210, 0.06);
+  stroke: rgba(25, 118, 210, 0.28);
+  stroke-width: 8;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+
+.flat-polygon-active {
+  stroke-width: 14;
+}
+
+.flat-polygon-available {
+  fill: rgba(46, 125, 50, 0.34);
+  stroke: #2e7d32;
+}
+
+.flat-polygon-sold {
+  fill: rgba(211, 47, 47, 0.28);
+  stroke: #d32f2f;
 }
 
 /* Mobile */
