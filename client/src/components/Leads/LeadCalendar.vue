@@ -42,7 +42,7 @@
                 <v-list>
                     <v-list-item v-for="event in selectedEvents" :key="event.id" @click="getLeadForEdit({ event })">
                     <v-list-item-content>
-                        <v-list-item-title>{{ event.name }}</v-list-item-title>
+                        <v-list-item-title :class="{ 'eli-event': event.description && event.description.startsWith('אלי:') }">{{ event.name }}</v-list-item-title>
                     </v-list-item-content>
                     </v-list-item>
                 </v-list>
@@ -102,6 +102,7 @@ export default {
                         this.events.push({
                             _id: item._id,
                             name: item.name + ":" + item.trackRemark,
+                            description: item.description,
                             start: moment(item.trackDate).format('YYYY-MM-DD'),
                             color: item.description && item.description.startsWith('אלי:') ? 'green' : 'blue',
                             timed: true,
@@ -161,6 +162,10 @@ export default {
 <style>
 .v-event, .v-event-more {
     place-self: center;
+}
+
+.eli-event {
+    background-color: #dff0d8;
 }
 </style>
   
