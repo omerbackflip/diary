@@ -54,6 +54,14 @@ class SpecificServiceEndPoints {
     return http.get("specific/google-sheets-sync-status");
   }
 
+  getLeadPhoneReport() {
+    return http.get("specific/lead-phone-report");
+  }
+
+  fixLeadPhones(items) {
+    return http.post("specific/fix-lead-phones", {items});
+  }
+
   bulkWriteApi(data,params) {
     return http.post("specific/bulk-write", data, {params});
   }

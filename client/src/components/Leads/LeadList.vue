@@ -32,11 +32,10 @@
                 <v-col cols="4" md="1">
                   <v-toolbar-title>({{ filteredLeads.length.toLocaleString() }}) {{ allLeadList.length.toLocaleString() }} </v-toolbar-title>
                 </v-col>
-                <v-col cols="4" md="2">
+                <v-col cols="4" md="1">
                   <v-text-field v-model="search" label="Search" clearable hide-details ></v-text-field>
                 </v-col>
                 <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
-                  <!-- <export-excel :data="$formatDataForExport(allLeadList)" type="xlsx"> -->
                   <export-excel :data="exportLeads" type="xlsx">
                     <v-btn x-small class="btn btn-danger">
                       <v-icon small>mdi-download</v-icon>
@@ -45,6 +44,11 @@
                 </v-col>
                 <v-col cols="2" md="1" style="text-align-last: center;">
                   <v-btn x-small class="btn btn-danger" @click="callStatistics"><v-icon small>mdi-google-analytics</v-icon></v-btn>
+                </v-col>
+                <v-col cols="2" md="1" v-if="!isMobile()" style="text-align-last: center;">
+                  <v-btn x-small class="btn btn-danger" @click="openPhoneReport">
+                    <v-icon small>mdi-phone-alert</v-icon>
+                  </v-btn>
                 </v-col>
                 <v-col cols="2" md="1" style="text-align-last: center;" v-if="role==='admin'">
                   <v-btn x-small @click="getNewLeads" class="btn btn-danger"> Leads <v-icon small>mdi-refresh</v-icon></v-btn>
@@ -150,6 +154,106 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="phoneReportDialog" max-width="1100px">
+        <v-card>
+          <v-card-title class="phone-report-title">
+            <strong>Lead Phone Report</strong>
+            <v-spacer />
+            <v-btn
+              small
+              text
+              color="primary"
+              @click="selectAllSafePhoneReportItems"
+              :disabled="phoneReportLoading || phoneReport.fixableCount === 0"
+            >
+              Select safe
+            </v-btn>
+            <v-btn
+              small
+              color="primary"
+              @click="fixSelectedLeadPhones"
+              :disabled="selectedPhoneReportItems.length === 0 || phoneReportLoading || phoneReportFixing"
+              :loading="phoneReportFixing"
+            >
+              Fix selected ({{ selectedPhoneReportItems.length }})
+            </v-btn>
+            <v-btn icon @click="openPhoneReport" :loading="phoneReportLoading">
+              <v-icon>mdi-refresh</v-icon>
+            </v-btn>
+            <v-btn icon @click="phoneReportDialog = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-row dense class="mb-3 phone-report-summary">
+              <v-col cols="6" md="3">Total: {{ phoneReport.total }}</v-col>
+              <v-col cols="6" md="3">Problems: {{ phoneReport.invalidCount }}</v-col>
+              <v-col cols="6" md="3">Safe suggestions: {{ phoneReport.fixableCount }}</v-col>
+              <v-col cols="6" md="3">Review needed: {{ phoneReport.reviewCount }}</v-col>
+            </v-row>
+            <v-row dense class="mb-2">
+              <v-col cols="12" md="4">
+                <v-select
+                  v-model="phoneReportStatusFilter"
+                  :items="phoneReportStatusOptions"
+                  label="Status"
+                  dense
+                  hide-details
+                ></v-select>
+              </v-col>
+              <v-col cols="12" md="8" class="phone-report-filter-count">
+                Showing {{ filteredPhoneReportItems.length }} of {{ phoneReport.items.length }}
+              </v-col>
+            </v-row>
+            <v-data-table
+              :headers="phoneReportHeaders"
+              :items="filteredPhoneReportItems"
+              :items-per-page="25"
+              :loading="phoneReportLoading"
+              mobile-breakpoint="0"
+              disable-pagination
+              hide-default-footer 
+              dense
+              fixed-header
+              height="520"
+              item-key="_id"
+              @click:row="openLeadFromPhoneReport"
+            >
+              <template v-slot:item.selected="{ item }">
+                <v-checkbox
+                  :input-value="isPhoneReportItemSelected(item)"
+                  :disabled="!item.fixable || phoneReportFixing"
+                  hide-details
+                  dense
+                  class="ma-0 pa-0"
+                  @click.stop
+                  @change="togglePhoneReportItem(item, $event)"
+                ></v-checkbox>
+              </template>
+              <template v-slot:item.problems="{ item }">
+                <v-chip
+                  v-for="problem in item.problems"
+                  :key="problem"
+                  x-small
+                  class="ma-1"
+                  color="warning"
+                  text-color="black"
+                >
+                  {{ problem }}
+                </v-chip>
+              </template>
+              <template v-slot:item.fixable="{ item }">
+                <v-chip v-if="item.fixable" x-small color="success" text-color="white">
+                  safe suggestion
+                </v-chip>
+                <v-chip v-else x-small color="error" text-color="white">
+                  review needed
+                </v-chip>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-layout>
   </div>
 </template>
@@ -206,6 +310,31 @@ export default {
       lastSeenSyncVersion: null,
       newLeadsMessage: "",
       filterKey: 0,
+      phoneReportDialog: false,
+      phoneReportLoading: false,
+      phoneReportFixing: false,
+      selectedPhoneReportIds: [],
+      phoneReport: {
+        total: 0,
+        invalidCount: 0,
+        fixableCount: 0,
+        reviewCount: 0,
+        items: [],
+      },
+      phoneReportStatusFilter: 'all',
+      phoneReportStatusOptions: [
+        { text: "All", value: "all" },
+        { text: "Safe suggestions", value: "safe" },
+        { text: "Review needed", value: "review" },
+      ],
+      phoneReportHeaders: [
+        { text: "Fix", value: "selected", align: "center", sortable: false, width: "6%" },
+        { text: "Name", value: "name", align: "right", width: "16%" },
+        { text: "Current phone", value: "phone", align: "right", width: "14%" },
+        { text: "Suggested phone", value: "suggestedPhone", align: "right", width: "14%" },
+        { text: "Problems", value: "problems", align: "right", sortable: false, width: "36%" },
+        { text: "Status", value: "fixable", align: "right", sortable: false, width: "20%" },
+      ],
     }
   },
 
@@ -264,6 +393,23 @@ export default {
 
     exportLeads() {
       return this.$formatDataForExport(this.allLeadList);
+    },
+
+    filteredPhoneReportItems() {
+      if (this.phoneReportStatusFilter === 'safe') {
+        return this.phoneReport.items.filter((item) => item.fixable);
+      }
+
+      if (this.phoneReportStatusFilter === 'review') {
+        return this.phoneReport.items.filter((item) => !item.fixable);
+      }
+
+      return this.phoneReport.items;
+    },
+
+    selectedPhoneReportItems() {
+      const selectedIds = new Set(this.selectedPhoneReportIds);
+      return this.phoneReport.items.filter((item) => selectedIds.has(item._id) && item.fixable);
     }
   },
 
@@ -334,6 +480,83 @@ export default {
       let msg = await specificServiceEndPoints.syncGoogleSheets();
       window.alert(msg.data.message);
       this.retrieveLeads();
+    },
+
+    async openPhoneReport() {
+      this.phoneReportDialog = true;
+      this.phoneReportLoading = true;
+      try {
+        const response = await specificServiceEndPoints.getLeadPhoneReport();
+        this.phoneReport = {
+          total: response.data.total || 0,
+          invalidCount: response.data.invalidCount || 0,
+          fixableCount: response.data.fixableCount || 0,
+          reviewCount: response.data.reviewCount || 0,
+          items: response.data.items || [],
+        };
+        this.selectedPhoneReportIds = this.selectedPhoneReportIds.filter((id) =>
+          this.phoneReport.items.some((item) => item._id === id && item.fixable)
+        );
+      } catch (error) {
+        console.error("Error loading lead phone report:", error);
+        window.alert("Error loading lead phone report");
+      } finally {
+        this.phoneReportLoading = false;
+      }
+    },
+
+    async openLeadFromPhoneReport(reportItem) {
+      const lead = this.allLeadList.find((item) => item._id === reportItem._id);
+      if (!lead) return;
+
+      await this.getLeadForEdit(lead);
+    },
+
+    isPhoneReportItemSelected(item) {
+      return this.selectedPhoneReportIds.includes(item._id);
+    },
+
+    togglePhoneReportItem(item, checked) {
+      if (!item.fixable) return;
+
+      if (checked && !this.selectedPhoneReportIds.includes(item._id)) {
+        this.selectedPhoneReportIds = [...this.selectedPhoneReportIds, item._id];
+      } else if (!checked) {
+        this.selectedPhoneReportIds = this.selectedPhoneReportIds.filter((id) => id !== item._id);
+      }
+    },
+
+    selectAllSafePhoneReportItems() {
+      this.selectedPhoneReportIds = this.phoneReport.items
+        .filter((item) => item.fixable)
+        .map((item) => item._id);
+    },
+
+    async fixSelectedLeadPhones() {
+      const items = this.selectedPhoneReportItems.map((item) => ({
+        _id: item._id,
+        suggestedPhone: item.suggestedPhone,
+      }));
+
+      if (!items.length) return;
+
+      const confirmed = window.confirm(`Fix ${items.length} selected phone numbers? updatedAt will stay unchanged.`);
+      if (!confirmed) return;
+
+      this.phoneReportFixing = true;
+      try {
+        const response = await specificServiceEndPoints.fixLeadPhones(items);
+        const skippedCount = response.data.skipped ? response.data.skipped.length : 0;
+        window.alert(`${response.data.fixedCount || 0} phone numbers fixed. ${skippedCount} skipped.`);
+        this.selectedPhoneReportIds = [];
+        await this.retrieveLeads();
+        await this.openPhoneReport();
+      } catch (error) {
+        console.error("Error fixing lead phones:", error);
+        window.alert("Error fixing lead phones");
+      } finally {
+        this.phoneReportFixing = false;
+      }
     },
 
     async callStatistics () {
@@ -685,6 +908,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .eli-highlight {
   background-color: #dff0d8;
+}
+
+.phone-report-filter-count {
+  align-self: center;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
 }
 
 @media (max-width: 600px) {

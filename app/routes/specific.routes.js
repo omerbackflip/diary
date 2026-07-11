@@ -22,6 +22,8 @@ module.exports = app => {
   router.get("/get-google-connection-status", specific.googleConnectionStatus);
   router.get("/sync-google-sheets", specific.syncGoogleSheets);
   router.get("/google-sheets-sync-status", specific.getGoogleSheetsSyncStatus);
+  router.get("/lead-phone-report", specific.getLeadPhoneReport);
+  router.post("/fix-lead-phones", specific.fixLeadPhones);
   router.get("/test-google-sheets-sync-job", specific.testGoogleSheetsSyncJob); // for testing the sync job manually
 
   router.post("/backup/run", specific.runBackup);

@@ -17,6 +17,7 @@ const { google } = require('googleapis');
 const { uploadFile, ensureFolder } = require('../../google/backend');
 const googleSubmoduleService = require('../../google/backend/services/google-submodule-service');
 const googleLeadsSyncService = require('../services/google-leads-sync-service');
+const leadPhoneReportService = require('../services/lead-phone-report-service');
 const { getGoogleSheetsSyncStatus } = require("../jobs/googleSheetsSync.job");
 const backupService = require('../../backup/backend');
 const backupConfig = require('../backup/backup.config');
@@ -307,6 +308,110 @@ exports.syncGoogleSheets = async (req, res) => {
   } catch (error) {
     console.error("Error syncing Google Sheets:", error);
     res.status(500).json({ success: false, message: "Error syncing Google Sheets" });
+  }
+};
+
+exports.getLeadPhoneReport = async (req, res) => {
+  try {
+    const leads = await db.leads
+      .find({})
+      .select("name phone createdAt updatedAt")
+      .lean();
+
+    res.json({
+      success: true,
+      ...leadPhoneReportService.buildPhoneReport(leads),
+    });
+  } catch (error) {
+    console.error("Error building lead phone report:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error building lead phone report",
+    });
+  }
+};
+
+exports.fixLeadPhones = async (req, res) => {
+  try {
+    const items = Array.isArray(req.body && req.body.items) ? req.body.items : [];
+
+    if (!items.length) {
+      return res.status(400).json({
+        success: false,
+        message: "No phone fixes were selected",
+      });
+    }
+
+    const requestedFixes = new Map(
+      items
+        .filter((item) => item && item._id && item.suggestedPhone)
+        .map((item) => [String(item._id), String(item.suggestedPhone).trim()])
+    );
+
+    if (!requestedFixes.size) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid phone fixes were selected",
+      });
+    }
+
+    const leads = await db.leads
+      .find({ _id: { $in: Array.from(requestedFixes.keys()) } })
+      .select("_id phone")
+      .lean();
+
+    const bulkOps = [];
+    const skipped = [];
+    const foundIds = new Set(leads.map((lead) => String(lead._id)));
+
+    for (const requestedId of requestedFixes.keys()) {
+      if (!foundIds.has(requestedId)) {
+        skipped.push({ _id: requestedId, reason: "lead not found" });
+      }
+    }
+
+    leads.forEach((lead) => {
+      const leadId = String(lead._id);
+      const requestedPhone = requestedFixes.get(leadId);
+      const analysis = leadPhoneReportService.analyzePhone(lead.phone);
+
+      if (!analysis.fixable) {
+        skipped.push({ _id: leadId, reason: "phone is not safely fixable" });
+        return;
+      }
+
+      if (analysis.suggested !== requestedPhone) {
+        skipped.push({ _id: leadId, reason: "suggested phone no longer matches" });
+        return;
+      }
+
+      bulkOps.push({
+        updateOne: {
+          filter: { _id: lead._id },
+          update: { $set: { phone: analysis.suggested } },
+          timestamps: false,
+        },
+      });
+    });
+
+    let result = { matchedCount: 0, modifiedCount: 0 };
+    if (bulkOps.length) {
+      result = await db.leads.bulkWrite(bulkOps, { timestamps: false });
+    }
+
+    res.json({
+      success: true,
+      requestedCount: requestedFixes.size,
+      fixedCount: result.modifiedCount || 0,
+      matchedCount: result.matchedCount || 0,
+      skipped,
+    });
+  } catch (error) {
+    console.error("Error fixing lead phones:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fixing lead phones",
+    });
   }
 };
 
