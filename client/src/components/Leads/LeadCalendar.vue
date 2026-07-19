@@ -167,5 +167,11 @@ export default {
 .eli-event {
     background-color: #dff0d8;
 }
+
+.v-calendar-monthly__day.v-present,
+.v-calendar-weekly__day.v-present {
+    background-color: #dff0ff !important;
+    box-shadow: inset 0 0 0 3px #1976d2;
+}
 </style>
   

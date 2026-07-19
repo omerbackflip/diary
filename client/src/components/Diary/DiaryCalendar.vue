@@ -69,28 +69,23 @@
             v-model="focus"
             type="month"
             locale="he-IL"
-            color="primary"
             :weekdays="[0,1,2,3,4,5,6]"
-            :class="['diary-calendar', { mobile: isMobileView }]"
+            class="diary-calendar"
           >
             <template v-slot:day="{ date, outside }">
               <div
                 class="day-cell"
-                :class="{
-                  'outside-day': outside,
-                  mobile: isMobileView
-                }"
+                :class="{ 'outside-day': outside }"
                 @click="onClickDay(date)"
               >
                 <div
                   v-if="getDiaryByDate(date)"
                   class="poalim-box"
-                  :class="{ mobile: isMobileView }"
                 >
-                  <div class="poalim-label" :class="{ mobile: isMobileView }">
+                  <div class="poalim-label">
                     פועלים
                   </div>
-                  <div class="poalim-value" :class="{ mobile: isMobileView }">
+                  <div class="poalim-value">
                     {{ getDiaryByDate(date).poalim || 0 }}
                   </div>
                 </div>
@@ -177,7 +172,6 @@ export default {
   data() {
     return {
       diaryList: [],
-      isLoading: false,
       months: [],
       month: new Date().getMonth() + 1,
       focus: moment().startOf("month").format("YYYY-MM-DD"),
@@ -242,18 +236,12 @@ export default {
 
   methods: {
     async retrieveDairies() {
-      this.isLoading = true;
+      const response = await apiService.clientGetEntities(DIARY_MODEL);
 
-      try {
-        const response = await apiService.clientGetEntities(DIARY_MODEL);
-
-        if (response && response.data) {
-          this.diaryList = response.data.sort((a, b) => {
-            return new Date(b.date) - new Date(a.date);
-          });
-        }
-      } finally {
-        this.isLoading = false;
+      if (response && response.data) {
+        this.diaryList = response.data.sort((a, b) => {
+          return new Date(b.date) - new Date(a.date);
+        });
       }
     },
 
@@ -358,12 +346,6 @@ export default {
   beforeDestroy() {
     this.$root.$off("addNewDiary");
     window.removeEventListener("resize", this.onResizeHandler);
-  },
-
-  watch: {
-    month() {
-      this.syncFocusWithMonth();
-    }
   }
 };
 </script>
@@ -419,16 +401,7 @@ export default {
   white-space: nowrap;
 }
 
-.current-month-btn,
-.month-list-btn {
-  white-space: nowrap;
-}
-
 .diary-calendar {
-  width: 100%;
-}
-
-.diary-calendar.mobile {
   width: 100%;
 }
 
@@ -562,12 +535,6 @@ export default {
 
 .calendar-page.mobile .calendar-month-title {
   font-size: 15px;
-}
-
-.calendar-page.mobile .current-month-btn,
-.calendar-page.mobile .month-list-btn {
-  width: 100%;
-  max-width: 220px;
 }
 
 .calendar-page.mobile .day-cell {
