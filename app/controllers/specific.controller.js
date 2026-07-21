@@ -283,14 +283,7 @@ exports.googleConnectionStatus = async (req, res) => {
 
     return res.send({
       connected: true,
-      username: null,
-      client_id: process.env.VUE_APP_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID,
-      developerKey: process.env.VUE_APP_GOOGLE_API_KEY || null,
-      locale: process.env.VUE_APP_GOOGLE_PICKER_LOCALE || 'en',
-      access_token: tokens.access_token || null,
-
-      // app-specific only:
-      folderId: ServerApp.google.pickerRootFolder
+      username: null
     });
   } catch (error) {
     console.log(error);
