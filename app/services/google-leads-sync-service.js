@@ -2,8 +2,8 @@ const { google } = require('googleapis');
 const db = require("../models");
 const googleSubmoduleService = require('./google-submodule-service');
 
-const SPREADSHEET_ID = "1qS8rb0RDkOwVCuH7McXPYrlvrfctLFSaQ2hpFrmtbI0";
-const RANGE = "'לידים'!A:I";
+const SPREADSHEET_ID = process.env.GOOGLE_LEADS_SPREADSHEET_ID || "1qS8rb0RDkOwVCuH7McXPYrlvrfctLFSaQ2hpFrmtbI0";
+const RANGE = process.env.GOOGLE_LEADS_RANGE || "'לידים'!A:I";
 
 async function fetchNewRows(UPLOAD_MODEL) {
   const oAuth2Client = googleSubmoduleService.getOAuthClientFromStoredTokens();
