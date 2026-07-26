@@ -489,20 +489,20 @@ exports.fixLeadPhones = async (req, res) => {
       const requestedPhone = requestedFixes.get(leadId);
       const analysis = leadPhoneReportService.analyzePhone(lead.phone);
 
-      if (!analysis.fixable) {
-        skipped.push({ _id: leadId, reason: "phone is not safely fixable" });
+      if (analysis.valid) {
+        skipped.push({ _id: leadId, reason: "phone is already valid" });
         return;
       }
 
-      if (analysis.suggested !== requestedPhone) {
-        skipped.push({ _id: leadId, reason: "suggested phone no longer matches" });
+      if (!/^0\d{9}$/.test(requestedPhone)) {
+        skipped.push({ _id: leadId, reason: "suggested phone is invalid" });
         return;
       }
 
       bulkOps.push({
         updateOne: {
           filter: { _id: lead._id },
-          update: { $set: { phone: analysis.suggested } },
+          update: { $set: { phone: requestedPhone } },
           timestamps: false,
         },
       });

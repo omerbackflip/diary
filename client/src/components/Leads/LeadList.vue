@@ -222,13 +222,24 @@
               <template v-slot:item.selected="{ item }">
                 <v-checkbox
                   :input-value="isPhoneReportItemSelected(item)"
-                  :disabled="!item.fixable || phoneReportFixing"
+                  :disabled="!isSuggestedPhoneValid(item) || phoneReportFixing"
                   hide-details
                   dense
                   class="ma-0 pa-0"
                   @click.stop
                   @change="togglePhoneReportItem(item, $event)"
                 ></v-checkbox>
+              </template>
+              <template v-slot:item.suggestedPhone="{ item }">
+                <v-text-field
+                  v-model="item.suggestedPhone"
+                  dense
+                  hide-details
+                  single-line
+                  class="phone-report-suggested-phone"
+                  :error="!isSuggestedPhoneValid(item)"
+                  @click.stop
+                ></v-text-field>
               </template>
               <template v-slot:item.problems="{ item }">
                 <v-chip
@@ -409,7 +420,7 @@ export default {
 
     selectedPhoneReportItems() {
       const selectedIds = new Set(this.selectedPhoneReportIds);
-      return this.phoneReport.items.filter((item) => selectedIds.has(item._id) && item.fixable);
+      return this.phoneReport.items.filter((item) => selectedIds.has(item._id) && this.isSuggestedPhoneValid(item));
     }
   },
 
@@ -495,7 +506,7 @@ export default {
           items: response.data.items || [],
         };
         this.selectedPhoneReportIds = this.selectedPhoneReportIds.filter((id) =>
-          this.phoneReport.items.some((item) => item._id === id && item.fixable)
+          this.phoneReport.items.some((item) => item._id === id && this.isSuggestedPhoneValid(item))
         );
       } catch (error) {
         console.error("Error loading lead phone report:", error);
@@ -517,7 +528,7 @@ export default {
     },
 
     togglePhoneReportItem(item, checked) {
-      if (!item.fixable) return;
+      if (!this.isSuggestedPhoneValid(item)) return;
 
       if (checked && !this.selectedPhoneReportIds.includes(item._id)) {
         this.selectedPhoneReportIds = [...this.selectedPhoneReportIds, item._id];
@@ -528,14 +539,18 @@ export default {
 
     selectAllSafePhoneReportItems() {
       this.selectedPhoneReportIds = this.phoneReport.items
-        .filter((item) => item.fixable)
+        .filter((item) => this.isSuggestedPhoneValid(item))
         .map((item) => item._id);
+    },
+
+    isSuggestedPhoneValid(item) {
+      return /^0\d{9}$/.test(String(item.suggestedPhone || '').trim());
     },
 
     async fixSelectedLeadPhones() {
       const items = this.selectedPhoneReportItems.map((item) => ({
         _id: item._id,
-        suggestedPhone: item.suggestedPhone,
+        suggestedPhone: String(item.suggestedPhone || '').trim(),
       }));
 
       if (!items.length) return;
@@ -914,6 +929,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   align-self: center;
   color: rgba(0, 0, 0, 0.6);
   font-size: 13px;
+}
+
+.phone-report-suggested-phone {
+  max-width: 140px;
 }
 
 @media (max-width: 600px) {
