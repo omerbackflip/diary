@@ -191,6 +191,127 @@ exports.uploadHolderPic = async(req, res) => {
   }
 };
 
+exports.uploadFlatIssuePic = async(req, res) => {
+  let uploadStep = "start";
+  let oAuth2Client;
+  let uploadedFileId;
+
+  try {
+    const { issueId, fileContent, name, capturedAt } = req.body || {};
+
+    if (!issueId) {
+      return res.status(400).send({ message: "Missing issueId" });
+    }
+
+    if (!fileContent) {
+      return res.status(400).send({ message: "Missing fileContent" });
+    }
+
+    uploadStep = "find-flat-issue";
+    const issue = await db.flatissues.findById(issueId).lean();
+
+    if (!issue) {
+      return res.status(404).send({ message: "FlatIssue was not found" });
+    }
+
+    uploadStep = "find-holder";
+    const holder = await db.holders
+      .findOne({ flatId: issue.flatId })
+      .select("GDParantFolder")
+      .lean();
+
+    if (!holder) {
+      return res.status(400).send({
+        message: `No Holder exists with flatId ${issue.flatId}`,
+      });
+    }
+
+    if (!holder.GDParantFolder) {
+      return res.status(400).send({
+        message: `Holder flatId ${issue.flatId} has no Google Drive parent folder`,
+      });
+    }
+
+    uploadStep = "google-auth";
+    oAuth2Client = googleSubmoduleService.getOAuthClientFromStoredTokens();
+
+    uploadStep = "ensure-issues-folder";
+    const issuesFolder = await ensureFolder({
+      oAuth2Client,
+      folderName: "issues",
+      parentId: holder.GDParantFolder,
+    });
+
+    uploadStep = "ensure-issue-folder";
+    const issueFolder = await ensureFolder({
+      oAuth2Client,
+      folderName: `issue_${issue._id}`,
+      parentId: issuesFolder.id,
+    });
+
+    uploadStep = "normalize-media";
+    const media = await normalizeCapturedMedia(req.body);
+    const requestedName = name && String(name).trim();
+    const filename = requestedName
+      ? requestedName.replace(/\.(jpg|jpeg|png|webm|mp4|mov)$/i, "") + media.extension
+      : `${media.mediaType === "video" ? "video" : "pic"}-${moment(new Date()).format("YYYY-MM-DD-HH.mm.ss")}${media.extension}`;
+
+    uploadStep = "google-upload";
+    const file = await uploadFile({
+      oAuth2Client,
+      name: filename,
+      mimeType: media.mimeType,
+      body: Readable.from([media.buffer]),
+      folderId: issueFolder.id,
+    });
+    uploadedFileId = file.id;
+
+    const pic = {
+      name: file.name,
+      fileId: file.id,
+      folderId: issueFolder.id,
+      url: file.webViewLink,
+      mimeType: media.mimeType,
+      mediaType: media.mediaType,
+      capturedAt: capturedAt || new Date(),
+    };
+
+    uploadStep = "associate-flat-issue";
+    const updatedIssue = await db.flatissues
+      .findByIdAndUpdate(
+        issue._id,
+        { $push: { photos: pic } },
+        { new: true }
+      )
+      .lean();
+
+    if (!updatedIssue) {
+      throw new Error("FlatIssue disappeared before picture association");
+    }
+
+    return res.send({
+      success: true,
+      pic,
+      issue: updatedIssue,
+    });
+  } catch (error) {
+    if (uploadedFileId && oAuth2Client) {
+      try {
+        const drive = google.drive({ version: "v3", auth: oAuth2Client });
+        await drive.files.delete({ fileId: uploadedFileId });
+      } catch (cleanupError) {
+        console.error("Unable to clean up unassociated FlatIssue picture:", cleanupError);
+      }
+    }
+
+    console.error(`uploadFlatIssuePic failed during ${uploadStep}:`, error);
+    res.status(500).send({
+      message: error.message || "Some error while uploading FlatIssue picture to Google Drive",
+      step: uploadStep,
+    });
+  }
+};
+
 exports.listHolderPics = async(req, res) => {
   try {
     const { parentFolderId } = req.query || {};

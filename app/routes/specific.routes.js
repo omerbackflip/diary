@@ -14,6 +14,7 @@ module.exports = app => {
 	router.post("/save-pic", specific.savePic);
 	router.post("/delete-pic", specific.deletePic);
 	router.post("/upload-holder-pic", specific.uploadHolderPic);
+	router.post("/upload-flat-issue-pic", specific.uploadFlatIssuePic);
 	router.get("/list-holder-pics", specific.listHolderPics);
 	router.post("/delete-holder-pic", specific.deleteHolderPic);
 	router.post("/bulk-write", specific.bulkWriteControl);

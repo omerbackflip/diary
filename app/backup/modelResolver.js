@@ -4,6 +4,7 @@ const MODEL_MAP = {
   Bill: db.bills,
   DiaryData: db.diarydatas,
   Holder: db.holders,
+  FlatIssue: db.flatissues,
   Lead: db.leads,
   Price: db.prices,
   Table: db.tables,

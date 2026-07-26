@@ -19,6 +19,11 @@ module.exports = {
       archiveName: 'holders.csv'
     },
     {
+      key: 'flatissues',
+      modelName: 'FlatIssue',
+      archiveName: 'flatissues.csv'
+    },
+    {
       key: 'leads',
       modelName: 'Lead',
       archiveName: 'leads.csv'

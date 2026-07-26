@@ -10,8 +10,9 @@ db.tables = require("./table.model.js")(mongoose);
 db.diarydatas = require("./diarydata.model.js")(mongoose);
 db.leads = require("./lead.model.js")(mongoose);
 db.holders = require("./holder.model.js")(mongoose);
+db.flatissues = require("./flatissue.model.js")(mongoose);
 db.prices = require("./price.model.js")(mongoose);
 db.bills = require("./bill.model.js")(mongoose);
 db.pricelist = require("./pricelist.model.js")(mongoose);
 
-module.exports = db; 
+module.exports = db;

@@ -1,6 +1,13 @@
 <template>
   <v-dialog v-model="dialogHolderForm" width="600">
     <v-card style="direction: rtl;" :class="bck_grnd(holder._id)">
+      <v-tabs v-model="activeTab" centered background-color="transparent">
+        <v-tab>פרטי דירה</v-tab>
+        <v-tab :disabled="isNewHolder || !holder.flatId">פריטים לטיפול</v-tab>
+      </v-tabs>
+
+      <v-tabs-items v-model="activeTab" class="holder-tabs-items">
+        <v-tab-item>
       <v-card-text style="padding: 0px;">
         <v-container>
           <!-- <v-row v-if="holderPics && holderPics.length" class="mx-0 pa-2" style="background-color: beige;">
@@ -114,6 +121,18 @@
         <v-spacer></v-spacer>
         <v-btn small @click="cancelHolderForm">בטל</v-btn>
       </v-card-actions>
+        </v-tab-item>
+
+        <v-tab-item>
+          <flat-issue-section
+            v-if="holder.flatId"
+            :flat-id="Number(holder.flatId)"
+          />
+          <v-card-actions class="justify-end">
+            <v-btn small @click="cancelHolderForm">סגור</v-btn>
+          </v-card-actions>
+        </v-tab-item>
+      </v-tabs-items>
     </v-card>
     <camera ref="camera" @captured="addMediaItems" />
     <modal-dialog ref="modalDialog"/>
@@ -127,13 +146,15 @@ import GooglePicker from "../GooglePicker.vue";
 import { GoogleFileViewerModal as modalDialog } from '../../../../google/frontend';
 import Camera from "../../../../camera/frontend";
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
+import FlatIssueSection from "./FlatIssueSection.vue";
 
 export default {
     name: "holder-form",
-    components: {GooglePicker,modalDialog, Camera},
+    components: {GooglePicker,modalDialog, Camera, FlatIssueSection},
     data() {
       return {
         dialogHolderForm: false,
+        activeTab: 0,
         resolve: null,      // What is this for ?
         isLoading: false,
         isNewHolder: false,
@@ -158,6 +179,7 @@ export default {
     methods: {
       open(holder, isNewHolder) {
         this.isNewHolder = isNewHolder;
+        this.activeTab = 0;
 
         this.holder = {
           ...holder,
@@ -388,6 +410,9 @@ export default {
 }
 .bg-beige {
   background-color: beige !important;
+}
+.holder-tabs-items {
+  background-color: transparent !important;
 }
 .centered-input input {
   text-align: center !important;

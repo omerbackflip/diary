@@ -38,6 +38,10 @@ class SpecificServiceEndPoints {
     return http.post("specific/upload-holder-pic", data);
   }
 
+  uploadFlatIssuePic(data) {
+    return http.post("specific/upload-flat-issue-pic", data);
+  }
+
   listHolderPics(params) {
     return http.get("specific/list-holder-pics", {params});
   }

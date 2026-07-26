@@ -2,6 +2,7 @@ export const DIARY_MODEL = 'diarydatas';
 export const TABLE_MODEL = 'tables';
 export const LEAD_MODEL = 'leads';
 export const HOLDER_MODEL = 'holders';
+export const FLAT_ISSUE_MODEL = 'flatissues';
 export const PRICE_MODEL = 'prices';
 export const BILL_MODEL = 'bills';
 export const PRICELIST_MODEL = 'pricelist';
