@@ -263,7 +263,7 @@ import Vue from "vue";
 import moment from "moment";
 import apiService from "../../services/apiService";
 import specificServiceEndPoints from "../../services/specificServiceEndPoints";
-import { LEAD_MODEL, LEADS_HEADERS, LEADS_SUMMARY_HEADERS, NEW_LEAD, loadTable, isMobile } from "../../constants/constants";
+import { LEAD_MODEL, LEADS_HEADERS, LEADS_SUMMARY_HEADERS, NEW_LEAD, loadTable, TABLE_IDS, isMobile } from "../../constants/constants";
 import leadForm from "./LeadForm.vue"
 import BarChart from '@/components/Common/BarChart.vue';
 import excel from "vue-excel-export";
@@ -707,9 +707,9 @@ export default {
     this.role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'
 
     const [statusTable = [], arrivedTable = [], interestTable = []] = await Promise.all([
-      loadTable(9),
-      loadTable(5),
-      loadTable(2),
+      loadTable(TABLE_IDS.LEAD_STATUSES),
+      loadTable(TABLE_IDS.ARRIVED_FROM),
+      loadTable(TABLE_IDS.LEAD_INTERESTS),
     ]);
     this.statusList = statusTable.map((code) => (code.description || '').trim());
     this.arrivedList = arrivedTable.map((code) => (code.description || '').trim());

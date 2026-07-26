@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { LEAD_MODEL, sendWhatsapp, loadTable } from "../../constants/constants";
+import { LEAD_MODEL, sendWhatsapp, loadTable, TABLE_IDS } from "../../constants/constants";
 import apiService from "../../services/apiService";
 import Vue from "vue";
 import moment from "moment";
@@ -195,9 +195,9 @@ export default {
     },
 
     async mounted(){
-      this.interestedList = (await loadTable(2)).map((code) => code.description)
-      this.statusList = (await loadTable(9)).map((code) => code.description)
-      this.arrivedList = (await loadTable(5)).map((code) => code.description)
+      this.interestedList = (await loadTable(TABLE_IDS.LEAD_INTERESTS)).map((code) => code.description)
+      this.statusList = (await loadTable(TABLE_IDS.LEAD_STATUSES)).map((code) => code.description)
+      this.arrivedList = (await loadTable(TABLE_IDS.ARRIVED_FROM)).map((code) => code.description)
     },
 
     computed : {

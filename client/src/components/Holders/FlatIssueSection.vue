@@ -170,6 +170,7 @@ import apiService from "../../services/apiService";
 import {
   FLAT_ISSUE_MODEL,
   loadTable,
+  TABLE_IDS,
   viewGDFile,
 } from "../../constants/constants";
 import Camera from "../../../../camera/frontend";
@@ -242,8 +243,8 @@ export default {
             flatId: this.flatId,
             _sort: JSON.stringify({ createdAt: -1 }),
           }),
-          loadTable(20),
-          loadTable(21),
+          loadTable(TABLE_IDS.FLAT_ISSUE_STATUSES),
+          loadTable(TABLE_IDS.FLAT_ISSUE_CATEGORIES),
         ]);
 
         this.issues = issueResponse.data || [];

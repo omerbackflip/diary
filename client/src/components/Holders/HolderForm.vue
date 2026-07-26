@@ -140,7 +140,7 @@
 </template>
 
 <script>
-import { HOLDER_MODEL, loadTable, viewGDFile } from "../../constants/constants";
+import { HOLDER_MODEL, loadTable, TABLE_IDS, viewGDFile } from "../../constants/constants";
 import apiService from "../../services/apiService";
 import GooglePicker from "../GooglePicker.vue";
 import { GoogleFileViewerModal as modalDialog } from '../../../../google/frontend';
@@ -376,7 +376,7 @@ export default {
     },
 
     async mounted(){
-      this.statusList = ((await loadTable(6)) || [])
+      this.statusList = ((await loadTable(TABLE_IDS.HOLDER_STATUSES)) || [])
         .map((code) => (code.description || '').trim())
         .filter(Boolean)
         .sort()

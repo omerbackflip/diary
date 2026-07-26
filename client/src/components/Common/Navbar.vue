@@ -80,7 +80,7 @@
 import ImportXLS from '../ImportXLS.vue';
 import Vue from "vue";
 import moment from "moment";
-import { isMobile, loadTable, TABLE_MODEL } from '../../constants/constants';
+import { isMobile, loadTable, TABLE_IDS, TABLE_MODEL } from '../../constants/constants';
 import apiService from "../../services/apiService";
 import { initializeGoogleOnAppLoad } from "../../../../google/frontend";
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
@@ -197,7 +197,7 @@ export default {
                     this.lastUpdate = "last backup : " + dateStr;
 
                     await apiService.updateEntity(
-                        { table_id: 110, table_code: 1 },
+                        { table_id: TABLE_IDS.LAST_BACKUP, table_code: 1 },
                         { description: this.lastUpdate },
                         { model: TABLE_MODEL }
                     );
@@ -258,7 +258,7 @@ export default {
     
     async mounted() {
         this.getDatabaseInformation();
-        const lastUpdateArr = (await loadTable(110)).map((code) => code.description);
+        const lastUpdateArr = (await loadTable(TABLE_IDS.LAST_BACKUP)).map((code) => code.description);
         this.lastUpdate = lastUpdateArr.length === 1 ? lastUpdateArr[0] : lastUpdateArr;
         this.checkGoogleConnection();
         this.role = localStorage.getItem('DiaryAuthenticated'); // 'admin' or 'viewer'

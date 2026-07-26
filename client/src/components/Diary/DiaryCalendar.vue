@@ -162,6 +162,7 @@ import {
   DIARY_MODEL,
   NEW_DIARY,
   loadTable,
+  TABLE_IDS,
   isMobile
 } from "../../constants/constants";
 
@@ -319,7 +320,7 @@ export default {
   },
 
   async mounted() {
-    this.months = (await loadTable(3)).map(code => {
+    this.months = (await loadTable(TABLE_IDS.MONTHS)).map(code => {
       return {
         id: code.table_code,
         name: code.description

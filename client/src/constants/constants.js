@@ -1,5 +1,18 @@
 export const DIARY_MODEL = 'diarydatas';
 export const TABLE_MODEL = 'tables';
+export const TABLE_IDS = Object.freeze({
+    CATALOG: 99,
+    USERS: 90,
+    LAST_BACKUP: 110,
+    GLOBAL_DOCUMENTS: 8,
+    HOLDER_STATUSES: 6,
+    LEAD_STATUSES: 9,
+    ARRIVED_FROM: 5,
+    LEAD_INTERESTS: 2,
+    FLAT_ISSUE_STATUSES: 20,
+    FLAT_ISSUE_CATEGORIES: 21,
+    MONTHS: 3,
+});
 export const LEAD_MODEL = 'leads';
 export const HOLDER_MODEL = 'holders';
 export const FLAT_ISSUE_MODEL = 'flatissues';

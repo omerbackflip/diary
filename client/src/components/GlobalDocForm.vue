@@ -197,7 +197,7 @@
 
 
 <script>
-import { TABLE_MODEL, viewGDFile, shareOnWhatsApp } from '../constants/constants';
+import { TABLE_IDS, TABLE_MODEL, viewGDFile, shareOnWhatsApp } from '../constants/constants';
 import apiService from '../services/apiService';
 import http from '../http-common';
 import { GoogleFileViewerModal as modalDialog } from '../../../google/frontend';
@@ -236,7 +236,7 @@ export default {
   methods: {
     retrieveDocs() {
       this.isLoading = true;
-      let table_id = 8;
+      const table_id = TABLE_IDS.GLOBAL_DOCUMENTS;
       apiService.clientGetEntities(TABLE_MODEL, {table_id})
         .then((response) => {
           this.documentList = response.data.sort((a, b) => a.table_code - b.table_code);
