@@ -227,13 +227,18 @@ export default {
             };
 
             input.click();
-            },
+        },
 
-            async runRestore(file) {
+        async runRestore(file) {
             try {
+                if (!file || !file.name || !file.name.toLowerCase().startsWith('diary')) {
+                    alert("Restore file must start with 'diary'.");
+                    return;
+                }
+
                 if (!confirm('This will overwrite ALL data. Continue?')) return;
 
-                this.loadingRestore = true;
+                this.loading = true;
 
                 const formData = new FormData();
                 formData.append('file', file);
@@ -243,13 +248,14 @@ export default {
 
                 alert('Restore completed');
                 console.log(response.data);
+                
             } catch (err) {
                 console.error(err);
                 alert(err?.response?.data?.message || 'Restore failed');
             } finally {
-                this.loadingRestore = false;
+                this.loading = false;
             }
-            }
+        }
 
     },
 

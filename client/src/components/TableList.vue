@@ -101,6 +101,7 @@
               :headers="headers"
               :items="tableID"
               :search="search"
+              :sort-by="['table_code']"
               disable-pagination
               hide-default-footer
               dense
@@ -174,6 +175,7 @@
               :headers="headers"
               :items="tableCode"
               :search="search"
+              :sort-by="['table_code']"
               disable-pagination
               hide-default-footer
               dense
