@@ -573,6 +573,14 @@ exports.bulkWriteControl = async (req, res) => {
 
 exports.runBackup = async (req, res) => {
   try {
+    const backupDate = moment().format('DD/MM/YYYY');
+
+    // Update before exporting so tables.csv contains this backup's date.
+    await db.tables.findOneAndUpdate(
+      { table_id: 110, table_code: 1 },
+      { description: `last backup : ${backupDate}` }
+    );
+
     const result = await backupService.runBackup({
       config: backupConfig,
       getModel,

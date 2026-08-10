@@ -80,8 +80,7 @@
 import ImportXLS from '../ImportXLS.vue';
 import Vue from "vue";
 import moment from "moment";
-import { isMobile, loadTable, TABLE_IDS, TABLE_MODEL } from '../../constants/constants';
-import apiService from "../../services/apiService";
+import { isMobile, loadTable, TABLE_IDS } from '../../constants/constants';
 import { initializeGoogleOnAppLoad } from "../../../../google/frontend";
 import SpecificServiceEndPoints from "../../services/specificServiceEndPoints";
 
@@ -195,12 +194,6 @@ export default {
                     const dateStr = match ? `${match[3]}/${match[2]}/${match[1]}` : '';
 
                     this.lastUpdate = "last backup : " + dateStr;
-
-                    await apiService.updateEntity(
-                        { table_id: TABLE_IDS.LAST_BACKUP, table_code: 1 },
-                        { description: this.lastUpdate },
-                        { model: TABLE_MODEL }
-                    );
                 }
             } catch (error) {
                 console.error(error);
