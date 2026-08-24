@@ -44,7 +44,7 @@
               <v-row>
                 <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6"
                        class="px-0 py-1" :class="holderList[i+28] && holderList[i+28].payedFile ? 'bck-green' : ''">
-                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+28])">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" :class="holderList[i+28] && holderList[i+28].name ? 'holder-name-bck' : ''" @click="getHolderForEdit(holderList[i+28])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i+28)"><span>{{i+29}}</span></v-row>
                     <v-row class="ma-0 desc-oflow">{{holderList[i+28].name || ""}}</v-row>
                   </v-sheet>
@@ -53,7 +53,7 @@
               <v-row>
                 <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3"
                        class="px-0 py-1 j-center" :class="holderList[i] && holderList[i].payedFile ? '' : ''">
-                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i])">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" :class="holderList[i] && holderList[i].name ? 'holder-name-bck' : ''" @click="getHolderForEdit(holderList[i])">
                     <v-row class="my-1 mx-0 cntr" :class="getStatus(i)">
                       <span class="pa-0" style="display: flex; align-items: center; justify-content: space-evenly;">
                         {{ i + 1 }}
@@ -82,7 +82,7 @@
               <v-row>
                 <v-col v-for="i in Array.from({ length: 1 }, (_, index) => 1 - index)" :key="i" cols="6"
                        class="px-0 py-1" :class="holderList[i-1] && holderList[i-1].payedFile ? 'bck-green' : ''">
-                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i-1])">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" :class="holderList[i-1] && holderList[i-1].name ? 'holder-name-bck' : ''" @click="getHolderForEdit(holderList[i-1])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i-1)"><span>{{i}}</span></v-row>
                     <v-row class="ma-0 desc-oflow">{{holderList[i-1].name || ""}}</v-row>
                   </v-sheet>
@@ -127,7 +127,7 @@
               <v-row>
                 <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6"
                        class="px-0 py-1" :class="holderList[i+60] && holderList[i+60].payedFile ? 'bck-green' : ''">
-                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+60])">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" :class="holderList[i+60] && holderList[i+60].name ? 'holder-name-bck' : ''" @click="getHolderForEdit(holderList[i+60])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i+60)"><span>{{i+61}}</span></v-row>
                     <v-row class="ma-0 desc-oflow">{{holderList[i+60].name || ""}}</v-row>
                   </v-sheet>
@@ -136,7 +136,7 @@
               <v-row>
                 <v-col v-for="i in Array.from({ length: 28 }, (_, index) => 28 - index)" :key="i" cols="3"
                         class="px-0 py-1 j-center" :class="holderList[i+32] && holderList[i+32].payedFile ? '' : ''">
-                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" @click="getHolderForEdit(holderList[i+32])">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize50" :class="holderList[i+32] && holderList[i+32].name ? 'holder-name-bck' : ''" @click="getHolderForEdit(holderList[i+32])">
                     <v-row class="my-1 mx-0 cntr" :class="getStatus(i+32)">
                       <span class="pa-0" style="display: flex; align-items: center; justify-content: space-evenly;">
                         {{ i + 33 }}
@@ -165,7 +165,7 @@
               <v-row>
                 <v-col v-for="i in Array.from({ length: 2 }, (_, index) => 2 - index)" :key="i" cols="6"
                        class="px-0 py-1" :class="holderList[i+30] && holderList[i+30].payedFile ? 'bck-green' : ''">
-                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" @click="getHolderForEdit(holderList[i+30])">
+                  <v-sheet rounded outlined elevation="1" class="mx-0 boxsize100" :class="holderList[i+30] && holderList[i+30].name ? 'holder-name-bck' : ''" @click="getHolderForEdit(holderList[i+30])">
                     <v-row class="my-1 mx-5 cntr" :class="getStatus(i+30)"><span>{{i+31}}</span></v-row>
                     <v-row class="ma-0 desc-oflow">{{holderList[i+30].name || ""}}</v-row>
                   </v-sheet>
@@ -316,7 +316,7 @@ export default {
           : error.message;
         window.alert("Error uploading media: " + message);
       } finally {
-        ;
+        
       }
     },
 
@@ -496,6 +496,10 @@ th > i {
 
 .bck-green {
   background-color: lightgreen;
+}
+
+.holder-name-bck {
+  background-color: lightgreen !important;
 }
 
 .v-input--checkbox {
