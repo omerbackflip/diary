@@ -42,7 +42,7 @@ async function fetchNewRows(UPLOAD_MODEL) {
             ? name 
             : answered?.includes('yes') 
               ? `כוכבית - ${duration} שניות` 
-              : 'כוכבית - לא נענתה',
+              : `כוכבית - לא נענתה (${formatCallTime(createdAt)})`,
           phone: formattedPhone,
           email,
           interested,
@@ -80,6 +80,23 @@ function formatPhoneNumber(phone) {
   }
 
   return formattedPhone;
+}
+
+// Format the call time to HH:MM for display in the name field if the call was not answered
+function formatCallTime(createdAt) {
+  const value = String(createdAt || '').trim();
+  const timeMatch = value.match(/(?:^|\s)(\d{1,2}):(\d{2})(?::\d{2})?/);
+
+  if (timeMatch) {
+    return `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`;
+  }
+
+  const date = new Date(createdAt);
+  if (!Number.isNaN(date.getTime())) {
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  }
+
+  return '??:??';
 }
 
 module.exports = {
