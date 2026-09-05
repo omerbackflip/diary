@@ -19,6 +19,15 @@
           <v-card-text>
             <v-container>
               <v-form ref="form">
+                <v-alert
+                  v-if="availabilityMessage"
+                  type="error"
+                  dense
+                  text
+                  class="mb-3"
+                >
+                  {{ availabilityMessage }}
+                </v-alert>
                 <v-row>
                   <v-col cols="4">
                     <v-text-field v-model="lead.name" label="שם" @focus="$event.target.select()"></v-text-field>
@@ -62,7 +71,13 @@
                                       style="padding-top: 0px;" label="ת. מעקב" clearable @click:clear="clearDate">
                         </v-text-field>
                       </template>
-                      <v-date-picker v-model="lead.trackDate" scrollable>
+                      <v-date-picker
+                        :key="`track-date-picker-${holidayDataVersion}`"
+                        v-model="lead.trackDate"
+                        :picker-date.sync="trackPickerDate"
+                        :allowed-dates="isTrackDateAllowed"
+                        scrollable
+                      >
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="dateModal = false"> Cancel </v-btn>
                         <v-btn text color="primary" @click="$refs.dateDialog.save(lead.trackDate)"> OK </v-btn>
@@ -92,6 +107,15 @@ import { LEAD_MODEL, sendWhatsapp, loadTable, TABLE_IDS } from "../../constants/
 import apiService from "../../services/apiService";
 import Vue from "vue";
 import moment from "moment";
+import israeliCalendarConfig from "../../config/israeliCalendarConfig";
+import {
+  getCachedIsraeliHolidays,
+  getDateAvailability,
+  getIsraeliHolidays,
+  isShabbat,
+  weekdayForDate,
+  dateKeyInTimeZone
+} from "../../services/israeliHolidays";
 Vue.filter("formatDate", function (value) {
 	if (value) {
     moment.locale('he')
@@ -118,15 +142,25 @@ export default {
         statusList: [],
         arrivedList: [],
         interestedList: [],
+        availabilityMessage: '',
+        trackPickerDate: dateKeyInTimeZone(new Date(), israeliCalendarConfig.timezone).slice(0, 7),
+        holidayDataVersion: 0,
+        loadedPickerYears: {},
       };
     },
 
     methods: {
-      open(lead, isNewLead) {
+      async open(lead, isNewLead) {
         this.isNewLead = isNewLead;
         this.lead = lead 
         this.lead.last_update = moment(this.lead.last_update).format('YYYY-MM-DD');
         this.lead.trackDate = this.lead.trackDate ? moment(this.lead.trackDate).format('YYYY-MM-DD') : null;
+        this.trackPickerDate = (this.lead.trackDate || dateKeyInTimeZone(new Date(), israeliCalendarConfig.timezone)).slice(0, 7);
+        this.availabilityMessage = '';
+        await this.loadPickerHolidayYear(Number(this.trackPickerDate.slice(0, 4)));
+        if (this.lead.trackDate) {
+          await this.updateDateAvailability(this.lead.trackDate);
+        }
         this.dialogLeadForm = true;
         return new Promise((resolve) => {
           this.resolve = resolve;
@@ -142,6 +176,15 @@ export default {
       async saveDiary() {
         try {
           this.isLoading = true
+          if (this.lead.trackDate) {
+            const availability = await getDateAvailability(this.lead.trackDate, israeliCalendarConfig);
+            if (!availability.available) {
+              this.availabilityMessage = availability.message;
+              this.isLoading = false;
+              return;
+            }
+          }
+          this.availabilityMessage = '';
           let response = ''
           // this.lead.medias = this.newPicsList.map((newPic) => {
           //     return {fileContent: newPic.fileContent};
@@ -184,6 +227,35 @@ export default {
       clearDate() {
         this.lead.trackDate = null;
         this.lead.trackRemark = null;
+        this.availabilityMessage = '';
+      },
+
+      isTrackDateAllowed(date) {
+        // Reading this reactive counter makes Vuetify reevaluate the callback
+        // after an asynchronous Hebcal request finishes.
+        void this.holidayDataVersion;
+        if (isShabbat(date)) return false;
+        if (weekdayForDate(date) === 5 && israeliCalendarConfig.fridayMode === 'day-off') return false;
+        const year = Number(String(date).slice(0, 4));
+        return !getCachedIsraeliHolidays(year, israeliCalendarConfig)
+          .some(event => event.start === date && event.blocksScheduling);
+      },
+
+      async loadPickerHolidayYear(year) {
+        const numericYear = Number(year);
+        if (!numericYear || this.loadedPickerYears[numericYear]) return;
+        this.$set(this.loadedPickerYears, numericYear, true);
+        await getIsraeliHolidays(numericYear, israeliCalendarConfig);
+        this.holidayDataVersion += 1;
+      },
+
+      async updateDateAvailability(date) {
+        if (!date) {
+          this.availabilityMessage = '';
+          return;
+        }
+        const availability = await getDateAvailability(date, israeliCalendarConfig);
+        this.availabilityMessage = availability.available ? '' : availability.message;
       },
 
       //Background of card
@@ -198,6 +270,21 @@ export default {
       this.interestedList = (await loadTable(TABLE_IDS.LEAD_INTERESTS)).map((code) => code.description)
       this.statusList = (await loadTable(TABLE_IDS.LEAD_STATUSES)).map((code) => code.description)
       this.arrivedList = (await loadTable(TABLE_IDS.ARRIVED_FROM)).map((code) => code.description)
+    },
+
+    watch: {
+      'lead.trackDate'(date) {
+        if (date) this.updateDateAvailability(date);
+        else this.availabilityMessage = '';
+      },
+      'lead.meeting'() {
+        this.updateDateAvailability(this.lead.trackDate);
+        this.holidayDataVersion += 1;
+      },
+      trackPickerDate(value) {
+        const year = Number(String(value || '').slice(0, 4));
+        if (year) this.loadPickerHolidayYear(year);
+      }
     },
 
     computed : {

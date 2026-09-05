@@ -11,6 +11,7 @@ export const TABLE_IDS = Object.freeze({
     LEAD_INTERESTS: 2,
     FLAT_ISSUE_STATUSES: 20,
     FLAT_ISSUE_CATEGORIES: 21,
+    REMINDERS: 30,
     MONTHS: 3,
 });
 export const LEAD_MODEL = 'leads';
