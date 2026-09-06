@@ -52,7 +52,7 @@
                     <v-text-field v-model="lead.email" label="Email" @focus="$event.target.select()" dense></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-textarea v-model="lead.description" label="תאור" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
+                    <v-textarea ref="descriptionTextarea" v-model="lead.description" label="תאור" auto-grow rows="1" @focus="$event.target.select()" dense></v-textarea>
                   </v-col>
                   <v-col cols="2">
                     <div class="d-flex flex-column align-end">
@@ -162,6 +162,13 @@ export default {
           await this.updateDateAvailability(this.lead.trackDate);
         }
         this.dialogLeadForm = true;
+        await this.$nextTick();
+        window.requestAnimationFrame(() => {
+          const descriptionTextarea = this.$refs.descriptionTextarea;
+          if (descriptionTextarea && descriptionTextarea.calculateInputHeight) {
+            descriptionTextarea.calculateInputHeight();
+          }
+        });
         return new Promise((resolve) => {
           this.resolve = resolve;
         });
