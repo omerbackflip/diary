@@ -76,12 +76,10 @@
               <tr
                 :class="['clickable-row']"
                 @click="handleRowClick(item)"
-                @mouseenter="setHoveredPriceListItem(item)"
                 @mouseover="setHoveredPriceListItem(item)"
-                @mousemove="positionFlatChartPreview($event)"
-                @mouseleave="clearHoveredPriceListItem(); hideFlatChartPreview()"
+                @mouseleave="clearHoveredPriceListItem()"
               >
-                <!-- @mouseenter="scheduleFlatChartPreview(item, $event)"  // preview the chart on hover -->
+                <!-- preview only on flatId hover -->
                 <td
                   v-if="isFirstFloorCell(index)"
                   :rowspan="floorRowSpan(index)"
@@ -89,17 +87,26 @@
                 >
                   {{ item.floor }}
                 </td>
+
                 <td
                   :class="['flat-id-cell', soldTextClass(item)]"
                   @click.stop="openFile(item)"
+                  @mouseenter="scheduleFlatChartPreview(item, $event)"
+                  @mousemove="positionFlatChartPreview($event)"
+                  @mouseleave="hideFlatChartPreview()"
                 >
                   <div class="d-flex justify-center">{{ item.flatId }}</div>
                 </td>
+
                 <td :class="soldTextClass(item)">{{ item.buyerName }}</td>
                 <td :class="soldTextClass(item)">{{ item.directions }}</td>
                 <td :class="soldTextClass(item)">{{ item.rooms }}</td>
-                <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'warehouse')"> {{ item.warehouseId }} - ({{ item.warehouseArea }})</td>
-                <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'parking')"> {{ item.parkingId }}</td>
+                <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'warehouse')">
+                  {{ item.warehouseId }} - ({{ item.warehouseArea }})
+                </td>
+                <td :class="['map-click-cell', soldTextClass(item)]" @click.stop="openPropertyMap(item, 'parking')">
+                  {{ item.parkingId }}
+                </td>
                 <td :class="soldTextClass(item)">{{ item.flatArea }}</td>
                 <td :class="soldTextClass(item)">{{ item.balconyArea }}</td>
                 <td :class="soldTextClass(item)">{{ item.equivalentArea }}</td>
