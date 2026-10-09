@@ -38,7 +38,29 @@
                 <v-text-field v-model="holder.phone" dense @focus="$event.target.select()"></v-text-field>
               </v-col>
               <v-row class="mx-0">
-                <v-col cols="3">
+                <v-dialog
+                  ref="mesiraDateDialog"
+                  v-model="mesiraDateDialog"
+                  persistent
+                  width="290px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      :value="formatMesiraDate(holder.mesiraDate)"
+                      label="מסירה"
+                      dense
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="mesiraDatePicker" scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="mesiraDateDialog = false">Cancel</v-btn>
+                    <v-btn text color="primary" @click="saveMesiraDate">OK</v-btn>
+                  </v-date-picker>
+                </v-dialog>
+                <!-- <v-col cols="3">
                   <v-checkbox v-model="holder.payedFile" label="ריצוף" hide-details></v-checkbox>
                 </v-col>  
                 <v-col cols="3">
@@ -49,7 +71,7 @@
                 </v-col>
                 <v-col cols="3">
                   <v-checkbox v-model="holder.payedOffer" label="חיפוי"></v-checkbox>
-                </v-col>
+                </v-col> -->
               </v-row>   
               <v-row class="mx-0">
                 <v-col cols="6">
@@ -173,6 +195,8 @@ export default {
         removedPicsThisSession: [],
         isUploadingPic: false,
         isLoadingPics: false,
+        mesiraDateDialog: false,
+        mesiraDatePicker: "",
       };
     },
 
@@ -184,6 +208,7 @@ export default {
         this.holder = {
           ...holder,
         };
+        this.mesiraDatePicker = this.formatMesiraDate(this.holder.mesiraDate);
         delete this.holder.pics;
 
         this.removedPicsThisSession = [];
@@ -221,6 +246,16 @@ export default {
           console.log(error);
           this.isLoading = false
         }
+      },
+
+      formatMesiraDate(value) {
+        return typeof value === "string" ? value.substring(0, 10) : "";
+      },
+
+      saveMesiraDate() {
+        if (!this.mesiraDatePicker) return;
+        this.holder.mesiraDate = `${this.mesiraDatePicker}T00:00:00.000Z`;
+        this.mesiraDateDialog = false;
       },
 
       //Background of card

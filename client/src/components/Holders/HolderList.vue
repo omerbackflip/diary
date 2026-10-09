@@ -41,12 +41,13 @@
               <td>
                 <span>{{item.name}}</span>
               </td>
-              <td @click.stop="openMesiraDateDialog(item)">
+              <!-- <td @click.stop="openMesiraDateDialog(item)"> -->
+              <td>
                 <span style="margin-left: 0.5rem;">
                   {{ item.mesiraDate | formatDate }}
                 </span>
               </td>
-              <td>
+              <!-- <td>
                 <span>{{item.status}}</span>
               </td>
               <td>
@@ -63,13 +64,13 @@
               </td>
               <td>
                 <v-checkbox v-model="item.payedOffer" hide-details color="green" readonly></v-checkbox>
-              </td>
+              </td> -->
             </tr>
-            <tr>
+            <!-- <tr>
               <td :colspan="headers.length" @click="getHolderForEdit(item)" style="text-align: center">
                 <span>{{item.remark}}</span>
               </td>            
-            </tr>
+            </tr> -->
           </template>
           <template v-slot:footer>
             <div style="width: 100%; place-items: center;; padding: 12px; border-top: 1px solid #ddd; 
@@ -121,7 +122,7 @@ import moment from "moment";
 Vue.filter("formatDate", function (value) {
 	if (value) {
     // moment.locale('he')
-		return moment(value).format("YYYY-MM-DD");
+		return moment(value).format("DD/MM/YYYY");
 	}
 });
 
