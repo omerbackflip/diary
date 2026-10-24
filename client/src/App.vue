@@ -2,14 +2,16 @@
   <v-app>
     <template v-if="!isAuthenticated">
       <v-container fill-height fluid>
-        <v-layout align-center justify-center>
+        <v-layout column align-center justify-center>
+          <v-alert v-if="loginError" type="error" role="alert">{{ loginError }}</v-alert>
+          <v-progress-linear v-if="usersLoading" indeterminate />
+          <v-btn v-if="!usersLoading && !usersLoaded" text @click="loadUsers">Retry loading users</v-btn>
           <login-form @submit="handleLogin" />
         </v-layout>
       </v-container>
     </template>
-
     <template v-else>
-      <Navbar @logout="logout"/>
+      <Navbar @logout="logout" />
       <v-main>
         <router-view />
       </v-main>
@@ -18,51 +20,81 @@
 </template>
 
 <script>
-import Navbar from './components/Common/Navbar.vue'
-import LoginForm from './components/shared/login'
-import { loadTable, TABLE_IDS } from "../src/constants/constants.js";
+import Navbar from './components/Common/Navbar.vue';
+import LoginForm from './components/shared/login';
+import { loadTable, TABLE_IDS } from './constants/constants';
+
+const AUTH_STORAGE_KEY = 'DiaryAuthenticated';
 
 export default {
-  name: "app",
-  components: {Navbar,LoginForm},
+  name: 'app',
+  components: { Navbar, LoginForm },
   data() {
     return {
       isAuthenticated: false,
-      validUser: '',
-      validpass: '',
+      userInfo: [],
+      usersLoading: false,
+      usersLoaded: false,
+      loginError: ''
     };
   },
-  async mounted() {
-    this.userInfo = (await loadTable(TABLE_IDS.USERS));
-  },
   created() {
-    const authFlag = localStorage.getItem('DiaryAuthenticated');
-    if (authFlag === 'admin' || authFlag === 'viewer') { // viewer will be filtetred to יד1 only
-      this.isAuthenticated = true;
-    }
+    const role = localStorage.getItem(AUTH_STORAGE_KEY);
+    this.isAuthenticated = role === 'admin' || role === 'viewer';
+  },
+  mounted() {
+    this.loadUsers();
   },
   methods: {
-  async handleLogin({ username, password }) {
-    // חפש את המשתמש הנכון מתוך רשימת המשתמשים
-    const foundUser = this.userInfo.find(u => u.table_id === TABLE_IDS.USERS && u.description === username && u.GDFileId === password);
-
-    if (foundUser) {
-      this.isAuthenticated = true;
+    async loadUsers() {
+      if (this.usersLoading) return false;
+      this.usersLoading = true;
+      this.usersLoaded = false;
+      this.loginError = '';
+      this.userInfo = [];
+      try {
+        const users = await loadTable(TABLE_IDS.USERS);
+        if (!Array.isArray(users)) {
+          this.loginError = 'Could not load users. Please retry.';
+          return false;
+        }
+        this.userInfo = users;
+        this.usersLoaded = true;
+        this.loginError = users.length ? '' : 'No users are configured.';
+        return users.length > 0;
+      } catch (_) {
+        this.loginError = 'Could not load users. Please retry.';
+        return false;
+      } finally {
+        this.usersLoading = false;
+      }
+    },
+    async handleLogin({ username, password }) {
+      if (this.usersLoading) {
+        this.loginError = 'Users are still loading. Please wait.';
+        return;
+      }
+      if (!this.usersLoaded && !(await this.loadUsers())) return;
+      this.loginError = '';
+      const foundUser = this.userInfo.find(user =>
+        user.table_id === TABLE_IDS.USERS &&
+        user.description === username && user.textValue === password
+      );
+      if (!foundUser) {
+        this.loginError = 'Wrong username or password.';
+        return;
+      }
       const role = Number(foundUser.table_code) === 1 ? 'admin' : 'viewer';
-      localStorage.setItem('DiaryAuthenticated', role)
-    } else {
-      window.alert("Wrong user/password");
+      localStorage.setItem(AUTH_STORAGE_KEY, role);
+      this.isAuthenticated = true;
+    },
+    logout() {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      this.isAuthenticated = false;
+      this.loginError = '';
     }
-  },
-
-  logout() {
-    this.isAuthenticated = false;
-    localStorage.removeItem('DiaryAuthenticated');
   }
-}
-
-
-}
+};
 </script>
 
 <style>

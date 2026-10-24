@@ -239,7 +239,9 @@ export default {
       const table_id = TABLE_IDS.GLOBAL_DOCUMENTS;
       apiService.clientGetEntities(TABLE_MODEL, {table_id})
         .then((response) => {
-          this.documentList = response.data.sort((a, b) => a.table_code - b.table_code);
+          this.documentList = response.data  // this reaplce the name of the field GDFileId with textValue to add clarity
+            .map(({ textValue, ...item }) => ({...item, GDFileId: textValue, }))
+            .sort((a, b) => a.table_code - b.table_code);
           this.selectedDocuments = [];
           this.isLoading = false;
         })
@@ -271,15 +273,22 @@ export default {
     },
 
     updateOne(item) {
-      apiService.updateEntity({_id:item._id}, item, {model: TABLE_MODEL})
-        .then(response => {
+      const { GDFileId, ...data } = item;
+
+      apiService.updateEntity(
+        { _id: item._id },
+        { ...data, textValue: GDFileId },
+        { model: TABLE_MODEL }
+      )
+        .then((response) => {
           console.log(response.data);
           this.message = 'The updateOne() updated successfully!';
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
         });
-        this.itemToEdit = '';
+
+      this.itemToEdit = '';
     },
 
     setEdit(item) {

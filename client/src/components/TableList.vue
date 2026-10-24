@@ -45,7 +45,7 @@
           <v-card-text>
             <v-form ref="form" v-model="formValid">
               <v-row>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="2">
                   <v-text-field
                     v-model="newItem.table_id"
                     label="ID"
@@ -53,7 +53,7 @@
                     dense
                   />
                 </v-col>
-                <v-col cols="12" md="3">
+                <v-col cols="12" md="2">
                   <v-text-field
                     v-model="newItem.table_code"
                     label="Code"
@@ -71,8 +71,16 @@
                 </v-col>
                 <v-col cols="12" md="3">
                   <v-text-field
-                    v-model="newItem.GDFileId"
-                    label="GDFileId"
+                    v-model="newItem.textValue"
+                    label="Text Value"
+                    dense
+                  />
+                </v-col>
+                <v-col cols="12" md="2">
+                  <v-text-field
+                    v-model="newItem.numeric"
+                    label="Numeric Value"
+                    type="number"
                     dense
                   />
                 </v-col>
@@ -121,6 +129,34 @@
                 </div>
               </template>
 
+              <template v-slot:[`item.numeric`]="{ item }">
+                <div v-if="editRowId === item._id">
+                  <v-text-field
+                    v-model="editItem.numeric"
+                    dense
+                    hide-details
+                    :id="`itemEdit-${item._id}`"
+                  />
+                </div>
+                <div v-else>
+                  {{ item.numeric }}
+                </div>
+              </template>
+
+              <template v-slot:[`item.textValue`]="{ item }">
+                <div v-if="editRowId === item._id">
+                  <v-text-field
+                    v-model="editItem.textValue"
+                    dense
+                    hide-details
+                    :id="`itemEdit-${item._id}`"
+                  />
+                </div>
+                <div v-else>
+                  {{ item.textValue }}
+                </div>
+              </template>
+
               <template v-slot:[`item.description`]="{ item }">
                 <div v-if="editRowId === item._id">
                   <v-text-field
@@ -153,14 +189,6 @@
                 </div>
               </template>
 
-              <template v-slot:[`item.GDFileId`]="{ item }">
-                <div v-if="editRowId === item._id">
-                  <v-text-field v-model="editItem.GDFileId" dense hide-details />
-                </div>
-                <div v-else>
-                  {{ item.GDFileId }}
-                </div>
-              </template>
             </v-data-table>
           </v-card>
         </v-col>
@@ -194,6 +222,24 @@
                 </div>
               </template>
 
+              <template v-slot:[`item.numeric`]="{ item }">
+                <div v-if="editRowId === item._id">
+                  <v-text-field v-model="editItem.numeric" dense hide-details />
+                </div>
+                <div v-else>
+                  {{ item.numeric }}
+                </div>
+              </template>
+
+              <template v-slot:[`item.textValue`]="{ item }">
+                <div v-if="editRowId === item._id">
+                  <v-text-field v-model="editItem.textValue" dense hide-details />
+                </div>
+                <div v-else>
+                  {{ item.textValue }}
+                </div>
+              </template>
+
               <template v-slot:[`item.description`]="{ item }">
                 <div v-if="editRowId === item._id">
                   <v-text-field v-model="editItem.description" dense hide-details />
@@ -221,14 +267,6 @@
                 </div>
               </template>
 
-              <template v-slot:[`item.GDFileId`]="{ item }">
-                <div v-if="editRowId === item._id">
-                  <v-text-field v-model="editItem.GDFileId" dense hide-details />
-                </div>
-                <div v-else>
-                  {{ item.GDFileId }}
-                </div>
-              </template>
             </v-data-table>
           </v-card>
         </v-col>
@@ -254,7 +292,8 @@ export default {
         { text: "ID", value: "table_id", class: 'success title'},
         { text: "CODE", value: "table_code", class: 'success title'},
         { text: "Description", value: "description", class: 'success title', groupable: false },
-        { text: "GDFileId", value: "GDFileId", class: 'success title', groupable: false },
+        { text: "Text Value", value: "textValue", class: 'success title', groupable: false },
+        { text: "Numeric Value", value: "numeric", class: 'success title', groupable: false },
         { text: "Act.", value: "actions", sortable: false, class: 'success title', groupable: false  },
       ],
       isLoading: false,
@@ -267,7 +306,8 @@ export default {
         table_id: "",
         table_code: "",
         description: "",
-        GDFileId: "",
+        textValue: "",
+        numeric: "",
       },
       fldRules: [v => !!v || 'Field is required'],
     };
@@ -320,7 +360,8 @@ export default {
         table_id: "",
         table_code: "",
         description: "",
-        GDFileId: "",
+        textValue: "",
+        numeric: "",
       };
       if (this.$refs.form) {
         this.$refs.form.resetValidation();
