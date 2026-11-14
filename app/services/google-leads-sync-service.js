@@ -88,12 +88,14 @@ function formatCallTime(createdAt) {
   const timeMatch = value.match(/(?:^|\s)(\d{1,2}):(\d{2})(?::\d{2})?/);
 
   if (timeMatch) {
-    return `${timeMatch[1].padStart(2, '0')}:${timeMatch[2]}`;
+    const hour = (parseInt(timeMatch[1], 10) + 2) % 24;
+    return `${String(hour).padStart(2, '0')}:${timeMatch[2]}`;
   }
 
   const date = new Date(createdAt);
   if (!Number.isNaN(date.getTime())) {
-    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    const hour = (date.getHours() + 2) % 24;
+    return `${String(hour).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
   }
 
   return '??:??';
